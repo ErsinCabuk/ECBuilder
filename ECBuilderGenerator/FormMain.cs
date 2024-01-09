@@ -251,28 +251,32 @@ namespace ECBuilderGenerator
         private string GenerateCSFromDesigner()
         {
             CodeTypeDeclaration type;
-            var host = (IDesignerHost)DesignSurface.GetService(typeof(IDesignerHost));
-            var root = host.RootComponent;
-            var manager = new DesignerSerializationManager(host);
+            IDesignerHost host = (IDesignerHost)DesignSurface.GetService(typeof(IDesignerHost));
+            IComponent root = host.RootComponent;
+            DesignerSerializationManager manager = new DesignerSerializationManager(host);
             using (manager.CreateSession())
             {
-                var serializer = (TypeCodeDomSerializer)manager.GetSerializer(root.GetType(),
+                TypeCodeDomSerializer serializer = (TypeCodeDomSerializer)manager.GetSerializer(root.GetType(),
                     typeof(TypeCodeDomSerializer));
                 type = serializer.Serialize(manager, root, host.Container.Components);
                 type.IsPartial = true;
                 type.Members.OfType<CodeConstructor>()
                     .FirstOrDefault().Attributes = MemberAttributes.Public;
             }
-            var builder = new StringBuilder();
-            CodeGeneratorOptions option = new CodeGeneratorOptions();
-            option.BracingStyle = "C";
-            option.BlankLinesBetweenMembers = false;
-            using (var writer = new StringWriter(builder, CultureInfo.InvariantCulture))
+            StringBuilder builder = new StringBuilder();
+            CodeGeneratorOptions option = new CodeGeneratorOptions()
             {
-                using (var codeDomProvider = new CSharpCodeProvider())
+                BracingStyle = "C",
+                BlankLinesBetweenMembers = false,
+            };
+
+            using (StringWriter writer = new StringWriter(builder, CultureInfo.InvariantCulture))
+            {
+                using (CSharpCodeProvider codeDomProvider = new CSharpCodeProvider())
                 {
                     codeDomProvider.GenerateCodeFromType(type, writer, option);
                 }
+
                 return builder.ToString();
             }
         }
