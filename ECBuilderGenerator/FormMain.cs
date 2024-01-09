@@ -1,7 +1,9 @@
-﻿using Microsoft.CSharp;
+﻿using ECBuilder.Builders.FormBuilders;
+using ECBuilder.Components.Buttons;
+using Microsoft.CSharp;
 using System;
-using System.CodeDom.Compiler;
 using System.CodeDom;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
@@ -11,9 +13,9 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Linq;
 
 namespace ECBuilderGenerator
 {
@@ -24,6 +26,9 @@ namespace ECBuilderGenerator
             InitializeComponent();
         }
 
+        #region Parameters
+        private SqlConnection SqlConnection { get; set; }
+
         private Dictionary<string, Type> DataTypeControls { get; set; } = new Dictionary<string, Type>()
         {
             { "int", typeof(NumericUpDown) },
@@ -32,8 +37,7 @@ namespace ECBuilderGenerator
             { "date", typeof(DateTimePicker) },
         };
 
-
-        List<Type> Tools { get; set; } = new List<Type>()
+        List<Type> ControlTypes { get; set; } = new List<Type>()
         {
             typeof(TextBox),
             typeof(NumericUpDown),
@@ -41,162 +45,213 @@ namespace ECBuilderGenerator
             typeof(DateTimePicker)
         };
 
-        private SqlConnection SqlConnection { get; set; }
-
-        private void FormMain_Load(object sender, EventArgs e)
+        List<Type> FormTypes { get; set; } = new List<Type>()
         {
-            DataGridViewComboBoxColumn comboBox = (DataGridViewComboBoxColumn)dataGridViewControls.Columns["ColumnControlType"];
-            comboBox.DataSource = Tools;
-            comboBox.DisplayMember = "Name";
-        }
+            typeof(InfoFormBuilder),
+            typeof(CreateFormBuilder)
+        };
 
+        private DesignSurface DesignSurface { get; set; }
+        #endregion
+
+        #region Form Load
+        private void FormMainV2_Load(object sender, EventArgs e)
+        {
+            DataGridViewComboBoxColumn comboBox = (DataGridViewComboBoxColumn)dataGridViewControls.Columns["ControlType"];
+            comboBox.DataSource = ControlTypes;
+            comboBox.DisplayMember = "Name";
+
+            comboBoxFormType.DataSource = FormTypes;
+            comboBoxFormType.DisplayMember = "Name";
+        }
+        #endregion
+
+        #region Connect
         private void buttonConnect_Click(object sender, EventArgs e)
         {
-            if (SqlConnection != null && SqlConnection.State == ConnectionState.Open)
+            Cursor = Cursors.WaitCursor;
+
+            try
             {
-                textBoxFormName.Text = $"Form{comboBoxTables.SelectedItem}";
+                SqlConnection = new SqlConnection($"Server={textBoxServerName.Text};Database={textBoxDatabase.Text};User Id={textBoxUsername.Text};Password={textBoxPassword.Text};");
+                SqlConnection.Open();
 
-                string[] restrictionsColumns = new string[4];
-                restrictionsColumns[2] = comboBoxTables.SelectedItem.ToString();
-                DataTable schemaColumns = SqlConnection.GetSchema("Columns", restrictionsColumns);
-
-                foreach (DataRow rowColumn in schemaColumns.Rows)
+                DataTable dataTable = SqlConnection.GetSchema("Tables");
+                foreach (DataRow row in dataTable.Rows)
                 {
-                    string columnName = rowColumn["COLUMN_NAME"].ToString();
-                    string dataType = rowColumn["DATA_TYPE"].ToString();
-
-                    if(DataTypeControls.TryGetValue(dataType, out Type control))
-                    {
-                        dataGridViewControls.Rows.Add(new object[] { columnName, control.Name });
-                    }
-                    else
-                    {
-                        dataGridViewControls.Rows.Add(new object[] { columnName, "TextBox" });
-                    }
+                    comboBoxTables.Items.Add(row.ItemArray[2].ToString());
                 }
+
+                groupBoxServerInfo.Enabled = false;
+                comboBoxTables.Enabled = true;
             }
-            else
+            catch (Exception exception)
             {
-                try
+                MessageBox.Show(exception.Message);
+            }
+
+            Cursor = Cursors.Default;
+        }
+        #endregion
+
+        #region Start Designer
+        private void buttonStartDesigner_Click(object sender, EventArgs e)
+        {
+            textBoxFormName.Text = $"Form{comboBoxTables.SelectedItem}";
+
+            string[] restrictionsColumns = new string[4] { null, null, comboBoxTables.SelectedItem.ToString(), null };
+            DataTable schemaColumns = SqlConnection.GetSchema("Columns", restrictionsColumns);
+
+            foreach (DataRow rowColumn in schemaColumns.Rows)
+            {
+                string columnName = rowColumn["COLUMN_NAME"].ToString();
+                string dataType = rowColumn["DATA_TYPE"].ToString();
+
+                if (DataTypeControls.TryGetValue(dataType, out Type control))
                 {
-                    SqlConnection = new SqlConnection($"Server={textBoxServerName.Text};Database={textBoxDatabase.Text};User Id={textBoxUsername.Text};Password={textBoxPassword.Text};");
-                    SqlConnection.Open();
-
-                    DataTable dataTable = SqlConnection.GetSchema("Tables");
-                    foreach (DataRow row in dataTable.Rows)
-                    {
-                        comboBoxTables.Items.Add(row.ItemArray[2].ToString());
-                    }
-
-                    textBoxServerName.Enabled = false;
-                    textBoxUsername.Enabled = false;
-                    textBoxPassword.Enabled = false;
-                    textBoxDatabase.Enabled = false;
-                    comboBoxTables.Enabled = true;
-
-                    buttonConnect.Text = "Set";
+                    dataGridViewControls.Rows.Add(new object[] { columnName, control.Name });
                 }
-                catch (Exception exception)
+                else
                 {
-                    MessageBox.Show(exception.Message);
+                    dataGridViewControls.Rows.Add(new object[] { columnName, "TextBox" });
                 }
             }
         }
+        #endregion
 
+        #region Create Designer
         int labelBiggerWidth = 0;
-        private void buttonStart_Click(object sender, EventArgs e)
+        private void buttonCreateDesigner_Click(object sender, EventArgs e)
         {
-            DesignSurface designSurface = new DesignSurface(typeof(Form));
-            IDesignerHost host = (IDesignerHost) designSurface.GetService(typeof(IDesignerHost));
+            DesignSurface = new DesignSurface((Type)comboBoxFormType.SelectedItem);
+            IDesignerHost host = (IDesignerHost)DesignSurface.GetService(typeof(IDesignerHost));
 
-            Form root = (Form) host.RootComponent;
+            Form root = (Form)host.RootComponent;
             TypeDescriptor.GetProperties(root)["Name"].SetValue(root, textBoxFormName.Text);
-            root.Text = textBoxFormName.Text;
+            root.Text = textBoxFormText.Text;
             root.AutoScaleDimensions = new SizeF(9F, 21F);
             root.AutoScaleMode = AutoScaleMode.Font;
             root.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             root.Padding = new Padding(10);
             root.StartPosition = FormStartPosition.CenterScreen;
+            root.AutoSize = true;
 
             Control oldControl = new Control();
             foreach (DataGridViewRow row in dataGridViewControls.Rows)
             {
-                if (row.Cells["ColumnControlName"].Value == null) continue;
+                if (row.Cells["ControlName"].Value == null) continue;
 
-                DataGridViewComboBoxCell comboBox = (DataGridViewComboBoxCell)row.Cells["ColumnControlType"];
+                DataGridViewComboBoxCell comboBox = (DataGridViewComboBoxCell)row.Cells["ControlType"];
                 Type type = comboBox.Items.Cast<Type>().First(item => item.Name == comboBox.Value.ToString());
 
-                Control control = (Control)host.CreateComponent(type, row.Cells["ColumnControlName"].Value.ToString());
-
-                string labelText = ConvertToSeparatedWords(control.Name);
-
-                Label labelTitle = (Label)host.CreateComponent(typeof(Label), $"labelTitle{control.Name}");
-
-                labelTitle.Text = labelText;
-                labelTitle.Margin = new Padding(0, 0, 10, 0);
-                labelTitle.AutoSize = true;
-                labelTitle.TabIndex = 0;
-
+                Control control = (Control)host.CreateComponent(type, row.Cells["ControlName"].Value.ToString());
                 control.Margin = new Padding(0, 0, 0, 10);
                 control.Location = new Point(0, oldControl.Size.Height + 10 + oldControl.Location.Y);
                 control.Width = 300;
-                control.Tag = "use";
 
-                labelTitle.Location = new Point(10, control.Location.Y + (labelTitle.Height - control.Height));
-
-                root.Controls.Add(labelTitle);
+                List<string> tags = new List<string>() { "use" };
+                if (row.Cells["Required"].Value is bool requiredValue && requiredValue) tags.Add("required");
+                if (row.Cells["Locked"].Value is bool lockedValue && lockedValue) tags.Add("locked");
+                control.Tag = string.Join(", ", tags);
                 root.Controls.Add(control);
 
-                if(labelTitle.Width > labelBiggerWidth)
-                {
-                    labelBiggerWidth = labelTitle.Width;
-                }
+                Label labelTitle = (Label)host.CreateComponent(typeof(Label), $"labelTitle{control.Name}");
+                labelTitle.Text = row.Cells["LabelText"].FormattedValue + ":";
+                labelTitle.Margin = new Padding(0, 0, 10, 0);
+                labelTitle.AutoSize = true;
+                labelTitle.TabIndex = 0;
+                labelTitle.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+                labelTitle.Location = new Point(10, control.Location.Y + (control.Height - labelTitle.Height) - 4);
+                root.Controls.Add(labelTitle);
 
+                if (labelTitle.Width > labelBiggerWidth) labelBiggerWidth = labelTitle.Width;
                 oldControl = control;
             }
 
-
-            foreach (Control control in root.Controls)
+            foreach (Control control in root.Controls.OfType<Control>().Where(whereControl => whereControl.Tag != null && whereControl.Tag.ToString().Contains("use")))
             {
-                if (control.Tag != null)
-                {
-                    control.Location = new Point(labelBiggerWidth + 10 + 10, control.Location.Y);
-                }
+                control.Location = new Point(labelBiggerWidth + 10 + 10, control.Location.Y);
             }
 
-            var view = (Control)designSurface.View;
+            if (((Type)comboBoxFormType.SelectedItem).IsEquivalentTo(typeof(InfoFormBuilder)))
+            {
+                CustomButton editButton = (CustomButton)host.CreateComponent(typeof(EditButton), "buttonEdit");
+                editButton.Text = "Edit";
+                editButton.Width = 145;
+                editButton.Height = 31;
+                editButton.Margin = new Padding(0);
+                editButton.Location = new Point(oldControl.Location.X + oldControl.Width - editButton.Width, oldControl.Size.Height + 10 + oldControl.Location.Y);
+                root.Controls.Add(editButton);
+
+                CustomButton deleteButton = (CustomButton)host.CreateComponent(typeof(LogicalDeleteButton), "buttonLogicalDelete");
+                deleteButton.Text = "Delete";
+                deleteButton.Width = 145;
+                deleteButton.Height = 31;
+                deleteButton.Margin = new Padding(0);
+                deleteButton.Location = new Point(oldControl.Location.X + oldControl.Width - editButton.Width - 10 - deleteButton.Width, oldControl.Size.Height + 10 + oldControl.Location.Y);
+                root.Controls.Add(deleteButton);
+            }
+            else if (((Type)comboBoxFormType.SelectedItem).IsEquivalentTo(typeof(CreateFormBuilder)))
+            {
+                CustomButton createButton = (CustomButton)host.CreateComponent(typeof(CreateButton), "buttonCreate");
+                createButton.Text = "Save";
+                createButton.Width = 145;
+                createButton.Height = 31;
+                createButton.Margin = new Padding(0);
+                createButton.Location = new Point(oldControl.Location.X + oldControl.Width - createButton.Width, oldControl.Size.Height + 10 + oldControl.Location.Y);
+                root.Controls.Add(createButton);
+            }
+
+            groupBoxDesigner.Controls.Clear();
+            Control view = (Control)DesignSurface.View;
             view.Dock = DockStyle.Fill;
             view.BackColor = Color.White;
-            panel1.Controls.Add(view);
+            groupBoxDesigner.Controls.Add(view);
+        }
+        #endregion
 
-            string code = GenerateCSFromDesigner(designSurface);
+        #region DataGridViewRow Delete
+        DataGridViewRow selectedRow;
+        private void dataGridViewControls_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                selectedRow = dataGridViewControls.Rows[dataGridViewControls.HitTest(e.X, e.Y).RowIndex];
+                selectedRow.Selected = true;
 
+                if (selectedRow.IsNewRow) return;
+
+                contextMenuStripDataGridView.Show(dataGridViewControls, new Point(e.X, e.Y));
+            }
+        }
+
+        private void toolStripMenuItemDelete_Click(object sender, EventArgs e)
+        {
+            dataGridViewControls.Rows.Remove(selectedRow);
+        }
+        #endregion
+
+        #region Get File
+        private void buttonGetFile_Click(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+
+            string code = GenerateCSFromDesigner();
             using (StreamWriter sw = new StreamWriter($@"C:\Users\SuffaTech_11003\Desktop\{textBoxFormName.Text}.txt"))
             {
                 sw.WriteLine(code);
                 sw.Close();
             }
-        }
 
-        string ConvertToSeparatedWords(string input)
-        {
-            string result = string.Empty;
-            for (int i = 0; i < input.Length; i++)
-            {
-                char currentChar = input[i];
-                if (char.IsUpper(currentChar) && i > 0)
-                {
-                    result += " ";
-                }
-                result += currentChar;
-            }
-            return result;
+            Cursor = Cursors.Default;
         }
+        #endregion
 
-        string GenerateCSFromDesigner(DesignSurface designSurface)
+        #region Methods
+        private string GenerateCSFromDesigner()
         {
             CodeTypeDeclaration type;
-            var host = (IDesignerHost)designSurface.GetService(typeof(IDesignerHost));
+            var host = (IDesignerHost)DesignSurface.GetService(typeof(IDesignerHost));
             var root = host.RootComponent;
             var manager = new DesignerSerializationManager(host);
             using (manager.CreateSession())
@@ -221,5 +276,6 @@ namespace ECBuilderGenerator
                 return builder.ToString();
             }
         }
+        #endregion
     }
 }
