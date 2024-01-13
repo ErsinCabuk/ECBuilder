@@ -1,4 +1,5 @@
-﻿using ECBuilder.Interfaces;
+﻿using ECBuilder.DataAccess;
+using ECBuilder.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -47,8 +48,13 @@ namespace ECBuilder.Builders.FormBuilders
         /// Imported lists. The key gives the type of the list and the value gives the list.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Dictionary<Type, IEnumerable<IEntity>> ImportLists { get; set; }
+        public Dictionary<Type, List<IEntity>> ImportLists { get; set; }
 
+        /// <summary>
+        ///
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<Type> ImportListDefinitions { get; set; }
         #endregion
 
         #region Private Properties
@@ -60,6 +66,16 @@ namespace ECBuilder.Builders.FormBuilders
         {
             CheckForIllegalCrossThreadCalls = false;
 
+            #region Import Lists
+            if (ImportListDefinitions != null && ImportListDefinitions.Count > 0)
+            {
+                foreach (Type type in ImportListDefinitions)
+                {
+                    ImportLists.Add(type, await API.GetAll(type, 1));
+                }
+            }
+            #endregion
+
             #region BeforeLoadEvent
             if (BeforeLoadEvent != null)
             {
@@ -67,6 +83,7 @@ namespace ECBuilder.Builders.FormBuilders
             }
             #endregion
 
+            #region Load Event
             UsingControls = this.Controls.Cast<Control>().Where(whereControl => (whereControl.Tag != null) && (whereControl.Tag.ToString().Split(',').Select(tag => tag.Trim()).Contains("use"))).ToList();
             UsingControls.Sort((a, b) => a.TabIndex.CompareTo(b.TabIndex));
 
@@ -74,6 +91,7 @@ namespace ECBuilder.Builders.FormBuilders
             {
                 await LoadEvent();
             }
+            #endregion
 
             #region AfterLoadEvent
             if (AfterLoadEvent != null)

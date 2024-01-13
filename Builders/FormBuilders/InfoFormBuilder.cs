@@ -1,4 +1,5 @@
-﻿using ECBuilder.Test;
+﻿using ECBuilder.Components.ComboBoxes;
+using ECBuilder.Test;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -52,7 +53,7 @@ namespace ECBuilder.Builders.FormBuilders
                     }
                     else
                     {
-                        BuilderDebug.Error(this.DesignMode, $"{control.Name} property could not be converted to DateTime.");
+                        BuilderDebug.Error($"{control.Name} property could not be converted to DateTime.");
                     }
                 }
                 else if (control is NumericUpDown numericUpDown)
@@ -63,8 +64,13 @@ namespace ECBuilder.Builders.FormBuilders
                     }
                     else
                     {
-                        BuilderDebug.Error(this.DesignMode, $"{control.Name} property could not be converted to int.");
+                        BuilderDebug.Error($"{control.Name} property could not be converted to int.");
                     }
+                }
+                else if (control is CustomComboBox customComboBox)
+                {
+                    customComboBox.Import();
+                    customComboBox.SelectedValue = value;
                 }
             }
 

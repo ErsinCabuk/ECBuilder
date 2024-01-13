@@ -1,7 +1,6 @@
 ﻿using ECBuilder.Builders.DataGridViewBuilders;
 using System;
 using System.ComponentModel;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace ECBuilder.Components.TextBoxes

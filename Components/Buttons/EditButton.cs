@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 
 namespace ECBuilder.Components.Buttons
 {
@@ -18,7 +17,7 @@ namespace ECBuilder.Components.Buttons
         /// Edit text
         /// </summary>
         public string EditText { get; private set; }
-        
+
         /// <summary>
         /// Save Text
         /// </summary>
@@ -54,7 +53,7 @@ namespace ECBuilder.Components.Buttons
                     }
                 });
             }
-            else if(buttonMode == ButtonModes.Save)
+            else if (buttonMode == ButtonModes.Save)
             {
                 ParentForm.SetProperties();
 
