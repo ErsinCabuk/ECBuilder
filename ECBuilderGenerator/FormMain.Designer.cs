@@ -2,24 +2,6 @@
 {
     partial class FormMain
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -28,11 +10,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.contextMenuStripDataGridView = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextMenuStripDataGridView = new System.Windows.Forms.ContextMenuStrip();
             this.toolStripMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripTextBoxRepositing = new System.Windows.Forms.ToolStripTextBox();
             this.textBoxServerName = new System.Windows.Forms.TextBox();
             this.labelTitleServerName = new System.Windows.Forms.Label();
             this.textBoxUsername = new System.Windows.Forms.TextBox();
@@ -72,16 +55,24 @@
             // contextMenuStripDataGridView
             // 
             this.contextMenuStripDataGridView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItemDelete});
+            this.toolStripMenuItemDelete,
+            this.toolStripTextBoxRepositing});
             this.contextMenuStripDataGridView.Name = "contextMenuStripDataGridView";
-            this.contextMenuStripDataGridView.Size = new System.Drawing.Size(87, 26);
+            this.contextMenuStripDataGridView.Size = new System.Drawing.Size(161, 51);
+            this.contextMenuStripDataGridView.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuStripDataGridView_Closing);
             // 
             // toolStripMenuItemDelete
             // 
             this.toolStripMenuItemDelete.Name = "toolStripMenuItemDelete";
-            this.toolStripMenuItemDelete.Size = new System.Drawing.Size(86, 22);
+            this.toolStripMenuItemDelete.Size = new System.Drawing.Size(160, 22);
             this.toolStripMenuItemDelete.Text = "Sil";
             this.toolStripMenuItemDelete.Click += new System.EventHandler(this.toolStripMenuItemDelete_Click);
+            // 
+            // toolStripTextBoxRepositing
+            // 
+            this.toolStripTextBoxRepositing.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.toolStripTextBoxRepositing.Name = "toolStripTextBoxRepositing";
+            this.toolStripTextBoxRepositing.Size = new System.Drawing.Size(100, 23);
             // 
             // textBoxServerName
             // 
@@ -214,6 +205,7 @@
             // buttonStartDesigner
             // 
             this.buttonStartDesigner.AutoSize = true;
+            this.buttonStartDesigner.Enabled = false;
             this.buttonStartDesigner.Location = new System.Drawing.Point(116, 189);
             this.buttonStartDesigner.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.buttonStartDesigner.Name = "buttonStartDesigner";
@@ -304,9 +296,11 @@
             // 
             // dataGridViewControls
             // 
+            this.dataGridViewControls.AllowDrop = true;
             this.dataGridViewControls.AllowUserToResizeColumns = false;
             this.dataGridViewControls.AllowUserToResizeRows = false;
             this.dataGridViewControls.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dataGridViewControls.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -323,11 +317,19 @@
             this.Required,
             this.Locked,
             this.OtherProperties});
+            this.dataGridViewControls.EnableHeadersVisualStyles = false;
             this.dataGridViewControls.Location = new System.Drawing.Point(345, 20);
             this.dataGridViewControls.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
             this.dataGridViewControls.MultiSelect = false;
             this.dataGridViewControls.Name = "dataGridViewControls";
-            this.dataGridViewControls.RowHeadersVisible = false;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewControls.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridViewControls.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridViewControls.Size = new System.Drawing.Size(829, 418);
             this.dataGridViewControls.TabIndex = 24;
@@ -365,9 +367,11 @@
             // 
             // OtherProperties
             // 
+            this.OtherProperties.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.OtherProperties.HeaderText = "Other";
             this.OtherProperties.Name = "OtherProperties";
             this.OtherProperties.Text = "Other";
+            this.OtherProperties.Width = 55;
             // 
             // groupBoxDesigner
             // 
@@ -423,6 +427,7 @@
             this.Text = "ECBuilder Generator";
             this.Load += new System.EventHandler(this.FormMainV2_Load);
             this.contextMenuStripDataGridView.ResumeLayout(false);
+            this.contextMenuStripDataGridView.PerformLayout();
             this.groupBoxServerInfo.ResumeLayout(false);
             this.groupBoxServerInfo.PerformLayout();
             this.groupBoxFormInfo.ResumeLayout(false);
@@ -453,12 +458,6 @@
         private System.Windows.Forms.ComboBox comboBoxFormType;
         private System.Windows.Forms.Label labelTitleFormName;
         private System.Windows.Forms.DataGridView dataGridViewControls;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ControlName;
-        private System.Windows.Forms.DataGridViewComboBoxColumn ControlType;
-        private System.Windows.Forms.DataGridViewTextBoxColumn LabelText;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Required;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Locked;
-        private System.Windows.Forms.DataGridViewButtonColumn OtherProperties;
         private System.Windows.Forms.TextBox textBoxFormName;
         private System.Windows.Forms.GroupBox groupBoxDesigner;
         private System.Windows.Forms.TextBox textBoxFormText;
@@ -466,6 +465,13 @@
         private System.Windows.Forms.Button buttonGetFile;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button buttonStartDesigner;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ControlName;
+        private System.Windows.Forms.DataGridViewComboBoxColumn ControlType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn LabelText;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn Required;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn Locked;
+        private System.Windows.Forms.DataGridViewButtonColumn OtherProperties;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBoxRepositing;
     }
 }
 

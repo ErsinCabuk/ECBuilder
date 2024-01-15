@@ -84,6 +84,7 @@ namespace ECBuilderGenerator
 
                 groupBoxServerInfo.Enabled = false;
                 comboBoxTables.Enabled = true;
+                buttonStartDesigner.Enabled = true;
             }
             catch (Exception exception)
             {
@@ -210,38 +211,41 @@ namespace ECBuilderGenerator
         }
         #endregion
 
-        #region DataGridViewRow Delete
-        DataGridViewRow selectedRow;
-        private void dataGridViewControls_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                selectedRow = dataGridViewControls.Rows[dataGridViewControls.HitTest(e.X, e.Y).RowIndex];
-                selectedRow.Selected = true;
-
-                if (selectedRow.IsNewRow) return;
-
-                contextMenuStripDataGridView.Show(dataGridViewControls, new Point(e.X, e.Y));
-            }
-        }
-
-        private void toolStripMenuItemDelete_Click(object sender, EventArgs e)
-        {
-            dataGridViewControls.Rows.Remove(selectedRow);
-        }
-        #endregion
-
         #region Get File
         private void buttonGetFile_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
 
             string code = GenerateCSFromDesigner();
-            using (StreamWriter sw = new StreamWriter($@"C:\Users\SuffaTech_11003\Desktop\{textBoxFormName.Text}.txt"))
-            {
-                sw.WriteLine(code);
-                sw.Close();
-            }
+            StringBuilder stringBuilderDesigner = new StringBuilder();
+            stringBuilderDesigner.AppendLine("namespace ECBuilderGenerator");
+            stringBuilderDesigner.AppendLine("{");
+            stringBuilderDesigner.Append(string.Join("\n", code.Replace("\r\n", "\n").Split('\n').Select(str => $"\t{str}").ToArray()));
+            code = stringBuilderDesigner.ToString();
+            code = code.Replace($" : {((Type)comboBoxFormType.SelectedItem).FullName}", "");
+            code = code.Replace("public " + textBoxFormName.Text + "()\n\t    {\n\t        this.InitializeComponent();\n\t    }", "");
+            code = code.Replace($"public partial class {textBoxFormName.Text}", $"partial class {textBoxFormName.Text}");
+            code.TrimEnd();
+            code += "}";
+            StreamWriter streamWriterDesigner = new StreamWriter($@"C:\Users\SuffaTech_11003\Desktop\{textBoxFormName.Text}.Designer.cs");
+            streamWriterDesigner.Write(code);
+            streamWriterDesigner.Close();
+
+            StringBuilder stringBuilderMain = new StringBuilder();
+            stringBuilderMain.AppendLine("namespace ECBuilderGenerator");
+            stringBuilderMain.AppendLine("{");
+            stringBuilderMain.AppendLine($"\tpublic partial class {textBoxFormName.Text} : {((Type)comboBoxFormType.SelectedItem).FullName}");
+            stringBuilderMain.AppendLine("\t{");
+            stringBuilderMain.AppendLine($"\t\tpublic {textBoxFormName.Text}()");
+            stringBuilderMain.AppendLine("\t\t{");
+            stringBuilderMain.AppendLine("\t\t\tInitializeComponent();");
+            stringBuilderMain.AppendLine("\t\t}");
+            stringBuilderMain.AppendLine("\t}");
+            stringBuilderMain.AppendLine("}");
+
+            StreamWriter streamWriterMain = new StreamWriter($@"C:\Users\SuffaTech_11003\Desktop\{textBoxFormName.Text}.cs");
+            streamWriterMain.Write(stringBuilderMain.ToString());
+            streamWriterMain.Close();
 
             Cursor = Cursors.Default;
         }
@@ -279,6 +283,46 @@ namespace ECBuilderGenerator
 
                 return builder.ToString();
             }
+        }
+
+        #endregion
+
+        #region DataGridView Context Menu Strip
+        DataGridViewRow selectedRow;
+        private void dataGridViewControls_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                selectedRow = dataGridViewControls.Rows[dataGridViewControls.HitTest(e.X, e.Y).RowIndex];
+                selectedRow.Selected = true;
+
+                if (selectedRow.IsNewRow) return;
+
+                contextMenuStripDataGridView.Tag = selectedRow;
+                contextMenuStripDataGridView.Show(dataGridViewControls, new Point(e.X, e.Y));
+            }
+        }
+
+        private void toolStripMenuItemDelete_Click(object sender, EventArgs e)
+        {
+            dataGridViewControls.Rows.Remove(selectedRow);
+        }
+
+        private void contextMenuStripDataGridView_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+        {
+            DataGridViewRow selectedRow = contextMenuStripDataGridView.Tag as DataGridViewRow;
+
+            if (
+                selectedRow != null
+                && int.TryParse(toolStripTextBoxRepositing.Text, out int index)
+                && index < dataGridViewControls.Rows.Count - 1
+            )
+            {
+                dataGridViewControls.Rows.Remove(selectedRow);
+                dataGridViewControls.Rows.Insert(index, selectedRow);
+            }
+
+            toolStripTextBoxRepositing.Clear();
         }
         #endregion
     }
