@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ECBuilder.Builders.FormBuilders
+namespace ECBuilder.FormBuilders
 {
     /// <summary>
     /// Form that creates an entity.

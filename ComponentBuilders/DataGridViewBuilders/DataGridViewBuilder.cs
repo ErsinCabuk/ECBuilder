@@ -1,5 +1,6 @@
-﻿using ECBuilder.Builders.FormBuilders;
+﻿using ECBuilder.ComponentBuilders;
 using ECBuilder.DataAccess;
+using ECBuilder.FormBuilders;
 using ECBuilder.Helpers;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
@@ -11,9 +12,9 @@ using System.Windows.Forms;
 namespace ECBuilder.Builders.DataGridViewBuilders
 {
     /// <summary>
-    /// Shows the entities of the given type.
+    /// Displays entities of the given type in <see cref="DataGridView">DataGridView</see>.
     /// </summary>
-    public class DataGridViewBuilder : DataGridView
+    public class DataGridViewBuilder : DataGridView, IComponentBuilder
     {
         public DataGridViewBuilder()
         {
@@ -21,44 +22,20 @@ namespace ECBuilder.Builders.DataGridViewBuilders
         }
 
         #region Properties
-        /// <summary>
-        /// Form type in which the information of the selected Entity in the DataGridView will be opened.
-        /// </summary>
         public Type InfoForm { get; set; }
 
-        /// <summary>
-        /// Form type to open to create entity
-        /// </summary>
         public Type CreateForm { get; set; }
 
-        /// <summary>
-        /// Method to be run when <see cref="InfoForm">InfoForm</see> is closed.
-        /// </summary>
         public Func<DialogResult, Task> InfoFormCloseEvent { get; set; }
 
-        /// <summary>
-        /// Method to be run when <see cref="InfoForm">InfoForm</see> is closed.
-        /// </summary>
         public Func<DialogResult, Task> CreateFormCloseEvent { get; set; }
 
-        /// <summary>
-        /// DataGridView entity list type
-        /// </summary>
         public Type EntityType { get; set; }
 
-        /// <summary>
-        /// DataGridView <see cref="Import">Imported</see> entity list.
-        /// </summary>
         public List<IEntity> EntityList { get; set; }
 
-        /// <summary>
-        /// Import list types
-        /// </summary>
         public List<Type> ImportListDefinition { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public Dictionary<Type, List<IEntity>> ImportLists { get; set; } = new Dictionary<Type, List<IEntity>>();
 
         /// <summary>
@@ -100,10 +77,6 @@ namespace ECBuilder.Builders.DataGridViewBuilders
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Imports DataGridView's entities.
-        /// </summary>
-        /// <returns><see cref="Task"/></returns>
         public async Task Import()
         {
             #region Import Configurations
@@ -162,9 +135,6 @@ namespace ECBuilder.Builders.DataGridViewBuilders
             #endregion
         }
 
-        /// <summary>
-        /// Opens <see cref="CreateForm">CreateForm</see>.
-        /// </summary>
         public async void ShowCreateForm()
         {
             if (CreateForm == null)

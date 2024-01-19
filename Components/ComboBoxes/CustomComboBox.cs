@@ -1,4 +1,4 @@
-﻿using ECBuilder.Builders.FormBuilders;
+﻿using ECBuilder.FormBuilders;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using ECBuilder.Types;

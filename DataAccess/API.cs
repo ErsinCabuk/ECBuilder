@@ -49,7 +49,7 @@ namespace ECBuilder.DataAccess
         /// </summary>
         /// <param name="type">Entities type</param>
         /// <param name="state">Entities state</param>
-        /// <returns><see cref="List{T}"/></returns>
+        /// <returns><see cref="List{IEntity}"/></returns>
         public static async Task<List<IEntity>> GetAll(Type type, int state = 1)
         {
             HttpResponseMessage = await ECBuilderSettings.APIClient.GetAsync($"api/{type.Name}/{type.Name.ToLower()}Get?entityState={state}&entityID=0");

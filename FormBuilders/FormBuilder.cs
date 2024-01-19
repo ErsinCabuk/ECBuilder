@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ECBuilder.Builders.FormBuilders
+namespace ECBuilder.FormBuilders
 {
     [Serializable]
     public class FormBuilder : Form

@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ECBuilder.Builders.FormBuilders
+namespace ECBuilder.FormBuilders
 {
     /// <summary>
     /// An entitys information form.

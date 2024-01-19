@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace ECBuilder.Helpers
+namespace ECBuilder.Components
 {
     /// <summary>
     /// More useful methods inherited from the <see cref="MessageBox"/>
