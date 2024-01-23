@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Net.Http;
 
 namespace ECBuilder
@@ -30,5 +31,7 @@ namespace ECBuilder
         public static Color EditButtonSaveColor { get; set; }
 
         public static string CheckControlsText { get; set; }
+
+        public static Type ComponentBuilderTextBoxForm { get; set; }
     }
 }
