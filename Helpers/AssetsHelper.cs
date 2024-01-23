@@ -30,7 +30,7 @@ namespace ECBuilder.Helpers
                 }
                 else if (!File.Exists(imagePath) && !string.IsNullOrEmpty(imagePath))
                 {
-                    if (showErrorMessage) MessageBoxes.Error($"{imagePath} yolundaki resim bulunamadı.");
+                    if (showErrorMessage) Components.MessageBoxes.Error($"{imagePath} yolundaki resim bulunamadı.");
                     else image = ECBuilderSettings.AssetsHelperErrorImage;
                 }
                 else if (File.Exists(imagePath))
@@ -41,7 +41,7 @@ namespace ECBuilder.Helpers
             }
             catch (Exception exception)
             {
-                MessageBoxes.Error("Resim getirilirken bir hata oluştu. Hata: \n" + exception);
+                Components.MessageBoxes.Error("Resim getirilirken bir hata oluştu. Hata: \n" + exception);
             }
 
             return image;

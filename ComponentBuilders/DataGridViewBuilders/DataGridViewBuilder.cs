@@ -1,4 +1,5 @@
 ﻿using ECBuilder.ComponentBuilders;
+using ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns;
 using ECBuilder.DataAccess;
 using ECBuilder.FormBuilders;
 using ECBuilder.Helpers;
@@ -62,6 +63,7 @@ namespace ECBuilder.Builders.DataGridViewBuilders
             InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
 
             infoForm.Entity = EntityList.Find(findEntity => findEntity.GetType().GetProperty($"{findEntity.GetType().Name}ID").GetValue(findEntity).Equals(this.Rows[e.RowIndex].Cells[$"{EntityType.Name}ID"].Value));
+            infoForm.ComponentBuilder = this;
             DialogResult dialogResult = infoForm.ShowDialog(this);
 
             if (InfoFormCloseEvent != null)
@@ -117,7 +119,12 @@ namespace ECBuilder.Builders.DataGridViewBuilders
 
                     object itemValue = item.GetType().GetProperty(column.Name).GetValue(item);
 
-                    if (column is DataGridViewTextBoxColumn)
+                    if(column is DataGridViewCustomTextBoxColumn customTextBoxColumn)
+                    {
+                        itemValue = customTextBoxColumn.Use(itemValue, ImportLists);
+                        values.SetValue(itemValue, columnIndex);
+                    }
+                    else if (column is DataGridViewTextBoxColumn)
                     {
                         values.SetValue(itemValue, columnIndex);
                     }
@@ -152,6 +159,7 @@ namespace ECBuilder.Builders.DataGridViewBuilders
             CreateFormBuilder createForm = (CreateFormBuilder)Activator.CreateInstance(CreateForm);
 
             createForm.Entity = (IEntity)Activator.CreateInstance(EntityType);
+            createForm.ComponentBuilder = this;
             DialogResult dialogResult = createForm.ShowDialog(this);
 
             if (CreateFormCloseEvent != null)

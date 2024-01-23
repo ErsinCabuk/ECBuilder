@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ECBuilder.ComponentBuilders
 {
-    internal interface IComponentBuilder
+    public interface IComponentBuilder
     {
         /// <summary>
         /// Form that will open when <see cref="IEntity">Entity</see> information is displayed or edited in the Component. Must be of type <see cref="FormBuilder">FormBuilder</see>.

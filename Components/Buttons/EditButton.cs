@@ -37,7 +37,11 @@ namespace ECBuilder.Components.Buttons
         private async System.Threading.Tasks.Task EditButton_ClickEvent()
         {
             bool checkResult = ParentForm.CheckControls();
-            if (!checkResult) return;
+            if (!checkResult)
+            {
+                if (!string.IsNullOrEmpty(ECBuilderSettings.CheckControlsText)) MessageBoxes.Error(ECBuilderSettings.CheckControlsText);
+                return;
+            }
 
             if (buttonMode == ButtonModes.Edit)
             {

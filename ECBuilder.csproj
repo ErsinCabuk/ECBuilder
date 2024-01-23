@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComponentBuilders\DataGridViewBuilders\Columns\DataGridViewCustomTextBoxColumn.cs" />
     <Compile Include="ComponentBuilders\IComponentBuilder.cs" />
     <Compile Include="ComponentBuilders\TreeViewBuilders\TreeViewBuilder.cs">
       <SubType>Component</SubType>

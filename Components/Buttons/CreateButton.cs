@@ -13,7 +13,12 @@
         private async System.Threading.Tasks.Task CreateButton_ClickEvent()
         {
             bool checkResult = ParentForm.CheckControls();
-            if (!checkResult) return;
+            if (!checkResult) 
+            {
+                if(!string.IsNullOrEmpty(ECBuilderSettings.CheckControlsText)) MessageBoxes.Error(ECBuilderSettings.CheckControlsText);
+                return;
+            }
+
 
             ParentForm.SetProperties();
             ParentForm.SetEmptyProperties();

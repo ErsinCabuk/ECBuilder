@@ -1,4 +1,5 @@
-﻿using ECBuilder.DataAccess;
+﻿using ECBuilder.ComponentBuilders;
+using ECBuilder.DataAccess;
 using ECBuilder.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -48,13 +49,19 @@ namespace ECBuilder.FormBuilders
         /// Imported lists. The key gives the type of the list and the value gives the list.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Dictionary<Type, List<IEntity>> ImportLists { get; set; }
+        public Dictionary<Type, List<IEntity>> ImportLists { get; set; } = new Dictionary<Type, List<IEntity>>();
 
         /// <summary>
         ///
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Type> ImportListDefinitions { get; set; }
+
+        /// <summary>
+        /// Owner ComponentBuilder
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IComponentBuilder ComponentBuilder { get; set; }
         #endregion
 
         #region Private Properties

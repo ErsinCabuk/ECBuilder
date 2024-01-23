@@ -31,73 +31,64 @@ namespace ECBuilder.Components.ComboBoxes
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<IEntity> EntityList { get; set; } = new List<IEntity>();
 
-        public SortTypes SortType { get; set; }
-        #endregion
+        public SortTypes SortType { get; set; } = SortTypes.Ascending;
 
-        #region Private Parameters
-        private FormBuilder FormBuilder { get; set; }
-        #endregion
-
-        #region Events
-        protected override void OnParentChanged(EventArgs e)
-        {
-            base.OnParentChanged(e);
-
-            if (EntityType == null)
-            {
-                BuilderDebug.Error("EntityType was null");
-                return;
-            }
-
-            FormBuilder = (FormBuilder)this.Parent;
-        }
+        public FormBuilder FormBuilder { get; set; }
         #endregion
 
         #region Methods
         public Task Import()
         {
-            if (FormBuilder.ImportLists.TryGetValue(EntityType, out List<IEntity> list))
+            if (string.IsNullOrEmpty(DisplayMember))
             {
-                this.Items.Clear();
+                DisplayMember = $"{EntityType.Name}Name";
+                ValueMember = $"{EntityType.Name}ID";
+            }
 
-                EntityList = list.ToList();
+            if (!FormBuilder.ImportLists.ContainsKey(EntityType))
+            {
+                BuilderDebug.Error($"There were no lists of type {EntityType.Name} in ImportLists.");
+                return null;
+            }
 
-                #region Sort
-                if (SortType is SortTypes.Ascending)
-                {
-                    EntityList.Sort((x, y) =>
+           EntityList = FormBuilder.ImportLists[EntityType];
+            this.Items.Clear();
+
+            #region Sort
+            if (SortType is SortTypes.Ascending)
+            {
+                EntityList.Sort((x, y) =>
+                    string.Compare(
+                        x.GetType().GetProperty(DisplayMember).GetValue(x).ToString(),
+                        y.GetType().GetProperty(DisplayMember).GetValue(y).ToString(),
+                        StringComparison.Ordinal
+                    )
+                );
+            }
+            else if (SortType is SortTypes.Descending)
+            {
+                EntityList.Sort((x, y) =>
                         string.Compare(
-                            x.GetType().GetProperty(DisplayMember).GetValue(x).ToString(),
                             y.GetType().GetProperty(DisplayMember).GetValue(y).ToString(),
+                            x.GetType().GetProperty(DisplayMember).GetValue(x).ToString(),
                             StringComparison.Ordinal
                         )
                     );
-                }
-                else if (SortType is SortTypes.Descending)
-                {
-                    EntityList.Sort((x, y) =>
-                         string.Compare(
-                             y.GetType().GetProperty(DisplayMember).GetValue(y).ToString(),
-                             x.GetType().GetProperty(DisplayMember).GetValue(x).ToString(),
-                             StringComparison.Ordinal
-                         )
-                     );
-                }
-                #endregion
+            }
+            #endregion
 
-                EntityList.ForEach(entity =>
-                {
-                    this.Items.Add(entity);
-                });
+            EntityList.ForEach(entity =>
+            {
+                this.Items.Add(entity);
+            });
 
-                if (this.SelectedValue != null)
-                {
-                    this.SelectedValue = this.SelectedValue;
-                }
+            if (this.SelectedValue != null)
+            {
+                this.SelectedValue = this.SelectedValue;
             }
             else
             {
-                BuilderDebug.Error($"There were no lists of type {EntityType.Name} in ImportLists.");
+                this.SelectedIndex = 0;
             }
 
             return Task.CompletedTask;

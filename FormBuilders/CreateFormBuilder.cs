@@ -35,6 +35,7 @@ namespace ECBuilder.FormBuilders
 
                 else if (control is CustomComboBox customComboBox)
                 {
+                    customComboBox.FormBuilder = this;
                     customComboBox.Import();
                 }
             }

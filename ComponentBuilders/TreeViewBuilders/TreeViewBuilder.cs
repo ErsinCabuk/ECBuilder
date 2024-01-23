@@ -60,6 +60,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
             InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
 
             infoForm.Entity = (IEntity)this.SelectedNode.Tag;
+            infoForm.ComponentBuilder = this;
             DialogResult dialogResult = infoForm.ShowDialog(this);
 
             if (InfoFormCloseEvent != null)
@@ -145,6 +146,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
             CreateFormBuilder createForm = (CreateFormBuilder)Activator.CreateInstance(CreateForm);
 
             createForm.Entity = (IEntity)Activator.CreateInstance(EntityType);
+            createForm.ComponentBuilder = this;
             DialogResult dialogResult = createForm.ShowDialog(this);
 
             if (CreateFormCloseEvent != null)

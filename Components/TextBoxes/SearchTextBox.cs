@@ -1,4 +1,6 @@
 ﻿using ECBuilder.Builders.DataGridViewBuilders;
+using ECBuilder.ComponentBuilders;
+using ECBuilder.ComponentBuilders.TreeViewBuilders;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -20,7 +22,7 @@ namespace ECBuilder.Components.TextBoxes
         /// <see cref="Builders.DataGridViewBuilders.DataGridViewBuilder">DataGridViewBuilder</see> for this.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public DataGridViewBuilder DataGridViewBuilder { get; set; }
+        public IComponentBuilder ComponentBuilder { get; set; }
 
         /// <summary>
         /// Search text
@@ -57,18 +59,25 @@ namespace ECBuilder.Components.TextBoxes
             base.OnTextChanged(e);
             if (searchMode)
             {
-                string searchProperty = string.IsNullOrEmpty(SearchProperty) ? $"{DataGridViewBuilder.EntityType.Name}Name" : SearchProperty;
+                string searchProperty = string.IsNullOrEmpty(SearchProperty) ? $"{ComponentBuilder.EntityType.Name}Name" : SearchProperty;
 
-                foreach (DataGridViewRow row in DataGridViewBuilder.Rows)
+                if (ComponentBuilder is DataGridViewBuilder dataGridViewBuilder)
                 {
-                    if (row.Cells[searchProperty].Value.ToString().ToLower().Contains(this.Text.ToLower()))
+                    foreach (DataGridViewRow row in dataGridViewBuilder.Rows)
                     {
-                        row.Visible = true;
+                        if (row.Cells[searchProperty].Value.ToString().ToLower().Contains(this.Text.ToLower()))
+                        {
+                            row.Visible = true;
+                        }
+                        else
+                        {
+                            row.Visible = false;
+                        }
                     }
-                    else
-                    {
-                        row.Visible = false;
-                    }
+                }
+                else if(ComponentBuilder is TreeViewBuilder treeViewBuilder)
+                {
+
                 }
             }
         }

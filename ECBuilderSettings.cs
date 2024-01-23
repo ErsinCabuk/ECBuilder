@@ -27,6 +27,8 @@ namespace ECBuilder
         /// <summary>
         /// <see cref="Components.Buttons.EditButton">EditButton</see> save mode color.
         /// </summary>
-        public static Color EditButtonSaveColor { get; }
+        public static Color EditButtonSaveColor { get; set; }
+
+        public static string CheckControlsText { get; set; }
     }
 }
