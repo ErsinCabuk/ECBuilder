@@ -5,12 +5,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ECBuilder.FormBuilders
+namespace ECBuilder.FormBuilders.EntityFormBuilders
 {
     /// <summary>
     /// An entitys information form.
     /// </summary>
-    public class InfoFormBuilder : FormBuilder
+    public class InfoFormBuilder : EntityFormBuilder
     {
         public InfoFormBuilder()
         {

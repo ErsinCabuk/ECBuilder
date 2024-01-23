@@ -1,6 +1,7 @@
 ﻿using ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns;
 using ECBuilder.DataAccess;
 using ECBuilder.FormBuilders;
+using ECBuilder.FormBuilders.EntityFormBuilders;
 using ECBuilder.Helpers;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;

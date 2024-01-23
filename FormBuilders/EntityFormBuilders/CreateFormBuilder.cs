@@ -4,12 +4,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ECBuilder.FormBuilders
+namespace ECBuilder.FormBuilders.EntityFormBuilders
 {
     /// <summary>
     /// Form that creates an entity.
     /// </summary>
-    public class CreateFormBuilder : FormBuilder
+    public class CreateFormBuilder : EntityFormBuilder
     {
         public CreateFormBuilder()
         {

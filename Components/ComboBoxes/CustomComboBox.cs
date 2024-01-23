@@ -1,4 +1,4 @@
-﻿using ECBuilder.FormBuilders;
+﻿using ECBuilder.FormBuilders.EntityFormBuilders;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using ECBuilder.Types;
@@ -32,7 +32,7 @@ namespace ECBuilder.Components.ComboBoxes
 
         public SortTypes SortType { get; set; } = SortTypes.Ascending;
 
-        public FormBuilder FormBuilder { get; set; }
+        public EntityFormBuilder FormBuilder { get; set; }
         #endregion
 
         #region Methods

@@ -69,6 +69,9 @@
     <Compile Include="Components\ComboBoxes\CustomComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Components\TextBoxes\FormTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Components\TextBoxes\SearchTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -76,13 +79,19 @@
     <Compile Include="ComponentBuilders\DataGridViewBuilders\DataGridViewBuilder.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FormBuilders\CreateFormBuilder.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormBuilders\InfoFormBuilder.cs">
+    <Compile Include="FormBuilders\EntityFormBuilders\CreateFormBuilder.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormBuilders\FormBuilder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBuilders\FormTextBoxFormBuilder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBuilders\EntityFormBuilders\InfoFormBuilder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBuilders\EntityFormBuilders\EntityFormBuilder.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ECBuilderSettings.cs" />

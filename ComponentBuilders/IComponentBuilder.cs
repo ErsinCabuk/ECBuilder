@@ -10,12 +10,12 @@ namespace ECBuilder.ComponentBuilders
     public interface IComponentBuilder
     {
         /// <summary>
-        /// Form that will open when <see cref="IEntity">Entity</see> information is displayed or edited in the Component. Must be of type <see cref="FormBuilder">FormBuilder</see>.
+        /// Form that will open when <see cref="IEntity">Entity</see> information is displayed or edited in the Component. Must be of type <see cref="EntityFormBuilder">FormBuilder</see>.
         /// </summary>
         Type InfoForm { get; set; }
 
         /// <summary>
-        /// Form that will be opened when creating <see cref="IEntity">Entity</see> in the component. Must be of type <see cref="FormBuilder">FormBuilder</see>.
+        /// Form that will be opened when creating <see cref="IEntity">Entity</see> in the component. Must be of type <see cref="EntityFormBuilder">FormBuilder</see>.
         /// </summary>
         Type CreateForm { get; set; }
 

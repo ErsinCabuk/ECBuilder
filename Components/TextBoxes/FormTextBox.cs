@@ -4,50 +4,48 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ECBuilder.Components.Buttons
+namespace ECBuilder.Components.TextBoxes
 {
-    public class CustomButton : Button
+    public class FormTextBox : TextBox
     {
-        public CustomButton() { }
+        public FormTextBox()
+        {
+            this.ReadOnly = true;
+            this.Margin = new Padding(0, 0, 0, 0);
+            this.Size = new System.Drawing.Size(300, 29);
+            this.Text = DefaultText;
+        }
 
         #region Properties
         /// <summary>
-        /// Form containing the button.
+        /// 
         /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public EntityFormBuilder ParentForm { get; set; }
+        public string DefaultText { get; set; } = "Seç...";
 
         /// <summary>
-        /// Method that will work before the button does its main method. If the method returns <see langword="true"/>, the button starts main method. If it returns <see langword="false"/>, not starts main method.
+        /// 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Func<bool> ControlClickEvent { get; set; }
 
         /// <summary>
-        /// Method to be run before the main method of the button runs.
+        /// 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Func<Task> BeforeRunClickEvent { get; set; }
 
         /// <summary>
-        /// Method to be run after the main method of the button runs.
+        /// 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<int, Task> AfterRunClickEvent { get; set; }
-        #endregion
+        public Func<Task> AfterRunClickEvent { get; set; }
 
-        #region Parameters
+        /// <summary>
+        /// 
+        /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        internal Func<Task> ClickEvent { get; set; }
+        public EntityFormBuilder FormBuilder { get; set; }
         #endregion
-
-        #region Events
-        protected override void OnParentChanged(EventArgs e)
-        {
-            base.OnParentChanged(e);
-
-            ParentForm = (EntityFormBuilder)this.FindForm();
-        }
 
         protected override async void OnClick(EventArgs e)
         {
@@ -62,13 +60,12 @@ namespace ECBuilder.Components.Buttons
                 await BeforeRunClickEvent();
             }
 
-            await ClickEvent();
+
 
             if (AfterRunClickEvent != null)
             {
-                await AfterRunClickEvent(Convert.ToInt32(ParentForm.Entity.GetType().GetProperty($"{ParentForm.Entity.GetType().Name}ID").GetValue(ParentForm.Entity)));
+                await AfterRunClickEvent();
             }
         }
-        #endregion
     }
 }
