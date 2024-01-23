@@ -36,13 +36,6 @@ namespace ECBuilder.Components.Buttons
         private ButtonModes buttonMode = ButtonModes.Edit;
         private async System.Threading.Tasks.Task EditButton_ClickEvent()
         {
-            bool checkResult = ParentForm.CheckControls();
-            if (!checkResult)
-            {
-                if (!string.IsNullOrEmpty(ECBuilderSettings.CheckControlsText)) MessageBoxes.Error(ECBuilderSettings.CheckControlsText);
-                return;
-            }
-
             if (buttonMode == ButtonModes.Edit)
             {
                 this.BackColor = ECBuilderSettings.EditButtonSaveColor;
@@ -59,6 +52,13 @@ namespace ECBuilder.Components.Buttons
             }
             else if (buttonMode == ButtonModes.Save)
             {
+                bool checkResult = ParentForm.CheckControls();
+                if (!checkResult)
+                {
+                    if (!string.IsNullOrEmpty(ECBuilderSettings.CheckControlsText)) MessageBoxes.Error(ECBuilderSettings.CheckControlsText);
+                    return;
+                }
+
                 ParentForm.SetProperties();
 
                 await DataAccess.API.Update(ParentForm.Entity);

@@ -13,9 +13,9 @@
         private async System.Threading.Tasks.Task CreateButton_ClickEvent()
         {
             bool checkResult = ParentForm.CheckControls();
-            if (!checkResult) 
+            if (!checkResult)
             {
-                if(!string.IsNullOrEmpty(ECBuilderSettings.CheckControlsText)) MessageBoxes.Error(ECBuilderSettings.CheckControlsText);
+                if (!string.IsNullOrEmpty(ECBuilderSettings.CheckControlsText)) MessageBoxes.Error(ECBuilderSettings.CheckControlsText);
                 return;
             }
 

@@ -1,5 +1,4 @@
-﻿using ECBuilder.ComponentBuilders;
-using ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns;
+﻿using ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns;
 using ECBuilder.DataAccess;
 using ECBuilder.FormBuilders;
 using ECBuilder.Helpers;
@@ -10,7 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ECBuilder.Builders.DataGridViewBuilders
+namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
 {
     /// <summary>
     /// Displays entities of the given type in <see cref="DataGridView">DataGridView</see>.
@@ -119,7 +118,7 @@ namespace ECBuilder.Builders.DataGridViewBuilders
 
                     object itemValue = item.GetType().GetProperty(column.Name).GetValue(item);
 
-                    if(column is DataGridViewCustomTextBoxColumn customTextBoxColumn)
+                    if (column is DataGridViewCustomTextBoxColumn customTextBoxColumn)
                     {
                         itemValue = customTextBoxColumn.Use(itemValue, ImportLists);
                         values.SetValue(itemValue, columnIndex);

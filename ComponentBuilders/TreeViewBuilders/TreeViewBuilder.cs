@@ -95,7 +95,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
 
             if (UseSuperior)
             {
-                foreach (IEntity entity in EntityList.Where(whereEntity => whereEntity.GetType().GetProperty($"{whereEntity.GetType().Name}SuperiorID").GetValue(whereEntity) == null))
+                foreach (IEntity entity in EntityList.Where(whereEntity => whereEntity.GetType().GetProperty($"{whereEntity.GetType().Name}SuperiorID").GetValue(whereEntity).Equals(0)))
                 {
                     TreeNode treeNode = new TreeNode()
                     {
@@ -110,7 +110,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
                     });
                 }
 
-                foreach (IEntity entity in EntityList.Where(whereEntity => whereEntity.GetType().GetProperty($"{whereEntity.GetType().Name}SuperiorID").GetValue(whereEntity) != null))
+                foreach (IEntity entity in EntityList.Where(whereEntity => Convert.ToInt32(whereEntity.GetType().GetProperty($"{whereEntity.GetType().Name}SuperiorID").GetValue(whereEntity)) > 0))
                 {
                     this.BeginInvoke((MethodInvoker)delegate
                     {
@@ -125,7 +125,20 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
             }
             else
             {
+                foreach (IEntity entity in EntityList)
+                {
+                    TreeNode treeNode = new TreeNode()
+                    {
+                        Name = entity.GetType().GetProperty($"{entity.GetType().Name}ID").GetValue(entity).ToString(),
+                        Text = entity.GetType().GetProperty($"{entity.GetType().Name}Name").GetValue(entity).ToString(),
+                        Tag = entity
+                    };
 
+                    this.BeginInvoke((MethodInvoker)delegate
+                    {
+                        this.Nodes.Add(treeNode);
+                    });
+                }
             }
         }
 

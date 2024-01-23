@@ -1,5 +1,5 @@
-﻿using ECBuilder.Builders.DataGridViewBuilders;
-using ECBuilder.ComponentBuilders;
+﻿using ECBuilder.ComponentBuilders;
+using ECBuilder.ComponentBuilders.DataGridViewBuilders;
 using ECBuilder.ComponentBuilders.TreeViewBuilders;
 using System;
 using System.ComponentModel;
@@ -75,7 +75,7 @@ namespace ECBuilder.Components.TextBoxes
                         }
                     }
                 }
-                else if(ComponentBuilder is TreeViewBuilder treeViewBuilder)
+                else if (ComponentBuilder is TreeViewBuilder treeViewBuilder)
                 {
 
                 }

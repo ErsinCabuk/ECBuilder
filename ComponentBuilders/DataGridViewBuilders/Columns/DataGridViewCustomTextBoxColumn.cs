@@ -2,7 +2,6 @@
 using ECBuilder.Test;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns
@@ -32,7 +31,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns
                 return null;
             }
 
-            if(!lists.ContainsKey(ListType))
+            if (!lists.ContainsKey(ListType))
             {
                 BuilderDebug.Error("ListType not found in DataGridView.ImportLists");
                 return null;

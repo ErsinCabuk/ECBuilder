@@ -69,8 +69,8 @@ namespace ECBuilder.FormBuilders
                 }
                 else if (control is CustomComboBox customComboBox)
                 {
-                    customComboBox.Import();
-                    customComboBox.SelectedValue = value;
+                    customComboBox.FormBuilder = this;
+                    customComboBox.Import(value);
                 }
             }
 

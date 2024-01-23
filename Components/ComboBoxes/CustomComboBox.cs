@@ -5,7 +5,6 @@ using ECBuilder.Types;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -37,22 +36,19 @@ namespace ECBuilder.Components.ComboBoxes
         #endregion
 
         #region Methods
-        public Task Import()
+        public Task Import(object selectedValue = null)
         {
-            if (string.IsNullOrEmpty(DisplayMember))
-            {
-                DisplayMember = $"{EntityType.Name}Name";
-                ValueMember = $"{EntityType.Name}ID";
-            }
-
             if (!FormBuilder.ImportLists.ContainsKey(EntityType))
             {
                 BuilderDebug.Error($"There were no lists of type {EntityType.Name} in ImportLists.");
                 return null;
             }
 
-           EntityList = FormBuilder.ImportLists[EntityType];
+            EntityList = FormBuilder.ImportLists[EntityType];
             this.Items.Clear();
+
+            if (string.IsNullOrEmpty(DisplayMember)) DisplayMember = $"{EntityType.Name}Name";
+            if (string.IsNullOrEmpty(ValueMember)) ValueMember = $"{EntityType.Name}ID";
 
             #region Sort
             if (SortType is SortTypes.Ascending)
@@ -77,14 +73,12 @@ namespace ECBuilder.Components.ComboBoxes
             }
             #endregion
 
-            EntityList.ForEach(entity =>
-            {
-                this.Items.Add(entity);
-            });
+            EntityList.ForEach(entity => this.Items.Add(entity));
 
-            if (this.SelectedValue != null)
+            if (selectedValue != null)
             {
-                this.SelectedValue = this.SelectedValue;
+                int index = EntityList.FindIndex(entity => entity.GetType().GetProperty(ValueMember).GetValue(entity).Equals(selectedValue));
+                this.SelectedIndex = index;
             }
             else
             {

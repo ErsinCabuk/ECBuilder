@@ -1,4 +1,5 @@
 ﻿using ECBuilder.ComponentBuilders;
+using ECBuilder.Components.ComboBoxes;
 using ECBuilder.DataAccess;
 using ECBuilder.Interfaces;
 using System;
@@ -153,9 +154,10 @@ namespace ECBuilder.FormBuilders
                 {
                     propertyInfo.SetValue(Entity, dateTimePicker.Value);
                 }
-                else if (control is ComboBox comboBox)
+                else if (control is CustomComboBox customComboBox)
                 {
-                    propertyInfo.SetValue(Entity, comboBox.SelectedValue);
+                    IEntity selectedEntity = customComboBox.EntityList[customComboBox.SelectedIndex];
+                    propertyInfo.SetValue(Entity, selectedEntity.GetType().GetProperty(customComboBox.ValueMember).GetValue(selectedEntity));
                 }
                 else if (control is NumericUpDown numericUpDown)
                 {
