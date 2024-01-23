@@ -1,4 +1,6 @@
-﻿using ECBuilder.FormBuilders.EntityFormBuilders;
+﻿using ECBuilder.FormBuilders;
+using ECBuilder.FormBuilders.EntityFormBuilders;
+using ECBuilder.Test;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -32,39 +34,58 @@ namespace ECBuilder.Components.TextBoxes
         /// 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<Task> BeforeRunClickEvent { get; set; }
+        public Func<Task> BeforeFormOpening { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<Task> AfterRunClickEvent { get; set; }
+        public Func<DialogResult, Task> FormClosingEvent { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public EntityFormBuilder FormBuilder { get; set; }
+        public Func<FormTextBoxFormBuilder, Task> FormLoadingEvent { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Type FormBuilder { get; set; }
         #endregion
 
         protected override async void OnClick(EventArgs e)
         {
+            if (!FormBuilder.IsSubclassOf(typeof(FormTextBoxFormBuilder)))
+            {
+                BuilderDebug.Error("'FormTextBox.FormBuilder' must be of type 'FormTextBoxFormBuilder'");
+                return;
+            }
+
             if (ControlClickEvent != null)
             {
                 bool controlResult = ControlClickEvent();
                 if (!controlResult) return;
             }
 
-            if (BeforeRunClickEvent != null)
+            if (BeforeFormOpening != null)
             {
-                await BeforeRunClickEvent();
+                await BeforeFormOpening();
             }
 
+            FormTextBoxFormBuilder formTextBoxFormBuilder = (FormTextBoxFormBuilder)Activator.CreateInstance(FormBuilder);
 
-
-            if (AfterRunClickEvent != null)
+            if (FormLoadingEvent != null)
             {
-                await AfterRunClickEvent();
+                await FormLoadingEvent(formTextBoxFormBuilder);
+            }
+
+            DialogResult dialogResult = formTextBoxFormBuilder.ShowDialog();
+
+            if (FormClosingEvent != null)
+            {
+                await FormClosingEvent(dialogResult);
             }
         }
     }
