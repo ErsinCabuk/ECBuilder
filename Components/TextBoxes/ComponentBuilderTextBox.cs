@@ -1,4 +1,5 @@
-﻿using ECBuilder.FormBuilders.ComponentBuilderFormBuilders;
+﻿using ECBuilder.ComponentBuilders;
+using ECBuilder.FormBuilders.ComponentBuilderFormBuilders;
 using ECBuilder.Test;
 using System;
 using System.ComponentModel;
@@ -53,6 +54,11 @@ namespace ECBuilder.Components.TextBoxes
         #endregion
 
         #region Events
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+        }
+
         protected override async void OnClick(EventArgs e)
         {
             #region Controls
@@ -62,8 +68,7 @@ namespace ECBuilder.Components.TextBoxes
                 return;
             }
 
-            object formType = Activator.CreateInstance(ECBuilderSettings.ComponentBuilderTextBoxForm);
-            if (!formType.GetType().IsSubclassOf(typeof(ComponentBuilderFormBuilder)))
+            if (!ECBuilderSettings.ComponentBuilderTextBoxForm.IsSubclassOf(typeof(ComponentBuilderFormBuilder)))
             {
                 BuilderDebug.Error("ECBuilderSettings.ComponentBuilderTextBoxForm was not ComponentBuilderFormBuilder.");
                 return;
@@ -86,7 +91,7 @@ namespace ECBuilder.Components.TextBoxes
             #endregion
 
             #region Load Event
-            ComponentBuilderFormBuilder = (ComponentBuilderFormBuilder)formType;
+            ComponentBuilderFormBuilder = (ComponentBuilderFormBuilder)Activator.CreateInstance(ECBuilderSettings.ComponentBuilderTextBoxForm);
             this.ComponentBuilderFormBuilder.ComponentBuilderType = ComponentBuilderType;
 
             #region LoadingFormEvent
@@ -96,16 +101,16 @@ namespace ECBuilder.Components.TextBoxes
             }
             #endregion
 
-            DialogResult dialogResult = this.ComponentBuilderFormBuilder.ShowDialog();
+            DialogResult dialogResult = this.ComponentBuilderFormBuilder.ShowDialog(this.FindForm());
             if (dialogResult == DialogResult.OK)
             {
                 this.Text = string.IsNullOrEmpty(DisplayProperty)
                     ? ComponentBuilderFormBuilder.SelectedEntity.GetType().GetProperty($"{ComponentBuilderFormBuilder.SelectedEntity.GetType().Name}Name").GetValue(ComponentBuilderFormBuilder.SelectedEntity).ToString()
                     : ComponentBuilderFormBuilder.SelectedEntity.GetType().GetProperty(DisplayProperty).GetValue(ComponentBuilderFormBuilder.SelectedEntity).ToString();
-                this.Value = string.IsNullOrEmpty(ValueProperty)
-                 ? ComponentBuilderFormBuilder.SelectedEntity.GetType().GetProperty($"{ComponentBuilderFormBuilder.SelectedEntity.GetType().Name}ID").GetValue(ComponentBuilderFormBuilder.SelectedEntity)
-                 : ComponentBuilderFormBuilder.SelectedEntity.GetType().GetProperty(ValueProperty).GetValue(ComponentBuilderFormBuilder.SelectedEntity);
 
+                this.Value = string.IsNullOrEmpty(ValueProperty)
+                    ? ComponentBuilderFormBuilder.SelectedEntity.GetType().GetProperty($"{ComponentBuilderFormBuilder.SelectedEntity.GetType().Name}ID").GetValue(ComponentBuilderFormBuilder.SelectedEntity)
+                    : ComponentBuilderFormBuilder.SelectedEntity.GetType().GetProperty(ValueProperty).GetValue(ComponentBuilderFormBuilder.SelectedEntity);
             }
             #endregion
 

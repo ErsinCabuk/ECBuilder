@@ -40,6 +40,8 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         public List<IEntity> AddList { get; set; } = new List<IEntity>();
 
         public bool EnableInfoForm { get; set; } = true;
+
+        public bool NotImportEntityList { get; set; } = false;
         #endregion
 
         #region Events
@@ -85,11 +87,12 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         #region Methods
         public async Task Import()
         {
-            #region Import
+            #region Import Configurations
             this.Nodes.Clear();
             ImportLists.Clear();
-            EntityList.Clear();
+            #endregion
 
+            #region Import
             if (ImportListDefinition != null && ImportListDefinition.Count > 0)
             {
                 foreach (Type type in ImportListDefinition)
@@ -98,8 +101,19 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
                 }
             }
 
-            EntityList.AddRange(AddList);
-            EntityList.AddRange(await API.GetAll(EntityType, 1));
+            if (!NotImportEntityList)
+            {
+                EntityList.Clear();
+                EntityList.AddRange(AddList);
+                EntityList.AddRange(await API.GetAll(EntityType, 1));
+            }
+            else
+            {
+                AddList.AddRange(EntityList);
+                EntityList = AddList;
+
+                Console.WriteLine(string.Join(",", EntityList.Select(x => x.GetType().GetProperty(x.GetType().Name + "Name").GetValue(x))));
+            }
             #endregion
 
             if (UseSuperior)

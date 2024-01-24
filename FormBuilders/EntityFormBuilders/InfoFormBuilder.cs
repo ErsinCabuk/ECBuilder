@@ -1,5 +1,8 @@
-﻿using ECBuilder.Components.ComboBoxes;
+﻿using ECBuilder.ComponentBuilders;
+using ECBuilder.Components.ComboBoxes;
 using ECBuilder.Components.TextBoxes;
+using ECBuilder.FormBuilders.ComponentBuilderFormBuilders;
+using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using System;
 using System.Reflection;
@@ -46,8 +49,18 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
 
                     if (control is ComponentBuilderTextBox componentBuilderTextBox)
                     {
-                        componentBuilderTextBox.Text = "";
-                        componentBuilderTextBox.Value = "";
+                        IEntity entity = this.ImportLists[((IComponentBuilder)componentBuilderTextBox.ComponentBuilderType).EntityType].Find(findEntity => findEntity.GetType().GetProperty(componentBuilderTextBox.ValueProperty).GetValue(findEntity).Equals(value));
+                        componentBuilderTextBox.Text = entity.GetType().GetProperty(
+                            string.IsNullOrEmpty(componentBuilderTextBox.DisplayProperty) 
+                                ? $"{entity.GetType().Name}Name" 
+                                : componentBuilderTextBox.DisplayProperty
+                        ).GetValue(entity).ToString();
+
+                        componentBuilderTextBox.Value = entity.GetType().GetProperty(
+                             string.IsNullOrEmpty(componentBuilderTextBox.ValueProperty)
+                                ? $"{entity.GetType().Name}ID"
+                                : componentBuilderTextBox.ValueProperty
+                        ).GetValue(entity).ToString();
                     }
                     else if (control is TextBox || control is RichTextBox)
                     {

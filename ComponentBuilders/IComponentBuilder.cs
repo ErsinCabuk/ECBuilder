@@ -63,5 +63,7 @@ namespace ECBuilder.ComponentBuilders
         /// 
         /// </summary>
         List<IEntity> AddList { get; set; }
+
+        bool NotImportEntityList { get; set; }
     }
 }

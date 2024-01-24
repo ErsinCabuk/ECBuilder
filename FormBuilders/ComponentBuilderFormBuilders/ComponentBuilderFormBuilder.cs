@@ -4,6 +4,8 @@ using ECBuilder.ComponentBuilders.TreeViewBuilders;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -27,6 +29,7 @@ namespace ECBuilder.FormBuilders.ComponentBuilderFormBuilders
 
         private async Task ComponentBuilderFormBuilder_LoadEvent()
         {
+            #region Controls
             Control findPanel = UsingControls.Find(control => control.Tag.ToString().Contains("componentBuilderPanel"));
             if (findPanel == null)
             {
@@ -34,17 +37,29 @@ namespace ECBuilder.FormBuilders.ComponentBuilderFormBuilders
                 return;
             }
 
-            object componentBuilderType = Activator.CreateInstance(ComponentBuilderType);
-            if (!componentBuilderType.GetType().IsSubclassOf(typeof(TreeViewBuilder)) && !componentBuilderType.GetType().IsSubclassOf(typeof(DataGridViewBuilder)))
+            if (!ComponentBuilderType.IsSubclassOf(typeof(TreeViewBuilder)) && !ComponentBuilderType.IsSubclassOf(typeof(DataGridViewBuilder)))
             {
                 BuilderDebug.Error("ComponentBuilderFormBuilder.IComponentBuilder was not IComponentBuilder");
                 return;
             }
+            #endregion
 
             Panel panel = (Panel)findPanel;
-            ComponentBuilder = (IComponentBuilder)componentBuilderType;
+
+            ComponentBuilder = (IComponentBuilder)Activator.CreateInstance(ComponentBuilderType);
             panel.Controls.Add((Control)ComponentBuilder);
-            await ComponentBuilder.Import();
+
+            if (((FormBuilder)this.Owner).ImportLists.TryGetValue(ComponentBuilder.EntityType, out List<IEntity> entityList))
+            {
+                ComponentBuilder.NotImportEntityList = true;
+                ComponentBuilder.EntityList = entityList;
+                Console.WriteLine("****" + string.Join(",", ComponentBuilder.EntityList.Select(x => x.GetType().GetProperty(x.GetType().Name + "Name").GetValue(x))));
+                await ComponentBuilder.Import();
+            }
+            else
+            {
+                BuilderDebug.Error("ComponentBuilderFormBuilder.ComponentBuilder.EntityType is not found in ImportLists.");
+            }
         }
     }
 }

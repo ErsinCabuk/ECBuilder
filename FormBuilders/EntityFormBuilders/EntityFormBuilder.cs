@@ -71,7 +71,6 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
 
                 if (control is ComponentBuilderTextBox componentBuilderTextBox)
                 {
-                    Console.WriteLine(propertyInfo.Name + " " + componentBuilderTextBox.Value);
                     propertyInfo.SetValue(Entity, componentBuilderTextBox.Value);
                 }
                 else if (control is TextBox || control is RichTextBox)

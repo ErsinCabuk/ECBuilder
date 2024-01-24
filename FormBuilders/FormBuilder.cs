@@ -58,6 +58,7 @@ namespace ECBuilder.FormBuilders
             {
                 foreach (Type type in ImportListDefinitions)
                 {
+                    var x = await API.GetAll(type, 1);
                     ImportLists.Add(type, await API.GetAll(type, 1));
                 }
             }
