@@ -20,9 +20,11 @@ namespace ECBuilder.FormBuilders.ComponentBuilderFormBuilders
         public Type ComponentBuilderType { get; set; }
 
         public IComponentBuilder ComponentBuilder { get; set; }
+
+        public object SelectedValue { get; set; }
         #endregion
 
-        public async Task ComponentBuilderFormBuilder_LoadEvent()
+        private async Task ComponentBuilderFormBuilder_LoadEvent()
         {
             Control findPanel = UsingControls.Find(control => control.Tag.ToString().Contains("componentBuilderPanel"));
             if (findPanel == null)

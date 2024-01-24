@@ -18,29 +18,30 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
 
         public Task CreateFormBuilder_LoadEvent()
         {
-            if (Entity == null)
+            return Task.Run(() =>
             {
-                BuilderDebug.Error("Entity was null");
-                return Task.CompletedTask;
-            }
-
-            foreach (Control control in UsingControls)
-            {
-                PropertyInfo property = Entity.GetType().GetProperty(control.Name);
-                if (property == null)
+                if (Entity == null)
                 {
-                    BuilderDebug.Error(this.DesignMode, $"{control.Name} property was not found in the {this.Name} form");
-                    continue;
+                    BuilderDebug.Error("Entity was null");
+                    return;
                 }
 
-                else if (control is CustomComboBox customComboBox)
+                foreach (Control control in UsingControls)
                 {
-                    customComboBox.FormBuilder = this;
-                    customComboBox.Import();
-                }
-            }
+                    PropertyInfo property = Entity.GetType().GetProperty(control.Name);
+                    if (property == null)
+                    {
+                        BuilderDebug.Error(this.DesignMode, $"{control.Name} property was not found in the {this.Name} form");
+                        continue;
+                    }
 
-            return Task.CompletedTask;
+                    else if (control is CustomComboBox customComboBox)
+                    {
+                        customComboBox.FormBuilder = this;
+                        customComboBox.Import();
+                    }
+                }
+            });
         }
     }
 }

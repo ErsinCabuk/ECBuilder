@@ -58,5 +58,10 @@ namespace ECBuilder.ComponentBuilders
         /// Method showing <see cref="CreateForm">CreateForm</see>.
         /// </summary>
         void ShowCreateForm();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        List<IEntity> AddList { get; set; }
     }
 }

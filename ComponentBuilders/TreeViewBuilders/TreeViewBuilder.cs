@@ -26,7 +26,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
 
         public Type EntityType { get; set; }
 
-        public List<IEntity> EntityList { get; set; }
+        public List<IEntity> EntityList { get; set; } = new List<IEntity>();
 
         public List<Type> ImportListDefinition { get; set; }
 
@@ -36,6 +36,8 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         /// If the Entity contains Superior and there will be sub-breaks of nodes, true should be selected. Default is <see langword="true"/>.
         /// </summary>
         public bool UseSuperior { get; set; } = true;
+
+        public List<IEntity> AddList { get; set; } = new List<IEntity>();
         #endregion
 
         #region Events
@@ -90,7 +92,8 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
                 }
             }
 
-            EntityList = await API.GetAll(EntityType, 1);
+            EntityList.AddRange(AddList);
+            EntityList.AddRange(await API.GetAll(EntityType, 1));
             #endregion
 
             if (UseSuperior)
