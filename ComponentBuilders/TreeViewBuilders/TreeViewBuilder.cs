@@ -38,42 +38,47 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         public bool UseSuperior { get; set; } = true;
 
         public List<IEntity> AddList { get; set; } = new List<IEntity>();
+
+        public bool EnableInfoForm { get; set; } = true;
         #endregion
 
         #region Events
         protected override async void OnNodeMouseDoubleClick(TreeNodeMouseClickEventArgs e)
         {
+            if (EnableInfoForm)
+            {
+                if (this.SelectedNode == null) return;
+
+                if (InfoForm == null)
+                {
+                    BuilderDebug.Error("InfoForm was null.");
+                    return;
+                }
+
+                if (!InfoForm.IsSubclassOf(typeof(InfoFormBuilder)))
+                {
+                    BuilderDebug.Error("InfoForm was not InfoFormBuilder.");
+                    return;
+                }
+
+                InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
+
+                infoForm.Entity = (IEntity)this.SelectedNode.Tag;
+                infoForm.ComponentBuilder = this;
+                DialogResult dialogResult = infoForm.ShowDialog(this);
+
+                if (InfoFormCloseEvent != null)
+                {
+                    await InfoFormCloseEvent(dialogResult);
+                }
+
+                if (dialogResult == DialogResult.OK)
+                {
+                    await this.Import();
+                }
+            }
+
             base.OnNodeMouseDoubleClick(e);
-
-            if (this.SelectedNode == null) return;
-
-            if (InfoForm == null)
-            {
-                BuilderDebug.Error("InfoForm was null.");
-                return;
-            }
-
-            if (!InfoForm.IsSubclassOf(typeof(InfoFormBuilder)))
-            {
-                BuilderDebug.Error("InfoForm was not InfoFormBuilder.");
-                return;
-            }
-
-            InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
-
-            infoForm.Entity = (IEntity)this.SelectedNode.Tag;
-            infoForm.ComponentBuilder = this;
-            DialogResult dialogResult = infoForm.ShowDialog(this);
-
-            if (InfoFormCloseEvent != null)
-            {
-                await InfoFormCloseEvent(dialogResult);
-            }
-
-            if (dialogResult == DialogResult.OK)
-            {
-                await this.Import();
-            }
         }
         #endregion
 
@@ -83,6 +88,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
             #region Import
             this.Nodes.Clear();
             ImportLists.Clear();
+            EntityList.Clear();
 
             if (ImportListDefinition != null && ImportListDefinition.Count > 0)
             {

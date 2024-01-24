@@ -19,7 +19,6 @@
                 return;
             }
 
-
             ParentForm.SetProperties();
             ParentForm.SetEmptyProperties();
 

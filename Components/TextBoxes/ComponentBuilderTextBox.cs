@@ -25,12 +25,16 @@ namespace ECBuilder.Components.TextBoxes
         /// </summary>
         public string DefaultText { get; set; } = "Seç...";
 
-        public Func<bool> ControlEvent { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Func<bool> ControlClickEvent { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Func<Task> BeforeLoadingFormEvent { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Func<ComponentBuilderFormBuilder, Task> LoadingFormEvent { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Func<DialogResult, Task> ClosedFormEvent { get; set; }
 
         /// <summary>
@@ -38,10 +42,20 @@ namespace ECBuilder.Components.TextBoxes
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type ComponentBuilderType { get; set; }
+
+        public string DisplayProperty { get; set; }
+
+        public string ValueProperty { get; set; }
+
+        public object Value { get; set; }
+
+        public ComponentBuilderFormBuilder ComponentBuilderFormBuilder { get; set; }
         #endregion
 
+        #region Events
         protected override async void OnClick(EventArgs e)
         {
+            #region Controls
             if (ECBuilderSettings.ComponentBuilderTextBoxForm == null)
             {
                 BuilderDebug.Error("ECBuilderSettings.ComponentBuilderTextBoxForm was null.");
@@ -54,32 +68,54 @@ namespace ECBuilder.Components.TextBoxes
                 BuilderDebug.Error("ECBuilderSettings.ComponentBuilderTextBoxForm was not ComponentBuilderFormBuilder.");
                 return;
             }
+            #endregion
 
-            if (ControlEvent != null)
+            #region Control Click Event
+            if (ControlClickEvent != null)
             {
-                bool control = ControlEvent();
+                bool control = ControlClickEvent();
                 if (!control) return;
             }
+            #endregion
 
+            #region BeforeLoadingFormEvent
             if (BeforeLoadingFormEvent != null)
             {
                 await BeforeLoadingFormEvent();
             }
+            #endregion
 
-            ComponentBuilderFormBuilder componentBuilderFormBuilder = (ComponentBuilderFormBuilder)formType;
-            componentBuilderFormBuilder.ComponentBuilderType = ComponentBuilderType;
+            #region Load Event
+            ComponentBuilderFormBuilder = (ComponentBuilderFormBuilder)formType;
+            this.ComponentBuilderFormBuilder.ComponentBuilderType = ComponentBuilderType;
 
+            #region LoadingFormEvent
             if (LoadingFormEvent != null)
             {
-                await LoadingFormEvent(componentBuilderFormBuilder);
+                await LoadingFormEvent(ComponentBuilderFormBuilder);
             }
+            #endregion
 
-            DialogResult dialogResult = componentBuilderFormBuilder.ShowDialog();
+            DialogResult dialogResult = this.ComponentBuilderFormBuilder.ShowDialog();
+            if (dialogResult == DialogResult.OK)
+            {
+                this.Text = string.IsNullOrEmpty(DisplayProperty)
+                    ? ComponentBuilderFormBuilder.SelectedEntity.GetType().GetProperty($"{ComponentBuilderFormBuilder.SelectedEntity.GetType().Name}Name").GetValue(ComponentBuilderFormBuilder.SelectedEntity).ToString()
+                    : ComponentBuilderFormBuilder.SelectedEntity.GetType().GetProperty(DisplayProperty).GetValue(ComponentBuilderFormBuilder.SelectedEntity).ToString();
+                this.Value = string.IsNullOrEmpty(ValueProperty)
+                 ? ComponentBuilderFormBuilder.SelectedEntity.GetType().GetProperty($"{ComponentBuilderFormBuilder.SelectedEntity.GetType().Name}ID").GetValue(ComponentBuilderFormBuilder.SelectedEntity)
+                 : ComponentBuilderFormBuilder.SelectedEntity.GetType().GetProperty(ValueProperty).GetValue(ComponentBuilderFormBuilder.SelectedEntity);
 
+            }
+            #endregion
+
+            #region ClosedFormEvent
             if (ClosedFormEvent != null)
             {
                 await ClosedFormEvent(dialogResult);
             }
+            #endregion
         }
+        #endregion
     }
 }

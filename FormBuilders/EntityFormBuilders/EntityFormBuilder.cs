@@ -1,5 +1,6 @@
 ﻿using ECBuilder.ComponentBuilders;
 using ECBuilder.Components.ComboBoxes;
+using ECBuilder.Components.TextBoxes;
 using ECBuilder.Interfaces;
 using System;
 using System.ComponentModel;
@@ -68,7 +69,12 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 PropertyInfo propertyInfo = Entity.GetType().GetProperty(control.Name);
                 if (propertyInfo == null) continue;
 
-                if (control is TextBox || control is RichTextBox)
+                if (control is ComponentBuilderTextBox componentBuilderTextBox)
+                {
+                    Console.WriteLine(propertyInfo.Name + " " + componentBuilderTextBox.Value);
+                    propertyInfo.SetValue(Entity, componentBuilderTextBox.Value);
+                }
+                else if (control is TextBox || control is RichTextBox)
                 {
                     propertyInfo.SetValue(Entity, control.Text.Trim());
                 }

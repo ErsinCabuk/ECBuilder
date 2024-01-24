@@ -1,4 +1,5 @@
 ﻿using ECBuilder.Components.ComboBoxes;
+using ECBuilder.Components.TextBoxes;
 using ECBuilder.Test;
 using System;
 using System.Reflection;
@@ -43,7 +44,12 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                         continue;
                     }
 
-                    if (control is TextBox || control is RichTextBox)
+                    if (control is ComponentBuilderTextBox componentBuilderTextBox)
+                    {
+                        componentBuilderTextBox.Text = "";
+                        componentBuilderTextBox.Value = "";
+                    }
+                    else if (control is TextBox || control is RichTextBox)
                     {
                         control.Text = value.ToString();
                     }

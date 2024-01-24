@@ -85,6 +85,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             #region Import Configurations
             this.Rows.Clear();
             ImportLists.Clear();
+            EntityList.Clear();
 
             if (AutoAddIDColumn)
             {

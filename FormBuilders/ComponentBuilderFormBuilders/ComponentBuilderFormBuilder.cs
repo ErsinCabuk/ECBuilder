@@ -1,6 +1,7 @@
 ﻿using ECBuilder.ComponentBuilders;
 using ECBuilder.ComponentBuilders.DataGridViewBuilders;
 using ECBuilder.ComponentBuilders.TreeViewBuilders;
+using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using System;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace ECBuilder.FormBuilders.ComponentBuilderFormBuilders
 
         public IComponentBuilder ComponentBuilder { get; set; }
 
-        public object SelectedValue { get; set; }
+        public IEntity SelectedEntity { get; set; }
         #endregion
 
         private async Task ComponentBuilderFormBuilder_LoadEvent()
