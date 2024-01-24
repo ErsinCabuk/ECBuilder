@@ -51,10 +51,7 @@ namespace ECBuilder.FormBuilders.ComponentBuilderFormBuilders
 
             if (((FormBuilder)this.Owner).ImportLists.TryGetValue(ComponentBuilder.EntityType, out List<IEntity> entityList))
             {
-                ComponentBuilder.NotImportEntityList = true;
-                ComponentBuilder.EntityList = entityList;
-                Console.WriteLine("****" + string.Join(",", ComponentBuilder.EntityList.Select(x => x.GetType().GetProperty(x.GetType().Name + "Name").GetValue(x))));
-                await ComponentBuilder.Import();
+                await ComponentBuilder.Import(entityList);
             }
             else
             {

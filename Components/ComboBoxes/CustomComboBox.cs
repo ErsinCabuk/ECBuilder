@@ -31,8 +31,6 @@ namespace ECBuilder.Components.ComboBoxes
         public List<IEntity> EntityList { get; set; } = new List<IEntity>();
 
         public SortTypes SortType { get; set; } = SortTypes.Ascending;
-
-        public EntityFormBuilder FormBuilder { get; set; }
         #endregion
 
         #region Methods
@@ -40,13 +38,6 @@ namespace ECBuilder.Components.ComboBoxes
         {
             return Task.Run(() =>
             {
-                if (!FormBuilder.ImportLists.ContainsKey(EntityType))
-                {
-                    BuilderDebug.Error($"There were no lists of type {EntityType.Name} in ImportLists.");
-                    return;
-                }
-
-                EntityList = FormBuilder.ImportLists[EntityType];
                 this.Items.Clear();
 
                 if (string.IsNullOrEmpty(DisplayMember)) DisplayMember = $"{EntityType.Name}Name";

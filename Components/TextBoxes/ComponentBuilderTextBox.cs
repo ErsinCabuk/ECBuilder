@@ -1,7 +1,11 @@
 ﻿using ECBuilder.ComponentBuilders;
+using ECBuilder.FormBuilders;
 using ECBuilder.FormBuilders.ComponentBuilderFormBuilders;
+using ECBuilder.FormBuilders.EntityFormBuilders;
+using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -48,17 +52,17 @@ namespace ECBuilder.Components.TextBoxes
 
         public string ValueProperty { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public object Value { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ComponentBuilderFormBuilder ComponentBuilderFormBuilder { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Type EntityType { get; set; }
         #endregion
 
         #region Events
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-        }
-
         protected override async void OnClick(EventArgs e)
         {
             #region Controls
@@ -91,8 +95,6 @@ namespace ECBuilder.Components.TextBoxes
             #endregion
 
             #region Load Event
-            ComponentBuilderFormBuilder = (ComponentBuilderFormBuilder)Activator.CreateInstance(ECBuilderSettings.ComponentBuilderTextBoxForm);
-            this.ComponentBuilderFormBuilder.ComponentBuilderType = ComponentBuilderType;
 
             #region LoadingFormEvent
             if (LoadingFormEvent != null)
@@ -120,6 +122,42 @@ namespace ECBuilder.Components.TextBoxes
                 await ClosedFormEvent(dialogResult);
             }
             #endregion
+        }
+
+        public Task Import()
+        {
+            return Task.Run(() => {
+                ComponentBuilderFormBuilder = (ComponentBuilderFormBuilder)Activator.CreateInstance(ECBuilderSettings.ComponentBuilderTextBoxForm);
+                ComponentBuilderFormBuilder.ComponentBuilderType = ComponentBuilderType;
+            });
+        }
+
+        public void SetSelectedEntity(object entityID)
+        {
+            if(((FormBuilder)this.FindForm()).ImportLists.TryGetValue(EntityType, out List<IEntity> list))
+            {
+                IEntity entity = list.Find(findEntity => findEntity.GetType().GetProperty(
+                string.IsNullOrEmpty(this.ValueProperty)
+                    ? $"{findEntity.GetType().Name}ID"
+                    : this.ValueProperty
+                ).GetValue(findEntity).Equals(entityID));
+
+                this.Text = entity.GetType().GetProperty(
+                    string.IsNullOrEmpty(this.DisplayProperty)
+                        ? $"{entity.GetType().Name}Name"
+                        : this.DisplayProperty
+                ).GetValue(entity).ToString();
+
+                this.Value = entity.GetType().GetProperty(
+                     string.IsNullOrEmpty(this.ValueProperty)
+                        ? $"{entity.GetType().Name}ID"
+                        : this.ValueProperty
+                ).GetValue(entity).ToString();
+            }
+            else
+            {
+                BuilderDebug.Error("List of type ComponentBuildTextBox.EntityType was not found in ImportLists");
+            }
         }
         #endregion
     }

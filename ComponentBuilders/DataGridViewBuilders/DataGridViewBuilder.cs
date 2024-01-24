@@ -44,8 +44,6 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
         public bool AutoAddIDColumn { get; set; } = true;
 
         public List<IEntity> AddList { get; set; } = new List<IEntity>();
-
-        public bool NotImportEntityList { get; set; } = false;
         #endregion
 
         #region Events
@@ -82,7 +80,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
         #endregion
 
         #region Methods
-        public async Task Import()
+        public async Task Import(List<IEntity> list = null)
         {
             #region Import Configurations
             this.Rows.Clear();
@@ -109,15 +107,15 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
                 }
             }
 
-            if (!NotImportEntityList)
+            if (list == null)
             {
                 EntityList.AddRange(AddList);
                 EntityList.AddRange(await API.GetAll(EntityType, 1));
             }
             else
             {
-                AddList.AddRange(EntityList);
-                EntityList = AddList;
+                EntityList.AddRange(AddList);
+                EntityList.AddRange(list);
             }
             #endregion
 

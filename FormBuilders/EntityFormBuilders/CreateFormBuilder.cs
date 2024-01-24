@@ -1,5 +1,8 @@
 ﻿using ECBuilder.Components.ComboBoxes;
+using ECBuilder.Components.TextBoxes;
+using ECBuilder.Interfaces;
 using ECBuilder.Test;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,32 +19,41 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
             LoadEvent = CreateFormBuilder_LoadEvent;
         }
 
-        public Task CreateFormBuilder_LoadEvent()
+        public async Task CreateFormBuilder_LoadEvent()
         {
-            return Task.Run(() =>
+            if (Entity == null)
             {
-                if (Entity == null)
+                BuilderDebug.Error("Entity was null");
+                return;
+            }
+
+            foreach (Control control in UsingControls)
+            {
+                PropertyInfo property = Entity.GetType().GetProperty(control.Name);
+                if (property == null)
                 {
-                    BuilderDebug.Error("Entity was null");
-                    return;
+                    BuilderDebug.Error(this.DesignMode, $"{control.Name} property was not found in the {this.Name} form");
+                    continue;
                 }
 
-                foreach (Control control in UsingControls)
+                if(control is ComponentBuilderTextBox componentBuilderTextBox)
                 {
-                    PropertyInfo property = Entity.GetType().GetProperty(control.Name);
-                    if (property == null)
+                    await componentBuilderTextBox.Import();
+                }
+                else if (control is CustomComboBox customComboBox)
+                {
+                    if (!this.ImportLists.TryGetValue(customComboBox.EntityType, out List<IEntity> entityList))
                     {
-                        BuilderDebug.Error(this.DesignMode, $"{control.Name} property was not found in the {this.Name} form");
-                        continue;
+                        customComboBox.EntityList = entityList;
+                        await customComboBox.Import();
                     }
-
-                    else if (control is CustomComboBox customComboBox)
+                    else
                     {
-                        customComboBox.FormBuilder = this;
-                        customComboBox.Import();
+                        BuilderDebug.Error($"There were no lists of type {customComboBox.EntityType.Name} in ImportLists.");
+                        return;
                     }
                 }
-            });
+            }
         }
     }
 }

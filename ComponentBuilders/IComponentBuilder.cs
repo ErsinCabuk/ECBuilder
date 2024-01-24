@@ -52,7 +52,7 @@ namespace ECBuilder.ComponentBuilders
         /// Method that imports the types given in the <see cref="ImportListDefinition">ImportListDefinition</see> and <see cref="EntityType">EntityType</see> parameters and adds them to the Component.
         /// </summary>
         /// <returns>awaitable Task</returns>
-        Task Import();
+        Task Import(List<IEntity> list = null);
 
         /// <summary>
         /// Method showing <see cref="CreateForm">CreateForm</see>.
@@ -63,7 +63,5 @@ namespace ECBuilder.ComponentBuilders
         /// 
         /// </summary>
         List<IEntity> AddList { get; set; }
-
-        bool NotImportEntityList { get; set; }
     }
 }
