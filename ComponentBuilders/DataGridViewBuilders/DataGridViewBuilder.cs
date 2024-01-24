@@ -34,48 +34,57 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
 
         public List<IEntity> EntityList { get; set; } = new List<IEntity>();
 
+        public List<IEntity> AddList { get; set; } = new List<IEntity>();
+
         public List<Type> ImportListDefinition { get; set; }
 
         public Dictionary<Type, List<IEntity>> ImportLists { get; set; } = new Dictionary<Type, List<IEntity>>();
+
+        public bool EnableInfoForm { get; set; } = true;
 
         /// <summary>
         /// <see langword="true"/>, adds the ID column to the DataGridView and writes the EntityID for each row. Default: <see langword="true"/>
         /// </summary>
         public bool AutoAddIDColumn { get; set; } = true;
-
-        public List<IEntity> AddList { get; set; } = new List<IEntity>();
         #endregion
 
         #region Events
         protected override async void OnCellDoubleClick(DataGridViewCellEventArgs e)
         {
-            if (InfoForm == null)
+            if (EnableInfoForm)
             {
-                BuilderDebug.Error("InfoForm was null.");
-                return;
+                #region Controls
+                if (InfoForm == null)
+                {
+                    BuilderDebug.Error("InfoForm was null.");
+                    return;
+                }
+
+                if (!InfoForm.IsSubclassOf(typeof(InfoFormBuilder)))
+                {
+                    BuilderDebug.Error("InfoForm was not InfoFormBuilder.");
+                    return;
+                }
+                #endregion
+
+                InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
+
+                infoForm.Entity = EntityList.Find(findEntity => findEntity.GetType().GetProperty($"{findEntity.GetType().Name}ID").GetValue(findEntity).Equals(this.Rows[e.RowIndex].Cells[$"{EntityType.Name}ID"].Value));
+                infoForm.ComponentBuilder = this;
+                DialogResult dialogResult = infoForm.ShowDialog(this);
+
+                if (InfoFormCloseEvent != null)
+                {
+                    await InfoFormCloseEvent(dialogResult);
+                }
+
+                if (dialogResult == DialogResult.OK)
+                {
+                    await this.Import();
+                }
             }
 
-            if (!InfoForm.IsSubclassOf(typeof(InfoFormBuilder)))
-            {
-                BuilderDebug.Error("InfoForm was not InfoFormBuilder.");
-                return;
-            }
-
-            InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
-
-            infoForm.Entity = EntityList.Find(findEntity => findEntity.GetType().GetProperty($"{findEntity.GetType().Name}ID").GetValue(findEntity).Equals(this.Rows[e.RowIndex].Cells[$"{EntityType.Name}ID"].Value));
-            infoForm.ComponentBuilder = this;
-            DialogResult dialogResult = infoForm.ShowDialog(this);
-
-            if (InfoFormCloseEvent != null)
-            {
-                await InfoFormCloseEvent(dialogResult);
-            }
-
-            if (dialogResult == DialogResult.OK)
-            {
-                await this.Import();
-            }
+            base.OnCellDoubleClick(e);
         }
         #endregion
 
@@ -155,6 +164,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
 
         public async void ShowCreateForm()
         {
+            #region Controls
             if (CreateForm == null)
             {
                 BuilderDebug.Error("CreateForm was null.");
@@ -166,9 +176,9 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
                 BuilderDebug.Error("CreateForm was not CreateFormBuilder.");
                 return;
             }
+            #endregion
 
             CreateFormBuilder createForm = (CreateFormBuilder)Activator.CreateInstance(CreateForm);
-
             createForm.Entity = (IEntity)Activator.CreateInstance(EntityType);
             createForm.ComponentBuilder = this;
             DialogResult dialogResult = createForm.ShowDialog(this);

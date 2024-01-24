@@ -39,6 +39,11 @@ namespace ECBuilder.ComponentBuilders
         List<IEntity> EntityList { get; set; }
 
         /// <summary>
+        /// Objects to add to EntityList.
+        /// </summary>
+        List<IEntity> AddList { get; set; }
+
+        /// <summary>
         /// Other Entity types to be used in the component. Must be of type <see cref="IEntity">IEntity</see>
         /// </summary>
         List<Type> ImportListDefinition { get; set; }
@@ -49,8 +54,14 @@ namespace ECBuilder.ComponentBuilders
         Dictionary<Type, List<IEntity>> ImportLists { get; set; }
 
         /// <summary>
+        /// <see langword="true"/>, ComponentBuilder opens <see cref="InfoForm"/>; otherwise <see langword="false"/>
+        /// </summary>
+        bool EnableInfoForm { get; set; }
+
+        /// <summary>
         /// Method that imports the types given in the <see cref="ImportListDefinition">ImportListDefinition</see> and <see cref="EntityType">EntityType</see> parameters and adds them to the Component.
         /// </summary>
+        /// <param name="list">If an EntityList is given, it does not re-import the EntityType and uses the given EntityList.</param>
         /// <returns>awaitable Task</returns>
         Task Import(List<IEntity> list = null);
 
@@ -58,10 +69,5 @@ namespace ECBuilder.ComponentBuilders
         /// Method showing <see cref="CreateForm">CreateForm</see>.
         /// </summary>
         void ShowCreateForm();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        List<IEntity> AddList { get; set; }
     }
 }

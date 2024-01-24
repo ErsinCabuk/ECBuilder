@@ -1,7 +1,7 @@
 ﻿namespace ECBuilder.Components.Buttons
 {
     /// <summary>
-    /// Button that <see cref="DataAccess.API.Create">deletes</see> the <see cref="Builders.FormBuilders.FormBuilder.Entity">Entity</see> in <see cref="Builders.FormBuilders.InfoFormBuilder">InfoFormBuilder</see>.
+    /// Button that <see cref="DataAccess.API.Delete(Interfaces.IEntity)">deletes</see> the <see cref="Builders.FormBuilders.FormBuilder.Entity">Entity</see> in <see cref="Builders.FormBuilders.InfoFormBuilder">InfoFormBuilder</see>.
     /// </summary>
     public class DeleteButton : CustomButton
     {

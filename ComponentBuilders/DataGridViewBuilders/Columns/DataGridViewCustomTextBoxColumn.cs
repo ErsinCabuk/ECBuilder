@@ -6,6 +6,9 @@ using System.Windows.Forms;
 
 namespace ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns
 {
+    /// <summary>
+    /// Column type for <see cref="DataGridViewBuilder">DataGridViewBuilder</see> that can get cell content from another <see cref="IEntity">Entity</see>.
+    /// </summary>
     public class DataGridViewCustomTextBoxColumn : DataGridViewTextBoxColumn
     {
         public DataGridViewCustomTextBoxColumn()
@@ -14,17 +17,36 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns
         }
 
         #region Properties
+        /// <summary>
+        /// Entity list type to be get from <see cref="DataGridViewBuilder.ImportLists">DataGridViewBuilder.ImportLists</see>.
+        /// </summary>
         public Type ListType { get; set; }
 
+        /// <summary>
+        /// Property name of the Entity to be found from Entity list.
+        /// </summary>
         public string FindProperty { get; set; }
 
+        /// <summary>
+        /// Property name for the cell content of the found Entity.
+        /// </summary>
         public string ValueProperty { get; set; }
 
+        /// <summary>
+        /// The text that will be displayed if the Entity is not found.
+        /// </summary>
         public string NotFoundText { get; set; } = "";
         #endregion
 
-        public object Use(object preValue, Dictionary<Type, List<IEntity>> lists)
+        /// <summary>
+        /// Returns the contents of the cell.
+        /// </summary>
+        /// <param name="value">Value get from Entity based on column name.</param>
+        /// <param name="lists"><see cref="DataGridViewBuilder.ImportLists">DataGridViewBuilder.ImportLists</see></param>
+        /// <returns>Last content of cell</returns>
+        public object Use(object value, Dictionary<Type, List<IEntity>> lists)
         {
+            #region Controls
             if (ListType == null)
             {
                 BuilderDebug.Error("ListType was null.");
@@ -48,8 +70,9 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns
                 BuilderDebug.Error("ValueProperty was null.");
                 return null;
             }
+            #endregion
 
-            IEntity entity = lists[ListType].Find(findEntity => findEntity.GetType().GetProperty(this.FindProperty).GetValue(findEntity).Equals(preValue));
+            IEntity entity = lists[ListType].Find(findEntity => findEntity.GetType().GetProperty(this.FindProperty).GetValue(findEntity).Equals(value));
 
             if (entity != null)
             {

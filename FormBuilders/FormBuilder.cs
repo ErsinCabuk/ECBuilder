@@ -9,6 +9,9 @@ using System.Windows.Forms;
 
 namespace ECBuilder.FormBuilders
 {
+    /// <summary>
+    /// It covers all transactions related to the form.
+    /// </summary>
     public class FormBuilder : Form
     {
         #region Properties

@@ -11,6 +11,9 @@ using System.Windows.Forms;
 
 namespace ECBuilder.FormBuilders.EntityFormBuilders
 {
+    /// <summary>
+    /// It performs operations related to an Entity.
+    /// </summary>
     [Serializable]
     public class EntityFormBuilder : FormBuilder
     {

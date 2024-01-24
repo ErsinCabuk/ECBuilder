@@ -1,6 +1,4 @@
-﻿using ECBuilder.FormBuilders.EntityFormBuilders;
-using ECBuilder.Interfaces;
-using ECBuilder.Test;
+﻿using ECBuilder.Interfaces;
 using ECBuilder.Types;
 using System;
 using System.Collections.Generic;
@@ -10,6 +8,9 @@ using System.Windows.Forms;
 
 namespace ECBuilder.Components.ComboBoxes
 {
+    /// <summary>
+    /// Imports to ComboBox according to <see cref="EntityType"/>.
+    /// </summary>
     public class CustomComboBox : ComboBox
     {
         public CustomComboBox()
@@ -30,18 +31,30 @@ namespace ECBuilder.Components.ComboBoxes
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<IEntity> EntityList { get; set; } = new List<IEntity>();
 
+        /// <summary>
+        /// Entities in <see cref="EntityList"/> are sorted according to DisplayMember.
+        /// </summary>
         public SortTypes SortType { get; set; } = SortTypes.Ascending;
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Imports ComboBox's entities.
+        /// </summary>
+        /// <param name="selectedValue">ComboBox sets the selected value.</param>
+        /// <returns>awaitable Task</returns>
         public Task Import(object selectedValue = null)
         {
             return Task.Run(() =>
             {
+                #region Import Confs
                 this.Items.Clear();
+                #endregion
 
+                #region Controls
                 if (string.IsNullOrEmpty(DisplayMember)) DisplayMember = $"{EntityType.Name}Name";
                 if (string.IsNullOrEmpty(ValueMember)) ValueMember = $"{EntityType.Name}ID";
+                #endregion
 
                 #region Sort
                 if (SortType is SortTypes.Ascending)
@@ -66,8 +79,11 @@ namespace ECBuilder.Components.ComboBoxes
                 }
                 #endregion
 
+                #region Import
                 EntityList.ForEach(entity => this.Items.Add(entity));
+                #endregion
 
+                #region SelectedValue
                 if (selectedValue != null)
                 {
                     int index = EntityList.FindIndex(entity => entity.GetType().GetProperty(ValueMember).GetValue(entity).Equals(selectedValue));
@@ -77,6 +93,7 @@ namespace ECBuilder.Components.ComboBoxes
                 {
                     this.SelectedIndex = 0;
                 }
+                #endregion
             });
         }
         #endregion

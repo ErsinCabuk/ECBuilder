@@ -28,18 +28,18 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
 
         public List<IEntity> EntityList { get; set; } = new List<IEntity>();
 
+        public List<IEntity> AddList { get; set; } = new List<IEntity>();
+
         public List<Type> ImportListDefinition { get; set; }
 
         public Dictionary<Type, List<IEntity>> ImportLists { get; set; } = new Dictionary<Type, List<IEntity>>();
+
+        public bool EnableInfoForm { get; set; } = true;
 
         /// <summary>
         /// If the Entity contains Superior and there will be sub-breaks of nodes, true should be selected. Default is <see langword="true"/>.
         /// </summary>
         public bool UseSuperior { get; set; } = true;
-
-        public List<IEntity> AddList { get; set; } = new List<IEntity>();
-
-        public bool EnableInfoForm { get; set; } = true;
         #endregion
 
         #region Events
@@ -47,6 +47,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         {
             if (EnableInfoForm)
             {
+                #region Controls
                 if (this.SelectedNode == null) return;
 
                 if (InfoForm == null)
@@ -60,9 +61,9 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
                     BuilderDebug.Error("InfoForm was not InfoFormBuilder.");
                     return;
                 }
+                #endregion
 
                 InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
-
                 infoForm.Entity = (IEntity)this.SelectedNode.Tag;
                 infoForm.ComponentBuilder = this;
                 DialogResult dialogResult = infoForm.ShowDialog(this);

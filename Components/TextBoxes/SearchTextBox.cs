@@ -45,18 +45,17 @@ namespace ECBuilder.Components.TextBoxes
         private bool searchMode = false;
         protected override void OnClick(EventArgs e)
         {
-            base.OnClick(e);
-
             if (!searchMode)
             {
                 this.Text = "";
                 searchMode = true;
             }
+
+            base.OnClick(e);
         }
 
         protected override void OnTextChanged(EventArgs e)
         {
-            base.OnTextChanged(e);
             if (searchMode)
             {
                 string searchProperty = string.IsNullOrEmpty(SearchProperty) ? $"{ComponentBuilder.EntityType.Name}Name" : SearchProperty;
@@ -80,6 +79,8 @@ namespace ECBuilder.Components.TextBoxes
 
                 }
             }
+
+            base.OnTextChanged(e);
         }
 
         protected override void OnLostFocus(EventArgs e)
