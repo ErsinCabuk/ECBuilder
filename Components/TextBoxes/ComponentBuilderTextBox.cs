@@ -15,7 +15,9 @@ namespace ECBuilder.Components.TextBoxes
     {
         public ComponentBuilderTextBox()
         {
-
+            #region Designer
+            this.ReadOnly = true;
+            #endregion
         }
 
         #region Properties
@@ -41,7 +43,10 @@ namespace ECBuilder.Components.TextBoxes
         public object SelectedValue { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<bool> ControlClickEvent { get; set; }
+        public Func<bool> BeforeControlClickEvent { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Func<IEntity, bool> AfterControlClickEvent { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Func<Task> AfterClickEvent { get; set; }
@@ -50,10 +55,10 @@ namespace ECBuilder.Components.TextBoxes
         #region Events
         protected override async void OnClick(EventArgs e)
         {
-            #region ControlClickEvent
-            if (ControlClickEvent != null)
+            #region BeforeControlClickEvent
+            if (BeforeControlClickEvent != null)
             {
-                bool result = ControlClickEvent();
+                bool result = BeforeControlClickEvent();
                 if (!result) return;
             }
             #endregion
@@ -61,6 +66,14 @@ namespace ECBuilder.Components.TextBoxes
             DialogResult dialogResult = ComponentBuilderFormBuilder.ShowDialog(this.FindForm());
             if (dialogResult == DialogResult.OK)
             {
+                #region AfterControlClickEvent
+                if (AfterControlClickEvent != null)
+                {
+                    bool result = AfterControlClickEvent(ComponentBuilderFormBuilder.SelectedEntity);
+                    if (!result) return;
+                }
+                #endregion
+
                 SetSelectedEntity(ComponentBuilderFormBuilder.SelectedEntity);
             };
 
@@ -81,6 +94,12 @@ namespace ECBuilder.Components.TextBoxes
                 this.Text = DefaultText;
 
                 #region Controls
+                if (ComponentBuilderType == null)
+                {
+                    BuilderDebug.Error("ComponentBuilderTextBox.ComponentBuilderType was null.");
+                    return;
+                }
+
                 if (ECBuilderSettings.ComponentBuilderTextBoxForm == null)
                 {
                     BuilderDebug.Error("ECBuilderSettings.ComponentBuilderTextBoxForm was null.");
@@ -99,7 +118,6 @@ namespace ECBuilder.Components.TextBoxes
                     return;
                 }
                 #endregion
-
 
                 ComponentBuilderFormBuilder = (ComponentBuilderFormBuilder)Activator.CreateInstance(ECBuilderSettings.ComponentBuilderTextBoxForm);
                 ComponentBuilder = (IComponentBuilder)Activator.CreateInstance(ComponentBuilderType);

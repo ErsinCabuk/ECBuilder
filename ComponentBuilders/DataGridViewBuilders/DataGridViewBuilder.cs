@@ -4,8 +4,10 @@ using ECBuilder.FormBuilders.EntityFormBuilders;
 using ECBuilder.Helpers;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
+using ECBuilder.Types;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -22,23 +24,35 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
         }
 
         #region Properties
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type InfoForm { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type CreateForm { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Func<DialogResult, Task> InfoFormCloseEvent { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Func<DialogResult, Task> CreateFormCloseEvent { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type EntityType { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<IEntity> EntityList { get; set; } = new List<IEntity>();
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<IEntity> AddList { get; set; } = new List<IEntity>();
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Type> ImportListDefinition { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Dictionary<Type, List<IEntity>> ImportLists { get; set; } = new Dictionary<Type, List<IEntity>>();
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Dictionary<string, (FilterTypes, object)> Filters { get; set; } = new Dictionary<string, (FilterTypes, object)>();
 
         public bool EnableInfoForm { get; set; } = true;
 
@@ -125,6 +139,13 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             {
                 EntityList.AddRange(AddList);
                 EntityList.AddRange(list);
+            }
+            #endregion
+
+            #region Filter
+            if (Filters.Count > 0)
+            {
+                ListHelper.Filter(EntityList, Filters);
             }
             #endregion
 

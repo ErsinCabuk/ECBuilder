@@ -3,16 +3,17 @@ using ECBuilder.ComponentBuilders.DataGridViewBuilders;
 using ECBuilder.ComponentBuilders.TreeViewBuilders;
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace ECBuilder.Components.TextBoxes
 {
     /// <summary>
-    /// <see cref="TextBox"/> that can be searched in <see cref="Builders.DataGridViewBuilders.DataGridViewBuilder">DataGridViewBuilder</see>.
+    /// 
     /// </summary>
-    public class SearchTextBox : TextBox
+    public class ComponentBuilderSearchTextBox : TextBox
     {
-        public SearchTextBox()
+        public ComponentBuilderSearchTextBox()
         {
 
         }
@@ -76,7 +77,7 @@ namespace ECBuilder.Components.TextBoxes
                 }
                 else if (ComponentBuilder is TreeViewBuilder treeViewBuilder)
                 {
-
+                    SearchNodes(treeViewBuilder.Nodes);
                 }
             }
 
@@ -91,6 +92,33 @@ namespace ECBuilder.Components.TextBoxes
             {
                 searchMode = false;
                 this.Text = SearchText;
+            }
+        }
+        #endregion
+
+        #region Methods
+        private void SearchNodes(TreeNodeCollection nodes)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                if (string.IsNullOrEmpty(this.Text))
+                {
+                    node.BackColor = Color.Transparent;
+                    node.ForeColor = SystemColors.ControlText;
+                }
+                else if (node.Text.ToString().ToLower().Contains(this.Text.ToLower()))
+                {
+                    node.BackColor = SystemColors.Highlight;
+                    node.ForeColor = SystemColors.HighlightText;
+                    node.Expand();
+                }
+                else
+                {
+                    node.BackColor = Color.Transparent;
+                    node.ForeColor = SystemColors.ControlText;
+                }
+
+                SearchNodes(node.Nodes);
             }
         }
         #endregion

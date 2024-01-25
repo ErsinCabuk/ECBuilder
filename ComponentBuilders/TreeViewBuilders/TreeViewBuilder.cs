@@ -2,6 +2,7 @@
 using ECBuilder.FormBuilders.EntityFormBuilders;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
+using ECBuilder.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,8 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         public List<Type> ImportListDefinition { get; set; }
 
         public Dictionary<Type, List<IEntity>> ImportLists { get; set; } = new Dictionary<Type, List<IEntity>>();
+
+        public Dictionary<string, (FilterTypes, object)> Filters { get; set; } = new Dictionary<string, (FilterTypes, object)>();
 
         public bool EnableInfoForm { get; set; } = true;
 

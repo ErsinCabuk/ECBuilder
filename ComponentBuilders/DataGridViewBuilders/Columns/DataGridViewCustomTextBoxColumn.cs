@@ -55,7 +55,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns
 
             if (!lists.ContainsKey(ListType))
             {
-                BuilderDebug.Error("ListType not found in DataGridView.ImportLists");
+                BuilderDebug.Error("ListType was not found in DataGridView.ImportLists");
                 return null;
             }
 

@@ -1,4 +1,5 @@
 ﻿using ECBuilder.Interfaces;
+using ECBuilder.Types;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -57,6 +58,8 @@ namespace ECBuilder.ComponentBuilders
         /// <see langword="true"/>, ComponentBuilder opens <see cref="InfoForm"/>; otherwise <see langword="false"/>
         /// </summary>
         bool EnableInfoForm { get; set; }
+
+        Dictionary<string, (FilterTypes, object)> Filters { get; set; }
 
         /// <summary>
         /// Method that imports the types given in the <see cref="ImportListDefinition">ImportListDefinition</see> and <see cref="EntityType">EntityType</see> parameters and adds them to the Component.

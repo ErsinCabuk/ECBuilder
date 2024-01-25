@@ -72,7 +72,7 @@
     <Compile Include="Components\TextBoxes\ComponentBuilderTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\TextBoxes\SearchTextBox.cs">
+    <Compile Include="Components\TextBoxes\ComponentBuilderSearchTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DataAccess\API.cs" />
@@ -97,9 +97,11 @@
     <Compile Include="ECBuilderSettings.cs" />
     <Compile Include="Helpers\AssetsHelper.cs" />
     <Compile Include="Components\MessageBoxes.cs" />
+    <Compile Include="Helpers\ListHelper.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Test\BuilderDebug.cs" />
+    <Compile Include="Types\FilterTypes.cs" />
     <Compile Include="Types\SortTypes.cs" />
   </ItemGroup>
   <ItemGroup>
