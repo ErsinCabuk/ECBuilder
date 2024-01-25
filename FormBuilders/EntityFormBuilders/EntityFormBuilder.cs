@@ -48,7 +48,8 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 if (!control.Tag.ToString().Contains("required")) continue;
 
                 bool result = true;
-                if ((control is TextBox || control is RichTextBox) && string.IsNullOrEmpty(control.Text)) result = false;
+                if (control is ComponentBuilderTextBox componentBuilderTextBox && componentBuilderTextBox.SelectedValue == null) result = false;
+                else if ((control is TextBox || control is RichTextBox) && string.IsNullOrEmpty(control.Text)) result = false;
                 else if (control is NumericUpDown numericUpDown && string.IsNullOrEmpty(numericUpDown.Value.ToString())) result = false;
                 else if (control is ComboBox comboBox && comboBox.SelectedIndex == -1) result = false;
 
@@ -74,7 +75,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
 
                 if (control is ComponentBuilderTextBox componentBuilderTextBox)
                 {
-                    propertyInfo.SetValue(Entity, componentBuilderTextBox.Value);
+                    propertyInfo.SetValue(Entity, componentBuilderTextBox.SelectedValue);
                 }
                 else if (control is TextBox || control is RichTextBox)
                 {

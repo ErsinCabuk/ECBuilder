@@ -124,23 +124,23 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
                         Tag = entity
                     };
 
-                    this.BeginInvoke((MethodInvoker)delegate
-                    {
-                        this.Nodes.Add(treeNode);
-                    });
+                    //this.BeginInvoke((MethodInvoker)delegate
+                    //{
+                    this.Nodes.Add(treeNode);
+                    //});
                 }
 
                 foreach (IEntity entity in EntityList.Where(whereEntity => Convert.ToInt32(whereEntity.GetType().GetProperty($"{whereEntity.GetType().Name}SuperiorID").GetValue(whereEntity)) > 0))
                 {
-                    this.BeginInvoke((MethodInvoker)delegate
+                    //this.BeginInvoke((MethodInvoker)delegate
+                    //{
+                    this.Nodes.Find(entity.GetType().GetProperty($"{entity.GetType().Name}SuperiorID").GetValue(entity).ToString(), true)[0].Nodes.Add(new TreeNode
                     {
-                        this.Nodes.Find(entity.GetType().GetProperty($"{entity.GetType().Name}SuperiorID").GetValue(entity).ToString(), true)[0].Nodes.Add(new TreeNode
-                        {
-                            Name = entity.GetType().GetProperty($"{entity.GetType().Name}ID").GetValue(entity).ToString(),
-                            Text = entity.GetType().GetProperty($"{entity.GetType().Name}Name").GetValue(entity).ToString(),
-                            Tag = entity
-                        });
+                        Name = entity.GetType().GetProperty($"{entity.GetType().Name}ID").GetValue(entity).ToString(),
+                        Text = entity.GetType().GetProperty($"{entity.GetType().Name}Name").GetValue(entity).ToString(),
+                        Tag = entity
                     });
+                    //});
                 }
             }
             else
@@ -154,10 +154,10 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
                         Tag = entity
                     };
 
-                    this.BeginInvoke((MethodInvoker)delegate
-                    {
-                        this.Nodes.Add(treeNode);
-                    });
+                    //this.BeginInvoke((MethodInvoker)delegate
+                    //{
+                    this.Nodes.Add(treeNode);
+                    //});
                 }
             }
         }

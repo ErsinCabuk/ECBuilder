@@ -69,12 +69,18 @@
     <Compile Include="Components\ComboBoxes\CustomComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Components\TextBoxes\ComponentBuilderTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Components\TextBoxes\SearchTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DataAccess\API.cs" />
     <Compile Include="ComponentBuilders\DataGridViewBuilders\DataGridViewBuilder.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FormBuilders\ComponentBuilderFormBuilders\ComponentBuilderFormBuilder.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormBuilders\EntityFormBuilders\CreateFormBuilder.cs">
       <SubType>Form</SubType>

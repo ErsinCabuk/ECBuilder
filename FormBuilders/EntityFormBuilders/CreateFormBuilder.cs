@@ -1,4 +1,5 @@
 ﻿using ECBuilder.Components.ComboBoxes;
+using ECBuilder.Components.TextBoxes;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                     continue;
                 }
 
-                if(control is ComponentBuilderTextBox componentBuilderTextBox)
+                if (control is ComponentBuilderTextBox componentBuilderTextBox)
                 {
                     await componentBuilderTextBox.Import();
                 }
