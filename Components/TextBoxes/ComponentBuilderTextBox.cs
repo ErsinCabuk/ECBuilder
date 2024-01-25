@@ -39,16 +39,37 @@ namespace ECBuilder.Components.TextBoxes
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public object SelectedValue { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Func<bool> ControlClickEvent { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Func<Task> AfterClickEvent { get; set; }
         #endregion
 
         #region Events
-        protected override void OnClick(EventArgs e)
+        protected override async void OnClick(EventArgs e)
         {
+            #region ControlClickEvent
+            if (ControlClickEvent != null)
+            {
+                bool result = ControlClickEvent();
+                if (!result) return;
+            }
+            #endregion
+
             DialogResult dialogResult = ComponentBuilderFormBuilder.ShowDialog(this.FindForm());
             if (dialogResult == DialogResult.OK)
             {
                 SetSelectedEntity(ComponentBuilderFormBuilder.SelectedEntity);
             };
+
+            #region AfterClickEvent
+            if (AfterClickEvent != null)
+            {
+                await AfterClickEvent();
+            }
+            #endregion
         }
         #endregion
 
@@ -106,7 +127,6 @@ namespace ECBuilder.Components.TextBoxes
 
             if (SelectedEntity == null)
             {
-
                 SelectedEntity = ComponentBuilder.AddList[0];
             }
 
@@ -120,6 +140,13 @@ namespace ECBuilder.Components.TextBoxes
 
             this.Text = SelectedEntity.GetType().GetProperty(DisplayProperty).GetValue(SelectedEntity).ToString();
             this.SelectedValue = SelectedEntity.GetType().GetProperty(ValueProperty).GetValue(SelectedEntity);
+        }
+
+        public void ResetSelectedEntity()
+        {
+            SelectedEntity = null;
+            SelectedValue = null;
+            Text = DefaultText;
         }
         #endregion
     }
