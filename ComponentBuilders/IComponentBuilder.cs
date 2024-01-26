@@ -72,5 +72,10 @@ namespace ECBuilder.ComponentBuilders
         /// Method showing <see cref="CreateForm">CreateForm</see>.
         /// </summary>
         void ShowCreateForm();
+
+        /// <summary>
+        /// Button that will open the <see cref="FormBuilders.EntityFormBuilders.CreateFormBuilder">Entity Create Form</see>. If it is null, the form will not open.
+        /// </summary>
+        IButtonControl CreateButton { get; set; }
     }
 }

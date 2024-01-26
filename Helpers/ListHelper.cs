@@ -7,7 +7,7 @@ namespace ECBuilder.Helpers
 {
     public class ListHelper
     {
-        public static void Filter(List<IEntity> list, Dictionary<string, (FilterTypes, object)> filters)
+        public static List<IEntity> Filter(List<IEntity> list, Dictionary<string, (FilterTypes, object)> filters)
         {
             Comparer<object> comparer = Comparer<object>.Default;
             /*
@@ -111,6 +111,8 @@ namespace ECBuilder.Helpers
                     }
                 }
             }
+
+            return list;
         }
     }
 }

@@ -43,6 +43,8 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         /// If the Entity contains Superior and there will be sub-breaks of nodes, true should be selected. Default is <see langword="true"/>.
         /// </summary>
         public bool UseSuperior { get; set; } = true;
+
+        public IButtonControl CreateButton { get; set; }
         #endregion
 
         #region Events
@@ -163,6 +165,18 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
                     //});
                 }
             }
+
+            #region Create Button
+            if (this.CreateButton != null)
+            {
+                ((Button)this.CreateButton).Click += CreateButton_Click;
+            }
+            #endregion
+        }
+
+        private void CreateButton_Click(object sender, EventArgs e)
+        {
+            ShowCreateForm();
         }
 
         public async void ShowCreateForm()

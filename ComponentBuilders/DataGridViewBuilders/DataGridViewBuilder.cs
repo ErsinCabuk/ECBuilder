@@ -60,6 +60,9 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
         /// <see langword="true"/>, adds the ID column to the DataGridView and writes the EntityID for each row. Default: <see langword="true"/>
         /// </summary>
         public bool AutoAddIDColumn { get; set; } = true;
+
+        [DefaultValue(null)]
+        public IButtonControl CreateButton { get; set; }
         #endregion
 
         #region Events
@@ -145,7 +148,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             #region Filter
             if (Filters.Count > 0)
             {
-                ListHelper.Filter(EntityList, Filters);
+                EntityList = ListHelper.Filter(EntityList, Filters);
             }
             #endregion
 
@@ -181,6 +184,18 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
                 });
             });
             #endregion
+
+            #region Create Button
+            if(this.CreateButton != null)
+            {
+                ((Button)this.CreateButton).Click += CreateButton_Click;
+            }
+            #endregion
+        }
+
+        private void CreateButton_Click(object sender, EventArgs e)
+        {
+            ShowCreateForm();
         }
 
         public async void ShowCreateForm()
