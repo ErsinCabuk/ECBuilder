@@ -1,4 +1,5 @@
-﻿using ECBuilder.Interfaces;
+﻿using ECBuilder.DataAccess;
+using ECBuilder.Interfaces;
 using ECBuilder.Types;
 using System;
 using System.Collections.Generic;
@@ -43,58 +44,59 @@ namespace ECBuilder.Components.ComboBoxes
         /// </summary>
         /// <param name="selectedValue">ComboBox sets the selected value.</param>
         /// <returns>awaitable Task</returns>
-        public Task Import(object selectedValue = null)
+        public async Task Import(object selectedValue = null)
         {
-            return Task.Run(() =>
+            #region Import Confs
+            this.Items.Clear();
+            #endregion
+
+            #region Controls
+            if (string.IsNullOrEmpty(DisplayMember)) DisplayMember = $"{EntityType.Name}Name";
+            if (string.IsNullOrEmpty(ValueMember)) ValueMember = $"{EntityType.Name}ID";
+            #endregion
+
+            #region Import
+            EntityList = await API.GetAll(EntityType);
+            #endregion
+
+            #region Sort
+            if (SortType is SortTypes.Ascending)
             {
-                #region Import Confs
-                this.Items.Clear();
-                #endregion
-
-                #region Controls
-                if (string.IsNullOrEmpty(DisplayMember)) DisplayMember = $"{EntityType.Name}Name";
-                if (string.IsNullOrEmpty(ValueMember)) ValueMember = $"{EntityType.Name}ID";
-                #endregion
-
-                #region Sort
-                if (SortType is SortTypes.Ascending)
-                {
-                    EntityList.Sort((x, y) =>
+                EntityList.Sort((x, y) =>
+                    string.Compare(
+                        x.GetType().GetProperty(DisplayMember).GetValue(x).ToString(),
+                        y.GetType().GetProperty(DisplayMember).GetValue(y).ToString(),
+                        StringComparison.Ordinal
+                    )
+                );
+            }
+            else if (SortType is SortTypes.Descending)
+            {
+                EntityList.Sort((x, y) =>
                         string.Compare(
-                            x.GetType().GetProperty(DisplayMember).GetValue(x).ToString(),
                             y.GetType().GetProperty(DisplayMember).GetValue(y).ToString(),
+                            x.GetType().GetProperty(DisplayMember).GetValue(x).ToString(),
                             StringComparison.Ordinal
                         )
                     );
-                }
-                else if (SortType is SortTypes.Descending)
-                {
-                    EntityList.Sort((x, y) =>
-                            string.Compare(
-                                y.GetType().GetProperty(DisplayMember).GetValue(y).ToString(),
-                                x.GetType().GetProperty(DisplayMember).GetValue(x).ToString(),
-                                StringComparison.Ordinal
-                            )
-                        );
-                }
-                #endregion
+            }
+            #endregion
 
-                #region Import
-                EntityList.ForEach(entity => this.Items.Add(entity));
-                #endregion
+            #region Adding Items
+            EntityList.ForEach(entity => this.Items.Add(entity));
+            #endregion
 
-                #region SelectedValue
-                if (selectedValue != null)
-                {
-                    int index = EntityList.FindIndex(entity => entity.GetType().GetProperty(ValueMember).GetValue(entity).Equals(selectedValue));
-                    this.SelectedIndex = index;
-                }
-                else
-                {
-                    this.SelectedIndex = 0;
-                }
-                #endregion
-            });
+            #region SelectedValue
+            if (selectedValue != null)
+            {
+                int index = EntityList.FindIndex(entity => entity.GetType().GetProperty(ValueMember).GetValue(entity).Equals(selectedValue));
+                this.SelectedIndex = index;
+            }
+            else
+            {
+                this.SelectedIndex = 0;
+            }
+            #endregion
         }
         #endregion
     }
