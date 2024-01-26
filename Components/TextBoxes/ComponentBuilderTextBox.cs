@@ -3,7 +3,9 @@ using ECBuilder.FormBuilders;
 using ECBuilder.FormBuilders.ComponentBuilderFormBuilders;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
+using ECBuilder.Types;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,6 +52,9 @@ namespace ECBuilder.Components.TextBoxes
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Func<Task> AfterClickEvent { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Dictionary<string, (FilterTypes, object)> Filters { get; set; } = new Dictionary<string, (FilterTypes, object)>();
         #endregion
 
         #region Events
@@ -123,6 +128,7 @@ namespace ECBuilder.Components.TextBoxes
                 ComponentBuilder = (IComponentBuilder)Activator.CreateInstance(ComponentBuilderType);
 
                 ComponentBuilderFormBuilder.ComponentBuilder = ComponentBuilder;
+                ComponentBuilder.Filters = this.Filters;
 
                 if (string.IsNullOrEmpty(DisplayProperty)) DisplayProperty = $"{ComponentBuilder.EntityType.Name}Name";
                 if (string.IsNullOrEmpty(ValueProperty)) ValueProperty = $"{ComponentBuilder.EntityType.Name}ID";
@@ -154,10 +160,13 @@ namespace ECBuilder.Components.TextBoxes
 
         public void SetSelectedEntity(IEntity entity)
         {
-            SelectedEntity = entity;
+            if (entity != null)
+            {
+                SelectedEntity = entity;
 
-            this.Text = SelectedEntity.GetType().GetProperty(DisplayProperty).GetValue(SelectedEntity).ToString();
-            this.SelectedValue = SelectedEntity.GetType().GetProperty(ValueProperty).GetValue(SelectedEntity);
+                this.Text = SelectedEntity.GetType().GetProperty(DisplayProperty).GetValue(SelectedEntity).ToString();
+                this.SelectedValue = SelectedEntity.GetType().GetProperty(ValueProperty).GetValue(SelectedEntity);
+            }
         }
 
         public void ResetSelectedEntity()

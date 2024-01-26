@@ -1,5 +1,6 @@
 ﻿using ECBuilder.DataAccess;
 using ECBuilder.FormBuilders.EntityFormBuilders;
+using ECBuilder.Helpers;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using ECBuilder.Types;
@@ -118,6 +119,14 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
             }
             #endregion
 
+            #region Filter
+            if (Filters.Count > 0)
+            {
+                EntityList = ListHelper.Filter(EntityList, Filters);
+            }
+            #endregion
+
+            #region Adding Nodes
             if (UseSuperior)
             {
                 foreach (IEntity entity in EntityList.Where(whereEntity => whereEntity.GetType().GetProperty($"{whereEntity.GetType().Name}SuperiorID").GetValue(whereEntity).Equals(0)))
@@ -165,10 +174,12 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
                     //});
                 }
             }
+            #endregion
 
             #region Create Button
             if (this.CreateButton != null)
             {
+                ((Button)this.CreateButton).Click -= CreateButton_Click;
                 ((Button)this.CreateButton).Click += CreateButton_Click;
             }
             #endregion

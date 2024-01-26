@@ -100,8 +100,6 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
                     await this.Import();
                 }
             }
-
-            base.OnCellDoubleClick(e);
         }
         #endregion
 
@@ -186,8 +184,9 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             #endregion
 
             #region Create Button
-            if(this.CreateButton != null)
+            if (this.CreateButton != null)
             {
+                ((Button)this.CreateButton).Click -= CreateButton_Click;
                 ((Button)this.CreateButton).Click += CreateButton_Click;
             }
             #endregion

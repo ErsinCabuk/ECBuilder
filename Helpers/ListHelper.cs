@@ -5,8 +5,17 @@ using System.Linq;
 
 namespace ECBuilder.Helpers
 {
+    /// <summary>
+    /// Helpers for Lists.
+    /// </summary>
     public class ListHelper
     {
+        /// <summary>
+        /// Filters the list.
+        /// </summary>
+        /// <param name="list">List to filter.</param>
+        /// <param name="filters">Filters ("PropertyName", (<see cref="FilterTypes">FilterTypes</see>, value))</param>
+        /// <returns>Filtered <paramref name="list"/></returns>
         public static List<IEntity> Filter(List<IEntity> list, Dictionary<string, (FilterTypes, object)> filters)
         {
             Comparer<object> comparer = Comparer<object>.Default;
@@ -86,7 +95,7 @@ namespace ECBuilder.Helpers
                 }
                 else if (filterType == FilterTypes.EqualArray)
                 {
-                    if (value is List<object> valueList)
+                    if (value is IEnumerable<object> valueList)
                     {
                         list = list.Where(entity =>
                             valueList.Any(itemValue =>
@@ -99,7 +108,7 @@ namespace ECBuilder.Helpers
                 }
                 else if (filterType == FilterTypes.NotEqualArray)
                 {
-                    if (value is List<object> valueList)
+                    if (value is IEnumerable<object> valueList)
                     {
                         list = list.Where(entity =>
                             !valueList.Any(itemValue =>
