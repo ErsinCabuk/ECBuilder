@@ -1,5 +1,7 @@
-﻿using ECBuilder.DataAccess;
+﻿using ECBuilder.FormBuilders;
+using ECBuilder.Helpers;
 using ECBuilder.Interfaces;
+using ECBuilder.Test;
 using ECBuilder.Types;
 using System;
 using System.Collections.Generic;
@@ -36,6 +38,17 @@ namespace ECBuilder.Components.ComboBoxes
         /// Entities in <see cref="EntityList"/> are sorted according to DisplayMember.
         /// </summary>
         public SortTypes SortType { get; set; } = SortTypes.Ascending;
+
+        /// <summary>
+        /// Selected Entity Changed Event
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Func<IEntity, Task> SelectedEntityChanged { get; set; }
+
+        /// <summary>
+        /// Filters
+        /// </summary>
+        public Dictionary<string, (FilterTypes, object)> Filters = new Dictionary<string, (FilterTypes, object)>();
         #endregion
 
         #region Methods
@@ -46,17 +59,30 @@ namespace ECBuilder.Components.ComboBoxes
         /// <returns>awaitable Task</returns>
         public async Task Import(object selectedValue = null)
         {
-            #region Import Confs
-            this.Items.Clear();
+            #region Controls
+            if (!((FormBuilder)this.FindForm()).ImportLists.ContainsKey(EntityType))
+            {
+                BuilderDebug.Error($"There were no lists of type {EntityType.Name} in ImportLists.");
+                return;
+            }
             #endregion
 
-            #region Controls
+            #region Import Confs
+            this.Items.Clear();
+
             if (string.IsNullOrEmpty(DisplayMember)) DisplayMember = $"{EntityType.Name}Name";
             if (string.IsNullOrEmpty(ValueMember)) ValueMember = $"{EntityType.Name}ID";
             #endregion
 
             #region Import
-            EntityList = await API.GetAll(EntityType);
+            EntityList = ((FormBuilder)this.FindForm()).ImportLists[EntityType];
+            #endregion
+
+            #region Filters
+            if (Filters.Count > 0)
+            {
+                EntityList = ListHelper.Filter(EntityList, Filters);
+            }
             #endregion
 
             #region Sort
@@ -97,6 +123,24 @@ namespace ECBuilder.Components.ComboBoxes
                 this.SelectedIndex = 0;
             }
             #endregion
+
+            #region SelectedEntityChanged
+            if (SelectedEntityChanged != null)
+            {
+                await SelectedEntityChanged((IEntity)this.SelectedItem);
+            }
+            this.SelectedIndexChanged += CustomComboBox_SelectedIndexChanged;
+            #endregion
+        }
+        #endregion
+
+        #region Events
+        private async void CustomComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (SelectedEntityChanged != null)
+            {
+                await SelectedEntityChanged((IEntity)this.SelectedItem);
+            }
         }
         #endregion
     }

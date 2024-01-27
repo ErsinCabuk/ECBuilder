@@ -1,8 +1,6 @@
 ﻿using ECBuilder.Components.ComboBoxes;
 using ECBuilder.Components.TextBoxes;
-using ECBuilder.Interfaces;
 using ECBuilder.Test;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -42,16 +40,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 }
                 else if (control is CustomComboBox customComboBox)
                 {
-                    if (!this.ImportLists.TryGetValue(customComboBox.EntityType, out List<IEntity> entityList))
-                    {
-                        customComboBox.EntityList = entityList;
-                        await customComboBox.Import();
-                    }
-                    else
-                    {
-                        BuilderDebug.Error($"There were no lists of type {customComboBox.EntityType.Name} in ImportLists.");
-                        return;
-                    }
+                    await customComboBox.Import();
                 }
             }
         }

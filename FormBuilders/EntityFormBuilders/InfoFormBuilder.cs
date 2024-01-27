@@ -1,9 +1,7 @@
 ﻿using ECBuilder.Components.ComboBoxes;
 using ECBuilder.Components.TextBoxes;
-using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -66,28 +64,31 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 }
                 else if (control is NumericUpDown numericUpDown)
                 {
-                    if (int.TryParse(value.ToString(), out int intValue))
+                    if (value.GetType() == typeof(decimal))
                     {
-                        numericUpDown.Value = intValue;
+                        if (decimal.TryParse(value.ToString(), out decimal intValue))
+                        {
+                            numericUpDown.Value = intValue;
+                        }
+                        else
+                        {
+                            BuilderDebug.Error($"{control.Name} property could not be converted to decimal.");
+                        }
                     }
-                    else
+                    else if (value.GetType() == typeof(int))
                     {
-                        BuilderDebug.Error($"{control.Name} property could not be converted to int.");
+                        if (int.TryParse(value.ToString(), out int intValue))
+                        {
+                            numericUpDown.Value = intValue;
+                        }
+                        else
+                        {
+                            BuilderDebug.Error($"{control.Name} property could not be converted to int.");
+                        }
                     }
                 }
                 else if (control is CustomComboBox customComboBox)
                 {
-                    if (!this.ImportLists.TryGetValue(customComboBox.EntityType, out List<IEntity> entityList))
-                    {
-                        customComboBox.EntityList = entityList;
-                        await customComboBox.Import();
-                    }
-                    else
-                    {
-                        BuilderDebug.Error($"There were no lists of type {customComboBox.EntityType.Name} in ImportLists.");
-                        return;
-                    }
-
                     await customComboBox.Import(value);
                 }
             }
