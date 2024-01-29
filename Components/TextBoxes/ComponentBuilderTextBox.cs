@@ -51,7 +51,7 @@ namespace ECBuilder.Components.TextBoxes
         public Func<IEntity, bool> AfterControlClickEvent { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<Task> AfterClickEvent { get; set; }
+        public Func<Task> SelectedEntityChanged { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Dictionary<string, (FilterTypes, object)> Filters { get; set; } = new Dictionary<string, (FilterTypes, object)>();
@@ -82,10 +82,10 @@ namespace ECBuilder.Components.TextBoxes
                 SetSelectedEntity(ComponentBuilderFormBuilder.SelectedEntity);
             };
 
-            #region AfterClickEvent
-            if (AfterClickEvent != null)
+            #region SelectedEntityChanged
+            if (SelectedEntityChanged != null)
             {
-                await AfterClickEvent();
+                await SelectedEntityChanged();
             }
             #endregion
         }
