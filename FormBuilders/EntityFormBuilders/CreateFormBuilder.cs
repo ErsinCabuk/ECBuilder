@@ -28,7 +28,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
             foreach (Control control in UsingControls)
             {
                 PropertyInfo property = Entity.GetType().GetProperty(control.Name);
-                if (property == null)
+                if (property == null && !control.Tag.ToString().Contains("notProperty"))
                 {
                     BuilderDebug.Error(this.DesignMode, $"{control.Name} property was not found in the {this.Name} form");
                     continue;
