@@ -40,6 +40,9 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
         public Type EntityType { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Type CreateEntityType { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<IEntity> EntityList { get; set; } = new List<IEntity>();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -86,22 +89,13 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
                 }
                 #endregion
 
-                InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
-
-                infoForm.Entity = EntityList.Find(findEntity => findEntity.GetType().GetProperty($"{findEntity.GetType().Name}ID").GetValue(findEntity).Equals(this.Rows[e.RowIndex].Cells[$"{EntityType.Name}ID"].Value));
-                infoForm.ComponentBuilder = this;
-                DialogResult dialogResult = infoForm.ShowDialog(this);
-
-                if (InfoFormCloseEvent != null)
-                {
-                    await InfoFormCloseEvent(dialogResult);
-                }
-
-                if (dialogResult == DialogResult.OK)
-                {
-                    await this.Import();
-                }
+                ShowInfoForm(EntityList.Find(findEntity => findEntity.GetType().GetProperty($"{findEntity.GetType().Name}ID").GetValue(findEntity).Equals(this.Rows[e.RowIndex].Cells[$"{EntityType.Name}ID"].Value)));
             }
+        }
+
+        private void CreateButton_Click(object sender, EventArgs e)
+        {
+            ShowCreateForm();
         }
         #endregion
 
@@ -194,11 +188,6 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             #endregion
         }
 
-        private void CreateButton_Click(object sender, EventArgs e)
-        {
-            ShowCreateForm();
-        }
-
         public async void ShowCreateForm()
         {
             #region Controls
@@ -216,13 +205,34 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             #endregion
 
             CreateFormBuilder createForm = (CreateFormBuilder)Activator.CreateInstance(CreateForm);
-            createForm.Entity = (IEntity)Activator.CreateInstance(EntityType);
+            createForm.Entity = CreateEntityType == null 
+                                ? (IEntity)Activator.CreateInstance(EntityType) 
+                                : (IEntity)Activator.CreateInstance(CreateEntityType);
             createForm.ComponentBuilder = this;
             DialogResult dialogResult = createForm.ShowDialog(this);
 
             if (CreateFormCloseEvent != null)
             {
                 await CreateFormCloseEvent(dialogResult);
+            }
+
+            if (dialogResult == DialogResult.OK)
+            {
+                await this.Import();
+            }
+        }
+
+        public async void ShowInfoForm(IEntity entity)
+        {
+            InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
+
+            infoForm.Entity = entity;
+            infoForm.ComponentBuilder = this;
+            DialogResult dialogResult = infoForm.ShowDialog(this);
+
+            if (InfoFormCloseEvent != null)
+            {
+                await InfoFormCloseEvent(dialogResult);
             }
 
             if (dialogResult == DialogResult.OK)

@@ -35,6 +35,11 @@ namespace ECBuilder.ComponentBuilders
         Type EntityType { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        Type CreateEntityType { get; set; }
+
+        /// <summary>
         /// Entities to be imported to Component.
         /// </summary>
         List<IEntity> EntityList { get; set; }
@@ -72,6 +77,11 @@ namespace ECBuilder.ComponentBuilders
         /// Method showing <see cref="CreateForm">CreateForm</see>.
         /// </summary>
         void ShowCreateForm();
+
+        /// <summary>
+        /// Method showing <see cref="InfoForm">InfoForm</see> with <see cref="IEntity"/>. 
+        /// </summary>
+        void ShowInfoForm(IEntity entity);
 
         /// <summary>
         /// Button that will open the <see cref="FormBuilders.EntityFormBuilders.CreateFormBuilder">Entity Create Form</see>. If it is null, the form will not open.

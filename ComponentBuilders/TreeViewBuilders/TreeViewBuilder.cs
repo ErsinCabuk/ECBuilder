@@ -6,6 +6,7 @@ using ECBuilder.Test;
 using ECBuilder.Types;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,24 +19,37 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
     public class TreeViewBuilder : TreeView, IComponentBuilder
     {
         #region Properties
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type InfoForm { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type CreateForm { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Func<DialogResult, Task> InfoFormCloseEvent { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Func<DialogResult, Task> CreateFormCloseEvent { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type EntityType { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Type CreateEntityType { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<IEntity> EntityList { get; set; } = new List<IEntity>();
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<IEntity> AddList { get; set; } = new List<IEntity>();
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Type> ImportListDefinition { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Dictionary<Type, List<IEntity>> ImportLists { get; set; } = new Dictionary<Type, List<IEntity>>();
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Dictionary<string, (FilterTypes, object)> Filters { get; set; } = new Dictionary<string, (FilterTypes, object)>();
 
         public bool EnableInfoForm { get; set; } = true;
@@ -69,23 +83,15 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
                 }
                 #endregion
 
-                InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
-                infoForm.Entity = (IEntity)this.SelectedNode.Tag;
-                infoForm.ComponentBuilder = this;
-                DialogResult dialogResult = infoForm.ShowDialog(this);
-
-                if (InfoFormCloseEvent != null)
-                {
-                    await InfoFormCloseEvent(dialogResult);
-                }
-
-                if (dialogResult == DialogResult.OK)
-                {
-                    await this.Import();
-                }
+                ShowInfoForm((IEntity)this.SelectedNode.Tag);
             }
 
             base.OnNodeMouseDoubleClick(e);
+        }
+        
+        private void CreateButton_Click(object sender, EventArgs e)
+        {
+            ShowCreateForm();
         }
         #endregion
 
@@ -185,9 +191,22 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
             #endregion
         }
 
-        private void CreateButton_Click(object sender, EventArgs e)
+        public async void ShowInfoForm(IEntity entity)
         {
-            ShowCreateForm();
+            InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
+            infoForm.Entity = entity;
+            infoForm.ComponentBuilder = this;
+            DialogResult dialogResult = infoForm.ShowDialog(this);
+
+            if (InfoFormCloseEvent != null)
+            {
+                await InfoFormCloseEvent(dialogResult);
+            }
+
+            if (dialogResult == DialogResult.OK)
+            {
+                await this.Import();
+            }
         }
 
         public async void ShowCreateForm()
@@ -206,7 +225,9 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
 
             CreateFormBuilder createForm = (CreateFormBuilder)Activator.CreateInstance(CreateForm);
 
-            createForm.Entity = (IEntity)Activator.CreateInstance(EntityType);
+            createForm.Entity = CreateEntityType == null
+                                ? (IEntity)Activator.CreateInstance(EntityType)
+                                : (IEntity)Activator.CreateInstance(CreateEntityType);
             createForm.ComponentBuilder = this;
             DialogResult dialogResult = createForm.ShowDialog(this);
 
