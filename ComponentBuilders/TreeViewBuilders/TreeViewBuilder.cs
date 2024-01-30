@@ -63,7 +63,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         #endregion
 
         #region Events
-        protected override async void OnNodeMouseDoubleClick(TreeNodeMouseClickEventArgs e)
+        protected override void OnNodeMouseDoubleClick(TreeNodeMouseClickEventArgs e)
         {
             if (EnableInfoForm)
             {

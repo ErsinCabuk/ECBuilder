@@ -69,7 +69,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
         #endregion
 
         #region Events
-        protected override async void OnCellDoubleClick(DataGridViewCellEventArgs e)
+        protected override void OnCellDoubleClick(DataGridViewCellEventArgs e)
         {
             if (e.RowIndex == -1) return;
 

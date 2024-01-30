@@ -113,14 +113,17 @@ namespace ECBuilder.Components.ComboBoxes
             #endregion
 
             #region SelectedValue
-            if (selectedValue != null)
+            if (this.Items.Count > 0)
             {
-                int index = EntityList.FindIndex(entity => entity.GetType().GetProperty(ValueMember).GetValue(entity).Equals(selectedValue));
-                this.SelectedIndex = index;
-            }
-            else
-            {
-                this.SelectedIndex = 0;
+                if (selectedValue != null)
+                {
+                    int index = EntityList.FindIndex(entity => entity.GetType().GetProperty(ValueMember).GetValue(entity).Equals(selectedValue));
+                    this.SelectedIndex = index;
+                }
+                else
+                {
+                    this.SelectedIndex = 0;
+                }
             }
             #endregion
 
