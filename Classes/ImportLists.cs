@@ -13,7 +13,7 @@ namespace ECBuilder.Classes
             {
                 throw new Exception("List was not found.");
             }
-            
+
             return this[typeof(T)].Cast<T>().ToList();
         }
     }

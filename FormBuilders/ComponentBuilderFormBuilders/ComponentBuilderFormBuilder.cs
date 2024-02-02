@@ -1,7 +1,9 @@
 ﻿using ECBuilder.ComponentBuilders;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
+using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -26,7 +28,14 @@ namespace ECBuilder.FormBuilders.ComponentBuilderFormBuilders
 
         public async Task ComponentBuilderFormBuilder_LoadEvent()
         {
-            Panel panel = (Panel)UsingControls.Find(findControl => findControl.Tag.ToString().Contains("componentBuilderPanel"));
+            Control[] findControl = this.Controls.Find("componentBuilderPanel", true);
+            await Console.Out.WriteLineAsync(findControl.Select(x => x.Name).ToString());
+            if (findControl.Length == 0)
+            {
+                BuilderDebug.Error("componentBuilderPanel Panel was not found");
+                return;
+            }
+            Panel panel = (Panel)findControl[0];
             FormBuilder ownerFormBuilder = (FormBuilder)this.Owner;
 
             #region Controls

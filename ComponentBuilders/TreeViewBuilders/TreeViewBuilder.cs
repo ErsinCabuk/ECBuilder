@@ -89,7 +89,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
 
             base.OnNodeMouseDoubleClick(e);
         }
-        
+
         private void CreateButton_Click(object sender, EventArgs e)
         {
             ShowCreateForm();

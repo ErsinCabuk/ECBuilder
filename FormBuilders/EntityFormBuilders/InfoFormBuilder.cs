@@ -1,5 +1,6 @@
 ﻿using ECBuilder.Components.ComboBoxes;
 using ECBuilder.Components.TextBoxes;
+using ECBuilder.DataAccess;
 using ECBuilder.Test;
 using System;
 using System.Reflection;
@@ -15,7 +16,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
     {
         public InfoFormBuilder()
         {
-            LoadEvent = InfoFormBuilder_LoadEvent;
+            LoadEvent += InfoFormBuilder_LoadEvent;
         }
 
         #region Events
@@ -45,6 +46,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 if (control is ComponentBuilderTextBox componentBuilderTextBox)
                 {
                     await componentBuilderTextBox.Import();
+                    await AddImportList(componentBuilderTextBox.EntityType);
                     componentBuilderTextBox.SetSelectedEntity(value);
                 }
                 else if (control is TextBox || control is RichTextBox)
@@ -89,8 +91,17 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 }
                 else if (control is CustomComboBox customComboBox)
                 {
+                    await AddImportList(customComboBox.EntityType);
                     await customComboBox.Import(value);
                 }
+            }
+        }
+
+        private async Task AddImportList(Type type)
+        {
+            if (!ImportLists.ContainsKey(type))
+            {
+                ImportLists.Add(type, await API.GetAll(type));
             }
         }
         #endregion

@@ -3,10 +3,12 @@ using ECBuilder.Components.ComboBoxes;
 using ECBuilder.Components.TextBoxes;
 using ECBuilder.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ECBuilder.FormBuilders.EntityFormBuilders
@@ -19,7 +21,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
     {
         public EntityFormBuilder()
         {
-
+            this.BeforeLoadEvent += EntityFormBuilder_BeforeLoadEvent;
         }
 
         #region Properties
@@ -34,7 +36,23 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IComponentBuilder ComponentBuilder { get; set; }
+
+        /// <summary>
+        /// Controls to be used in the form and included in the process.
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<Control> UsingControls { get; set; }
         #endregion
+
+        private Task EntityFormBuilder_BeforeLoadEvent()
+        {
+            return Task.Run(() =>
+            {
+                UsingControls = this.Controls.Cast<Control>().Where(whereControl => (whereControl.Tag != null) && (whereControl.Tag.ToString().Split(',').Select(tag => tag.Trim()).Contains("use"))).ToList();
+                UsingControls.Sort((a, b) => a.TabIndex.CompareTo(b.TabIndex));
+            });
+        }
+
 
         #region Methods
         /// <summary>

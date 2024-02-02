@@ -206,8 +206,8 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             #endregion
 
             CreateFormBuilder createForm = (CreateFormBuilder)Activator.CreateInstance(CreateForm);
-            createForm.Entity = CreateEntityType == null 
-                                ? (IEntity)Activator.CreateInstance(EntityType) 
+            createForm.Entity = CreateEntityType == null
+                                ? (IEntity)Activator.CreateInstance(EntityType)
                                 : (IEntity)Activator.CreateInstance(CreateEntityType);
             createForm.ComponentBuilder = this;
             DialogResult dialogResult = createForm.ShowDialog(this);
