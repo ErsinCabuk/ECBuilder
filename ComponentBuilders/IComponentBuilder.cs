@@ -1,4 +1,5 @@
-﻿using ECBuilder.Interfaces;
+﻿using ECBuilder.Classes;
+using ECBuilder.Interfaces;
 using ECBuilder.Types;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace ECBuilder.ComponentBuilders
         /// <summary>
         /// List of other Entity types to be used in the component when the <see cref="Import">Import</see> method runs.
         /// </summary>
-        Dictionary<Type, List<IEntity>> ImportLists { get; set; }
+        ImportLists ImportLists { get; set; }
 
         /// <summary>
         /// <see langword="true"/>, ComponentBuilder opens <see cref="InfoForm"/>; otherwise <see langword="false"/>

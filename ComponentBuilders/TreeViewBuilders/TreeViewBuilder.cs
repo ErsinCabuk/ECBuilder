@@ -1,4 +1,5 @@
-﻿using ECBuilder.DataAccess;
+﻿using ECBuilder.Classes;
+using ECBuilder.DataAccess;
 using ECBuilder.FormBuilders.EntityFormBuilders;
 using ECBuilder.Helpers;
 using ECBuilder.Interfaces;
@@ -47,7 +48,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         public List<Type> ImportListDefinition { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Dictionary<Type, List<IEntity>> ImportLists { get; set; } = new Dictionary<Type, List<IEntity>>();
+        public ImportLists ImportLists { get; set; } = new ImportLists();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Dictionary<string, (FilterTypes, object)> Filters { get; set; } = new Dictionary<string, (FilterTypes, object)>();

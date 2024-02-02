@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace ECBuilder.Components.TextBoxes
 {
-    public class ComponentBuilderTextBox : TextBox
+    public class ComponentBuilderTextBox : TextBox, IComponentEntityType
     {
         public ComponentBuilderTextBox()
         {
@@ -55,6 +55,9 @@ namespace ECBuilder.Components.TextBoxes
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Dictionary<string, (FilterTypes, object)> Filters { get; set; } = new Dictionary<string, (FilterTypes, object)>();
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Type EntityType { get; set; }
         #endregion
 
         #region Events
@@ -129,6 +132,7 @@ namespace ECBuilder.Components.TextBoxes
 
                 ComponentBuilderFormBuilder.ComponentBuilder = ComponentBuilder;
                 ComponentBuilder.Filters = this.Filters;
+                EntityType = ComponentBuilder.EntityType;
 
                 if (string.IsNullOrEmpty(DisplayProperty)) DisplayProperty = $"{ComponentBuilder.EntityType.Name}Name";
                 if (string.IsNullOrEmpty(ValueProperty)) ValueProperty = $"{ComponentBuilder.EntityType.Name}ID";

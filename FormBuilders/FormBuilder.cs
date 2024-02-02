@@ -1,5 +1,7 @@
-﻿using ECBuilder.DataAccess;
+﻿using ECBuilder.Classes;
+using ECBuilder.DataAccess;
 using ECBuilder.Interfaces;
+using ECBuilder.Test;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,7 +39,7 @@ namespace ECBuilder.FormBuilders
         /// Imported lists. The key gives the type of the list and the value gives the list.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Dictionary<Type, List<IEntity>> ImportLists { get; set; } = new Dictionary<Type, List<IEntity>>();
+        public ImportLists ImportLists { get; set; } = new ImportLists();
 
         /// <summary>
         ///
@@ -56,16 +58,6 @@ namespace ECBuilder.FormBuilders
         {
             CheckForIllegalCrossThreadCalls = false;
 
-            #region Import Lists
-            if (ImportListDefinitions != null && ImportListDefinitions.Count > 0)
-            {
-                foreach (Type type in ImportListDefinitions)
-                {
-                    ImportLists.Add(type, await API.GetAll(type, 1));
-                }
-            }
-            #endregion
-
             #region BeforeLoadEvent
             if (BeforeLoadEvent != null)
             {
@@ -73,10 +65,34 @@ namespace ECBuilder.FormBuilders
             }
             #endregion
 
-            #region Load Event
             UsingControls = this.Controls.Cast<Control>().Where(whereControl => (whereControl.Tag != null) && (whereControl.Tag.ToString().Split(',').Select(tag => tag.Trim()).Contains("use"))).ToList();
             UsingControls.Sort((a, b) => a.TabIndex.CompareTo(b.TabIndex));
 
+            #region Import Lists
+            foreach (Control control in UsingControls)
+            {
+                if(control is IComponentEntityType entityTypeControl && !ImportLists.ContainsKey(entityTypeControl.EntityType))
+                {
+                    ImportLists.Add(entityTypeControl.EntityType, await API.GetAll(entityTypeControl.EntityType, 1));
+                }
+            }
+
+            if (ImportListDefinitions != null && ImportListDefinitions.Count > 0)
+            {
+                foreach (Type type in ImportListDefinitions)
+                {
+                    if (ImportLists.ContainsKey(type))
+                    {
+                        BuilderDebug.Warn("ImportLists contains");
+                        continue;
+                    }
+
+                    ImportLists.Add(type, await API.GetAll(type, 1));
+                }
+            }
+            #endregion
+            
+            #region Load Event
             if (LoadEvent != null)
             {
                 await LoadEvent();

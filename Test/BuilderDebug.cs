@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace ECBuilder.Test
 {
@@ -30,6 +31,23 @@ namespace ECBuilder.Test
             else
             {
                 Debug.WriteLine(message);
+            }
+        }
+
+        public static void Warn(string message)
+        {
+            Console.WriteLine(message);
+        }
+
+        public static void Warn(bool designMode, string message)
+        {
+            if (designMode)
+            {
+                Debug.Fail(message);
+            }
+            else
+            {
+                Console.WriteLine(message);
             }
         }
     }

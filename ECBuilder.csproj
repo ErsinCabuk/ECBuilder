@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ImportLists.cs" />
     <Compile Include="ComponentBuilders\DataGridViewBuilders\Columns\DataGridViewCustomTextBoxColumn.cs" />
     <Compile Include="ComponentBuilders\IComponentBuilder.cs" />
     <Compile Include="ComponentBuilders\TreeViewBuilders\TreeViewBuilder.cs">
@@ -99,6 +100,7 @@
     <Compile Include="Components\MessageBoxes.cs" />
     <Compile Include="Helpers\ListHelper.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
+    <Compile Include="Interfaces\IComponentEntityType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Test\BuilderDebug.cs" />
     <Compile Include="Types\FilterTypes.cs" />

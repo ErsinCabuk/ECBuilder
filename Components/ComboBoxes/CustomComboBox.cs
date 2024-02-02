@@ -14,7 +14,7 @@ namespace ECBuilder.Components.ComboBoxes
     /// <summary>
     /// Imports to ComboBox according to <see cref="EntityType"/>.
     /// </summary>
-    public class CustomComboBox : ComboBox
+    public class CustomComboBox : ComboBox, IComponentEntityType
     {
         public CustomComboBox()
         {
