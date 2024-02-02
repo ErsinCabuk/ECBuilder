@@ -148,7 +148,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             #endregion
 
             #region Adding Rows
-            EntityList.ForEach(item =>
+            foreach (IEntity entity in EntityList)
             {
                 object[] values = new object[this.ColumnCount];
 
@@ -156,11 +156,12 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
                 {
                     DataGridViewColumn column = this.Columns[columnIndex];
 
-                    object itemValue = item.GetType().GetProperty(column.Name).GetValue(item);
+                    object itemValue = entity.GetType().GetProperty(column.Name).GetValue(entity);
 
                     if (column is DataGridViewCustomTextBoxColumn customTextBoxColumn)
                     {
-                        itemValue = customTextBoxColumn.Use(itemValue, ImportLists);
+                        await AddImportList(customTextBoxColumn.ListType);
+                        itemValue = customTextBoxColumn.Use(itemValue, ImportLists[customTextBoxColumn.ListType]);
                         values.SetValue(itemValue, columnIndex);
                     }
                     else if (column is DataGridViewTextBoxColumn)
@@ -177,7 +178,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
                 {
                     this.Rows.Add(values);
                 });
-            });
+            }
             #endregion
 
             #region Create Button
@@ -242,5 +243,13 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             }
         }
         #endregion
+        
+        private async Task AddImportList(Type type)
+        {
+            if (!ImportLists.ContainsKey(type))
+            {
+                ImportLists.Add(type, await API.GetAll(type));
+            }
+        }
     }
 }

@@ -44,18 +44,12 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns
         /// <param name="value">Value get from Entity based on column name.</param>
         /// <param name="lists"><see cref="DataGridViewBuilder.ImportLists">DataGridViewBuilder.ImportLists</see></param>
         /// <returns>Last content of cell</returns>
-        public object Use(object value, Dictionary<Type, List<IEntity>> lists)
+        public object Use(object value, List<IEntity> list)
         {
             #region Controls
             if (ListType == null)
             {
                 BuilderDebug.Error("ListType was null.");
-                return null;
-            }
-
-            if (!lists.ContainsKey(ListType))
-            {
-                BuilderDebug.Error("ListType was not found in DataGridView.ImportLists");
                 return null;
             }
 
@@ -72,7 +66,14 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns
             }
             #endregion
 
-            IEntity entity = lists[ListType].Find(findEntity => findEntity.GetType().GetProperty(this.FindProperty).GetValue(findEntity).Equals(value));
+            IEntity entity = list
+                .Find(findEntity => 
+                    findEntity
+                        .GetType()
+                        .GetProperty(this.FindProperty)
+                        .GetValue(findEntity)
+                        .Equals(value)
+                    );
 
             if (entity != null)
             {
