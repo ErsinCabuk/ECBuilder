@@ -67,7 +67,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns
             #endregion
 
             IEntity entity = list
-                .Find(findEntity => 
+                .Find(findEntity =>
                     findEntity
                         .GetType()
                         .GetProperty(this.FindProperty)

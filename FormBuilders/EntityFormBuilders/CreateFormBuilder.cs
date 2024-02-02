@@ -19,7 +19,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
             LoadEvent += CreateFormBuilder_LoadEvent;
         }
 
-        public async Task CreateFormBuilder_LoadEvent()
+        private async Task CreateFormBuilder_LoadEvent()
         {
             if (Entity == null)
             {
@@ -54,6 +54,10 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
             if (!ImportLists.ContainsKey(type))
             {
                 ImportLists.Add(type, await API.GetAll(type));
+            }
+            else
+            {
+                BuilderDebug.Warn($"{type.Name} already contains in CreateFormBuilder.ImportLists");
             }
         }
     }

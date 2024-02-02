@@ -20,7 +20,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
         }
 
         #region Events
-        public async Task InfoFormBuilder_LoadEvent()
+        private async Task InfoFormBuilder_LoadEvent()
         {
             if (Entity == null)
             {
@@ -96,12 +96,18 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 }
             }
         }
+        #endregion
 
+        #region Methods
         private async Task AddImportList(Type type)
         {
             if (!ImportLists.ContainsKey(type))
             {
                 ImportLists.Add(type, await API.GetAll(type));
+            }
+            else
+            {
+                BuilderDebug.Warn($"{type.Name} already contains in InfoFormBuilder.ImportLists");
             }
         }
         #endregion

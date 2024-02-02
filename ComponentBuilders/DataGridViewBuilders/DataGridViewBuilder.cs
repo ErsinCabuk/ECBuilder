@@ -243,12 +243,16 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             }
         }
         #endregion
-        
+
         private async Task AddImportList(Type type)
         {
             if (!ImportLists.ContainsKey(type))
             {
                 ImportLists.Add(type, await API.GetAll(type));
+            }
+            else
+            {
+                BuilderDebug.Warn($"{type.Name} already contains in DataGridViewBuilder.ImportLists");
             }
         }
     }

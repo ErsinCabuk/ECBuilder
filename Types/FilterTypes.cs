@@ -27,8 +27,14 @@
         /// </summary>
         LessThanOrEqual,
 
+        /// <summary>
+        /// Entered array and Entity value equal
+        /// </summary>
         EqualArray,
 
+        /// <summary>
+        /// Entered array and not entity value equal
+        /// </summary>
         NotEqualArray
     }
 }

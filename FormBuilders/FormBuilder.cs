@@ -64,7 +64,7 @@ namespace ECBuilder.FormBuilders
                 {
                     if (ImportLists.ContainsKey(type))
                     {
-                        BuilderDebug.Warn("Given type in ImportListDefinitions is also contains in ImportLists.");
+                        BuilderDebug.Warn($"{type.Name} already contains in FormBuilder.ImportLists.");
                         continue;
                     }
 
