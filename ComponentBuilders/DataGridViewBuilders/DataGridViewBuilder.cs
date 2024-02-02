@@ -6,9 +6,11 @@ using ECBuilder.Helpers;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using ECBuilder.Types;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -120,11 +122,19 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             #endregion
 
             #region Import
+            foreach (DataGridViewColumn dataGridViewColumn in this.Columns)
+            {
+                if (dataGridViewColumn is DataGridViewCustomTextBoxColumn customTextBoxColumn)
+                {
+                    await AddImportList(customTextBoxColumn.ListType);
+                }
+            }
+
             if (ImportListDefinition != null && ImportListDefinition.Count > 0)
             {
                 foreach (Type type in ImportListDefinition)
                 {
-                    ImportLists.Add(type, await API.GetAll(type, 1));
+                    await AddImportList(type);
                 }
             }
 
@@ -160,7 +170,6 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
 
                     if (column is DataGridViewCustomTextBoxColumn customTextBoxColumn)
                     {
-                        await AddImportList(customTextBoxColumn.ListType);
                         itemValue = customTextBoxColumn.Use(itemValue, ImportLists[customTextBoxColumn.ListType]);
                         values.SetValue(itemValue, columnIndex);
                     }

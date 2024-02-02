@@ -6,6 +6,7 @@ using ECBuilder.Types;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -61,8 +62,8 @@ namespace ECBuilder.Components.ComboBoxes
         {
             #region Controls
             if (!((FormBuilder)this.FindForm()).ImportLists.ContainsKey(EntityType))
-            {
-                BuilderDebug.Error($"There were no lists of type {EntityType.Name} in ImportLists.");
+            { 
+                BuilderDebug.Error($"{EntityType.Name} not contains in CustomComboBox.ImportLists.");
                 return;
             }
             #endregion

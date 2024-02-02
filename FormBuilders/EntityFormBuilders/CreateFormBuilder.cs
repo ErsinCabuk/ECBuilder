@@ -3,6 +3,7 @@ using ECBuilder.Components.TextBoxes;
 using ECBuilder.DataAccess;
 using ECBuilder.Test;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -27,6 +28,11 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 return;
             }
 
+            foreach (CustomComboBox customComboBox in UsingControls.OfType<CustomComboBox>())
+            {
+                await AddImportList(customComboBox.EntityType);
+            }
+
             foreach (Control control in UsingControls)
             {
                 PropertyInfo property = Entity.GetType().GetProperty(control.Name);
@@ -43,7 +49,6 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 }
                 else if (control is CustomComboBox customComboBox)
                 {
-                    await AddImportList(customComboBox.EntityType);
                     await customComboBox.Import();
                 }
             }
