@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace ECBuilder.ComponentBuilders
 {
-    public interface IComponentBuilder
+    public interface IComponentBuilder : IComponentEntityType
     {
         /// <summary>
         /// Form that will open when <see cref="IEntity">Entity</see> information is displayed or edited in the Component. Must be of type <see cref="EntityFormBuilder">FormBuilder</see>.
@@ -29,11 +29,6 @@ namespace ECBuilder.ComponentBuilders
         /// Event to be run when <see cref="CreateForm">CreateForm</see> is closed.
         /// </summary>
         Func<DialogResult, Task> CreateFormCloseEvent { get; set; }
-
-        /// <summary>
-        /// Entity type to be import in Component. Must be of type <see cref="IEntity">IEntity</see>
-        /// </summary>
-        Type EntityType { get; set; }
 
         /// <summary>
         /// 

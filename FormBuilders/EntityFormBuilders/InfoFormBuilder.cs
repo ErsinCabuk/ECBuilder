@@ -1,8 +1,11 @@
-﻿using ECBuilder.Components.ComboBoxes;
+﻿using ECBuilder.ComponentBuilders;
+using ECBuilder.Components.ComboBoxes;
 using ECBuilder.Components.TextBoxes;
 using ECBuilder.DataAccess;
+using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -28,25 +31,30 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 return;
             }
 
+            foreach (IComponentEntityType componentEntityType in UsingControls.OfType<IComponentEntityType>())
+            {
+                await AddImportList(componentEntityType.EntityType);
+            }
+
             foreach (Control control in UsingControls)
             {
+                await Console.Out.WriteLineAsync(control.Name + " 1");
                 PropertyInfo property = Entity.GetType().GetProperty(control.Name);
-                if (property == null && !control.Tag.ToString().Contains("notProperty"))
+                object value = null;
+                if (property != null)
                 {
-                    BuilderDebug.Error(this.DesignMode, $"{control.Name} property was not found in the {this.Name} form");
-                    continue;
+                    value = property.GetValue(Entity);
                 }
 
-                object value = property.GetValue(Entity);
-                if (value == null)
-                {
-                    continue;
-                }
+                //if (property == null && !control.Tag.ToString().Contains("notProperty"))
+                //{
+                //    BuilderDebug.Error(this.DesignMode, $"{control.Name} property was not found in the {this.Name} form");
+                //    continue;
+                //}
 
                 if (control is ComponentBuilderTextBox componentBuilderTextBox)
                 {
                     await componentBuilderTextBox.Import();
-                    await AddImportList(componentBuilderTextBox.EntityType);
                     componentBuilderTextBox.SetSelectedEntity(value);
                 }
                 else if (control is TextBox || control is RichTextBox)
@@ -91,8 +99,12 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 }
                 else if (control is CustomComboBox customComboBox)
                 {
-                    await AddImportList(customComboBox.EntityType);
                     await customComboBox.Import(value);
+                }
+                else if (control is IComponentBuilder componentBuilder)
+                {
+                    await Console.Out.WriteLineAsync("2");
+                    await componentBuilder.Import(this.ImportLists[componentBuilder.EntityType]);
                 }
             }
         }

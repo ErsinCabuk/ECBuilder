@@ -41,14 +41,30 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
         /// Controls to be used in the form and included in the process.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<Control> UsingControls { get; set; }
+        public List<Control> UsingControls { get; set; } = new List<Control>();
         #endregion
 
         private Task EntityFormBuilder_BeforeLoadEvent()
         {
+            void GetControls(Control control)
+            {
+                foreach (Control forControl in control.Controls)
+                {
+                    if ((forControl.Tag != null) && forControl.Tag.ToString().Contains("use"))
+                    {
+                        UsingControls.Add(forControl);
+                    }
+
+                    if (forControl.HasChildren)
+                    {
+                        GetControls(forControl);
+                    }
+                }
+            }
+
             return Task.Run(() =>
             {
-                UsingControls = this.Controls.Cast<Control>().Where(whereControl => (whereControl.Tag != null) && (whereControl.Tag.ToString().Split(',').Select(tag => tag.Trim()).Contains("use"))).ToList();
+                GetControls(this);
                 UsingControls.Sort((a, b) => a.TabIndex.CompareTo(b.TabIndex));
             });
         }

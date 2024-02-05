@@ -6,11 +6,9 @@ using ECBuilder.Helpers;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using ECBuilder.Types;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Common;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 

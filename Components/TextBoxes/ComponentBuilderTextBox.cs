@@ -132,7 +132,6 @@ namespace ECBuilder.Components.TextBoxes
 
                 ComponentBuilderFormBuilder.ComponentBuilder = ComponentBuilder;
                 ComponentBuilder.Filters = this.Filters;
-                EntityType = ComponentBuilder.EntityType;
 
                 if (string.IsNullOrEmpty(DisplayProperty)) DisplayProperty = $"{ComponentBuilder.EntityType.Name}Name";
                 if (string.IsNullOrEmpty(ValueProperty)) ValueProperty = $"{ComponentBuilder.EntityType.Name}ID";

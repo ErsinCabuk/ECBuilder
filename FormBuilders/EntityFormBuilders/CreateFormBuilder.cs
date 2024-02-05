@@ -1,10 +1,11 @@
-﻿using ECBuilder.Components.ComboBoxes;
+﻿using ECBuilder.ComponentBuilders;
+using ECBuilder.Components.ComboBoxes;
 using ECBuilder.Components.TextBoxes;
 using ECBuilder.DataAccess;
+using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using System;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -28,28 +29,24 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 return;
             }
 
-            foreach (CustomComboBox customComboBox in UsingControls.OfType<CustomComboBox>())
+            foreach (IComponentEntityType componentEntityType in UsingControls.OfType<IComponentEntityType>())
             {
-                await AddImportList(customComboBox.EntityType);
+                await AddImportList(componentEntityType.EntityType);
             }
 
             foreach (Control control in UsingControls)
             {
-                PropertyInfo property = Entity.GetType().GetProperty(control.Name);
-                if (property == null && !control.Tag.ToString().Contains("notProperty"))
-                {
-                    BuilderDebug.Error($"{control.Name} property was not found in the {this.Name} form");
-                    continue;
-                }
-
                 if (control is ComponentBuilderTextBox componentBuilderTextBox)
                 {
                     await componentBuilderTextBox.Import();
-                    await AddImportList(componentBuilderTextBox.EntityType);
                 }
                 else if (control is CustomComboBox customComboBox)
                 {
                     await customComboBox.Import();
+                }
+                else if (control is IComponentBuilder componentBuilder)
+                {
+                    await componentBuilder.Import(this.ImportLists[componentBuilder.EntityType]);
                 }
             }
         }
