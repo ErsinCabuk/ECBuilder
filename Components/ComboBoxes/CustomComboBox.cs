@@ -34,6 +34,13 @@ namespace ECBuilder.Components.ComboBoxes
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<IEntity> EntityList { get; set; } = new List<IEntity>();
 
+
+        /// <summary>
+        /// ComboBox Items List
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<IEntity> AddList { get; set; } = new List<IEntity>();
+
         /// <summary>
         /// Entities in <see cref="EntityList"/> are sorted according to DisplayMember.
         /// </summary>
@@ -69,26 +76,29 @@ namespace ECBuilder.Components.ComboBoxes
 
             #region Import Confs
             this.Items.Clear();
+            EntityList.Clear();
 
             if (string.IsNullOrEmpty(DisplayMember)) DisplayMember = $"{EntityType.Name}Name";
             if (string.IsNullOrEmpty(ValueMember)) ValueMember = $"{EntityType.Name}ID";
             #endregion
 
+            List<IEntity> list = new List<IEntity>();
+
             #region Import
-            EntityList = ((FormBuilder)this.FindForm()).ImportLists[EntityType];
+            list = ((FormBuilder)this.FindForm()).ImportLists[EntityType];
             #endregion
 
             #region Filters
             if (Filters.Count > 0)
             {
-                EntityList = ListHelper.Filter(EntityList, Filters);
+                list = ListHelper.Filter(list, Filters);
             }
             #endregion
 
             #region Sort
             if (SortType is SortTypes.Ascending)
             {
-                EntityList.Sort((x, y) =>
+                list.Sort((x, y) =>
                     string.Compare(
                         x.GetType().GetProperty(DisplayMember).GetValue(x).ToString(),
                         y.GetType().GetProperty(DisplayMember).GetValue(y).ToString(),
@@ -98,7 +108,7 @@ namespace ECBuilder.Components.ComboBoxes
             }
             else if (SortType is SortTypes.Descending)
             {
-                EntityList.Sort((x, y) =>
+                list.Sort((x, y) =>
                         string.Compare(
                             y.GetType().GetProperty(DisplayMember).GetValue(y).ToString(),
                             x.GetType().GetProperty(DisplayMember).GetValue(x).ToString(),
@@ -107,6 +117,9 @@ namespace ECBuilder.Components.ComboBoxes
                     );
             }
             #endregion
+
+            EntityList.AddRange(AddList);
+            EntityList.AddRange(list);
 
             #region Adding Items
             EntityList.ForEach(entity => this.Items.Add(entity));

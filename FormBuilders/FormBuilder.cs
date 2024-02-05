@@ -50,13 +50,6 @@ namespace ECBuilder.FormBuilders
         {
             CheckForIllegalCrossThreadCalls = false;
 
-            #region BeforeLoadEvent
-            if (BeforeLoadEvent != null)
-            {
-                await BeforeLoadEvent();
-            }
-            #endregion
-
             #region Import Lists
             if (ImportListDefinitions != null && ImportListDefinitions.Count > 0)
             {
@@ -70,6 +63,13 @@ namespace ECBuilder.FormBuilders
 
                     ImportLists.Add(type, await API.GetAll(type, 1));
                 }
+            }
+            #endregion
+
+            #region BeforeLoadEvent
+            if (BeforeLoadEvent != null)
+            {
+                await BeforeLoadEvent();
             }
             #endregion
 
