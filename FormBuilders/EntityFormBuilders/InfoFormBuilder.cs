@@ -38,7 +38,6 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
 
             foreach (Control control in UsingControls)
             {
-                await Console.Out.WriteLineAsync(control.Name + " 1");
                 PropertyInfo property = Entity.GetType().GetProperty(control.Name);
                 object value = null;
                 if (property != null)
@@ -103,7 +102,6 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 }
                 else if (control is IComponentBuilder componentBuilder)
                 {
-                    await Console.Out.WriteLineAsync("2");
                     await componentBuilder.Import(this.ImportLists[componentBuilder.EntityType]);
                 }
             }

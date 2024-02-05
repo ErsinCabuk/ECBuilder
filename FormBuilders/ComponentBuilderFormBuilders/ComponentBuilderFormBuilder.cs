@@ -29,19 +29,14 @@ namespace ECBuilder.FormBuilders.ComponentBuilderFormBuilders
         public async Task ComponentBuilderFormBuilder_LoadEvent()
         {
             Control[] findControl = this.Controls.Find("componentBuilderPanel", true);
-            await Console.Out.WriteLineAsync(findControl.Select(x => x.Name).ToString());
-            if (findControl.Length == 0)
-            {
-                BuilderDebug.Error("componentBuilderPanel Panel was not found");
-                return;
-            }
+
             Panel panel = (Panel)findControl[0];
             FormBuilder ownerFormBuilder = (FormBuilder)this.Owner;
 
             #region Controls
-            if (panel == null)
+            if (findControl.Length == 0)
             {
-                BuilderDebug.Error("ComponentBuilderFormBuilder componentBuilderPanel was not found.");
+                BuilderDebug.Error("componentBuilderPanel Panel was not found");
                 return;
             }
 
@@ -53,6 +48,7 @@ namespace ECBuilder.FormBuilders.ComponentBuilderFormBuilders
             #endregion
 
             panel.Controls.Add((Control)ComponentBuilder);
+
             await ComponentBuilder.Import(ownerFormBuilder.ImportLists[ComponentBuilder.EntityType]);
         }
     }

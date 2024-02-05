@@ -14,7 +14,13 @@ namespace ECBuilder.Test
         /// <param name="message">Message</param>
         public static void Error(string message)
         {
-            Debug.WriteLine(message);
+            Debug.WriteLine(
+                "----------ECBuilder Error----------" +
+                "\n"                                  +
+                message                               +
+                "\n"                                  +
+                "----------ECBuilder Error----------"
+            );
         }
 
         /// <summary>
@@ -30,13 +36,25 @@ namespace ECBuilder.Test
             }
             else
             {
-                Debug.WriteLine(message);
+                Debug.WriteLine(
+                    "----------ECBuilder Error----------" +
+                    "\n"                                  +
+                    message                               +
+                    "\n"                                  +
+                    "----------ECBuilder Error----------"
+                );
             }
         }
 
         public static void Warn(string message)
         {
-            Console.WriteLine(message);
+            Console.WriteLine(
+                "----------ECBuilder Warning----------" +
+                "\n"                                    +
+                message                                 +
+                "\n"                                    +
+                "----------ECBuilder Warning----------"
+            );
         }
 
         public static void Warn(bool designMode, string message)
@@ -47,7 +65,13 @@ namespace ECBuilder.Test
             }
             else
             {
-                Console.WriteLine(message);
+                Console.WriteLine(
+                    "----------ECBuilder Warning----------" +
+                    "\n"                                    +
+                    message                                 +
+                    "\n"                                    +
+                    "----------ECBuilder Warning----------"
+                );
             }
         }
     }
