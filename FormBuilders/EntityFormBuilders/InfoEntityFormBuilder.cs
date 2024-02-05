@@ -15,15 +15,15 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
     /// <summary>
     /// An entitys information form.
     /// </summary>
-    public class InfoFormBuilder : EntityFormBuilder
+    public class InfoEntityFormBuilder : EntityFormBuilder
     {
-        public InfoFormBuilder()
+        public InfoEntityFormBuilder()
         {
             LoadEvent += InfoFormBuilder_LoadEvent;
         }
 
         #region Events
-        private async Task InfoFormBuilder_LoadEvent()
+        internal async Task InfoFormBuilder_LoadEvent()
         {
             if (Entity == null)
             {

@@ -14,9 +14,9 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
     /// <summary>
     /// Form that creates an entity.
     /// </summary>
-    public class CreateFormBuilder : EntityFormBuilder
+    public class CreateEntityFormBuilder : EntityFormBuilder
     {
-        public CreateFormBuilder()
+        public CreateEntityFormBuilder()
         {
             LoadEvent += CreateFormBuilder_LoadEvent;
         }

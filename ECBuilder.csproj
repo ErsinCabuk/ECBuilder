@@ -83,19 +83,22 @@
     <Compile Include="FormBuilders\ComponentBuilderFormBuilders\ComponentBuilderFormBuilder.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormBuilders\EntityFormBuilders\CreateFormBuilder.cs">
+    <Compile Include="FormBuilders\EntityFormBuilders\CreateEntityFormBuilder.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormBuilders\FormBuilder.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormBuilders\EntityFormBuilders\InfoFormBuilder.cs">
+    <Compile Include="FormBuilders\EntityFormBuilders\InfoEntityFormBuilder.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormBuilders\EntityFormBuilders\EntityFormBuilder.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ECBuilderSettings.cs" />
+    <Compile Include="FormBuilders\ParentFormBuilders\ParentFormBuilder.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Helpers\AssetsHelper.cs" />
     <Compile Include="Components\MessageBoxes.cs" />
     <Compile Include="Helpers\ListHelper.cs" />
@@ -109,5 +112,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

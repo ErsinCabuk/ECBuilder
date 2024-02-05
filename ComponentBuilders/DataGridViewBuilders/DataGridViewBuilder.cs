@@ -83,7 +83,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
                     return;
                 }
 
-                if (!InfoForm.IsSubclassOf(typeof(InfoFormBuilder)))
+                if (!InfoForm.IsSubclassOf(typeof(InfoEntityFormBuilder)))
                 {
                     BuilderDebug.Error("InfoForm was not InfoFormBuilder.");
                     return;
@@ -206,14 +206,14 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
                 return;
             }
 
-            if (!CreateForm.IsSubclassOf(typeof(CreateFormBuilder)))
+            if (!CreateForm.IsSubclassOf(typeof(CreateEntityFormBuilder)))
             {
                 BuilderDebug.Error("CreateForm was not CreateFormBuilder.");
                 return;
             }
             #endregion
 
-            CreateFormBuilder createForm = (CreateFormBuilder)Activator.CreateInstance(CreateForm);
+            CreateEntityFormBuilder createForm = (CreateEntityFormBuilder)Activator.CreateInstance(CreateForm);
             createForm.Entity = CreateEntityType == null
                                 ? (IEntity)Activator.CreateInstance(EntityType)
                                 : (IEntity)Activator.CreateInstance(CreateEntityType);
@@ -233,7 +233,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
 
         public async void ShowInfoForm(IEntity entity)
         {
-            InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
+            InfoEntityFormBuilder infoForm = (InfoEntityFormBuilder)Activator.CreateInstance(InfoForm);
 
             infoForm.Entity = entity;
             infoForm.ComponentBuilder = this;

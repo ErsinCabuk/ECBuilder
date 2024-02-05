@@ -80,7 +80,7 @@ namespace ECBuilder.ComponentBuilders
         void ShowInfoForm(IEntity entity);
 
         /// <summary>
-        /// Button that will open the <see cref="FormBuilders.EntityFormBuilders.CreateFormBuilder">Entity Create Form</see>. If it is null, the form will not open.
+        /// Button that will open the <see cref="FormBuilders.EntityFormBuilders.CreateEntityFormBuilder">Entity Create Form</see>. If it is null, the form will not open.
         /// </summary>
         IButtonControl CreateButton { get; set; }
     }

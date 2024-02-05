@@ -77,7 +77,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
                     return;
                 }
 
-                if (!InfoForm.IsSubclassOf(typeof(InfoFormBuilder)))
+                if (!InfoForm.IsSubclassOf(typeof(InfoEntityFormBuilder)))
                 {
                     BuilderDebug.Error("InfoForm was not InfoFormBuilder.");
                     return;
@@ -194,7 +194,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
 
         public async void ShowInfoForm(IEntity entity)
         {
-            InfoFormBuilder infoForm = (InfoFormBuilder)Activator.CreateInstance(InfoForm);
+            InfoEntityFormBuilder infoForm = (InfoEntityFormBuilder)Activator.CreateInstance(InfoForm);
             infoForm.Entity = entity;
             infoForm.ComponentBuilder = this;
             DialogResult dialogResult = infoForm.ShowDialog(this);
@@ -218,13 +218,13 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
                 return;
             }
 
-            if (!CreateForm.IsSubclassOf(typeof(CreateFormBuilder)))
+            if (!CreateForm.IsSubclassOf(typeof(CreateEntityFormBuilder)))
             {
                 BuilderDebug.Error("CreateForm was not CreateFormBuilder.");
                 return;
             }
 
-            CreateFormBuilder createForm = (CreateFormBuilder)Activator.CreateInstance(CreateForm);
+            CreateEntityFormBuilder createForm = (CreateEntityFormBuilder)Activator.CreateInstance(CreateForm);
 
             createForm.Entity = CreateEntityType == null
                                 ? (IEntity)Activator.CreateInstance(EntityType)
