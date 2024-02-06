@@ -45,13 +45,13 @@ namespace ECBuilder.Components.TextBoxes
         public object SelectedValue { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<bool> BeforeControlClickEvent { get; set; }
+        public event Func<bool> BeforeControlClickEvent;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<IEntity, bool> AfterControlClickEvent { get; set; }
+        public event Func<IEntity, bool> AfterControlClickEvent;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<Task> SelectedEntityChanged { get; set; }
+        public event Func<Task> SelectedEntityChanged;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Dictionary<string, (FilterTypes, object)> Filters { get; set; } = new Dictionary<string, (FilterTypes, object)>();

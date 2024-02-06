@@ -50,7 +50,7 @@ namespace ECBuilder.Components.ComboBoxes
         /// Selected Entity Changed Event
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<IEntity, Task> SelectedEntityChanged { get; set; }
+        public event Func<IEntity, Task> SelectedEntityChanged;
 
         /// <summary>
         /// Filters

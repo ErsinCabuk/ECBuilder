@@ -16,7 +16,7 @@ namespace ECBuilder.FormBuilders.ComponentBuilderFormBuilders
     {
         public ComponentBuilderFormBuilder()
         {
-            this.LoadEvent = ComponentBuilderFormBuilder_LoadEvent;
+            this.LoadEvent += ComponentBuilderFormBuilder_LoadEvent;
         }
 
         #region Properties

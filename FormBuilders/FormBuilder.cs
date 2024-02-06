@@ -19,13 +19,13 @@ namespace ECBuilder.FormBuilders
         /// Event to run before the main load event. 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<Task> BeforeLoadEvent { get; set; }
+        public event Func<Task> BeforeLoadEvent;
 
         /// <summary>
         /// Event to run after the main load event. 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<Task> AfterLoadEvent { get; set; }
+        public event Func<Task> AfterLoadEvent;
 
         /// <summary>
         /// Imported lists. The key gives the type of the list and the value gives the list.
@@ -42,7 +42,7 @@ namespace ECBuilder.FormBuilders
         #endregion
 
         #region Private Properties
-        internal Func<Task> LoadEvent { get; set; }
+        internal event Func<Task> LoadEvent;
         #endregion
 
         #region Events

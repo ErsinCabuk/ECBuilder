@@ -21,24 +21,24 @@ namespace ECBuilder.Components.Buttons
         /// Method that will work before the button does its main method. If the method returns <see langword="true"/>, the button starts main method. If it returns <see langword="false"/>, not starts main method.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<bool> ControlClickEvent { get; set; }
+        public event Func<bool> ControlClickEvent;
 
         /// <summary>
         /// Method to be run before the main method of the button runs.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<Task> BeforeRunClickEvent { get; set; }
+        public event Func<Task> BeforeRunClickEvent;
 
         /// <summary>
         /// Method to be run after the main method of the button runs.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<int, Task> AfterRunClickEvent { get; set; }
+        public event Func<int, Task> AfterRunClickEvent;
         #endregion
 
         #region Parameters
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        internal Func<Task> ClickEvent { get; set; }
+        internal event Func<Task> ClickEvent;
         #endregion
 
         #region Events

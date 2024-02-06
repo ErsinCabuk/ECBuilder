@@ -32,10 +32,10 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
         public Type CreateForm { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<DialogResult, Task> InfoFormCloseEvent { get; set; }
+        public event Func<DialogResult, Task> InfoFormCloseEvent;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Func<DialogResult, Task> CreateFormCloseEvent { get; set; }
+        public event Func<DialogResult, Task> CreateFormCloseEvent;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type EntityType { get; set; }

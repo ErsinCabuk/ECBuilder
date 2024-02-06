@@ -23,12 +23,12 @@ namespace ECBuilder.ComponentBuilders
         /// <summary>
         /// Event to be run when <see cref="InfoForm">InfoForm</see> is closed.
         /// </summary>
-        Func<DialogResult, Task> InfoFormCloseEvent { get; set; }
+        event Func<DialogResult, Task> InfoFormCloseEvent;
 
         /// <summary>
         /// Event to be run when <see cref="CreateForm">CreateForm</see> is closed.
         /// </summary>
-        Func<DialogResult, Task> CreateFormCloseEvent { get; set; }
+        event Func<DialogResult, Task> CreateFormCloseEvent;
 
         /// <summary>
         /// 
