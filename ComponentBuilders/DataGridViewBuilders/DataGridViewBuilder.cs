@@ -20,11 +20,6 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
     /// </summary>
     public class DataGridViewBuilder : DataGridView, IComponentBuilder
     {
-        public DataGridViewBuilder()
-        {
-
-        }
-
         #region Properties
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type InfoForm { get; set; }
@@ -51,7 +46,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
         public List<IEntity> AddList { get; set; } = new List<IEntity>();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<Type> ImportListDefinition { get; set; }
+        public List<Type> ImportListDefinition { get; set; } = new List<Type>();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ImportLists ImportLists { get; set; } = new ImportLists();
@@ -66,8 +61,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
         /// </summary>
         public bool AutoAddIDColumn { get; set; } = true;
 
-        [DefaultValue(null)]
-        public IButtonControl CreateButton { get; set; }
+        public IButtonControl CreateButton { get; set; } = null;
         #endregion
 
         #region Events
@@ -102,99 +96,6 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
         #endregion
 
         #region Methods
-        public async Task Import(List<IEntity> list = null)
-        {
-            #region Import Configurations
-            this.Rows.Clear();
-            ImportLists.Clear();
-            EntityList.Clear();
-
-            if (AutoAddIDColumn && !this.Columns.Contains($"{EntityType.Name}ID"))
-            {
-                this.Columns.Add(new DataGridViewTextBoxColumn
-                {
-                    Name = $"{EntityType.Name}ID",
-                    HeaderText = "ID",
-                    Visible = false,
-                });
-            }
-            #endregion
-
-            #region Import
-            foreach (IComponentEntityType componentEntityType in this.Columns.OfType<IComponentEntityType>())
-            {
-                ImportLists.Add(componentEntityType.EntityType, await API.GetAll(componentEntityType.EntityType));
-            }
-
-            if (ImportListDefinition != null && ImportListDefinition.Count > 0)
-            {
-                foreach (Type type in ImportListDefinition)
-                {
-                    ImportLists.Add(type, await API.GetAll(type));
-                }
-            }
-
-            if (list == null)
-            {
-                EntityList.AddRange(AddList);
-                EntityList.AddRange(await API.GetAll(EntityType, 1));
-            }
-            else
-            {
-                EntityList.AddRange(AddList);
-                EntityList.AddRange(list);
-            }
-            #endregion
-
-            #region Filter
-            if (Filters.Count > 0)
-            {
-                EntityList = ListHelper.Filter(EntityList, Filters);
-            }
-            #endregion
-
-            #region Adding Rows
-            foreach (IEntity entity in EntityList)
-            {
-                object[] values = new object[this.ColumnCount];
-
-                for (int columnIndex = 0; columnIndex < this.ColumnCount; columnIndex++)
-                {
-                    DataGridViewColumn column = this.Columns[columnIndex];
-
-                    object itemValue = entity.GetType().GetProperty(column.Name).GetValue(entity);
-
-                    if (column is DataGridViewCustomTextBoxColumn customTextBoxColumn)
-                    {
-                        itemValue = customTextBoxColumn.Use(itemValue, ImportLists[customTextBoxColumn.EntityType]);
-                        values.SetValue(itemValue, columnIndex);
-                    }
-                    else if (column is DataGridViewTextBoxColumn)
-                    {
-                        values.SetValue(itemValue, columnIndex);
-                    }
-                    else if (column is DataGridViewImageColumn)
-                    {
-                        values.SetValue(AssetsHelper.GetImage(itemValue.ToString(), false, true), columnIndex);
-                    }
-                }
-
-                this.BeginInvoke((MethodInvoker)delegate
-                {
-                    this.Rows.Add(values);
-                });
-            }
-            #endregion
-
-            #region Create Button
-            if (this.CreateButton != null)
-            {
-                ((Button)this.CreateButton).Click -= CreateButton_Click;
-                ((Button)this.CreateButton).Click += CreateButton_Click;
-            }
-            #endregion
-        }
-
         public async void ShowCreateForm()
         {
             #region Controls
@@ -246,6 +147,149 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             {
                 await this.Import();
             }
+        }
+
+        public async Task Initialize(List<IEntity> list = null)
+        {
+            #region Auto Add ID Column
+            if (AutoAddIDColumn)
+            {
+                if(this.Columns.Contains($"{EntityType.Name}ID"))
+                {
+                    BuilderDebug.Warn($"{this.Name} is already containt ID column.");
+                    return;
+                }
+
+                this.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = $"{EntityType.Name}ID",
+                    HeaderText = "ID",
+                    Visible = false,
+                });
+            }
+            #endregion
+
+            #region Import
+            foreach (IComponentEntityType componentEntityType in this.Columns.OfType<IComponentEntityType>().Where(x => !ImportLists.ContainsKey(x.EntityType)))
+            {
+                ImportLists.Add(componentEntityType.EntityType, await API.GetAll(componentEntityType.EntityType));
+            }
+
+            foreach (Type type in ImportListDefinition)
+            {
+                if (!ImportLists.ContainsKey(type))
+                {
+                    ImportLists.Add(type, await API.GetAll(type));
+                }
+                else
+                {
+                    BuilderDebug.Warn($"DataGridViewBuilder.ImportListDefinition.{type.Name} is already contains in DataGridViewBuilder.ImportLists");
+                }
+            }
+
+            if (list == null)
+            {
+                EntityList.AddRange(AddList);
+                EntityList.AddRange(await API.GetAll(EntityType, 1));
+            }
+            else
+            {
+                EntityList.AddRange(AddList);
+                EntityList.AddRange(list);
+            }
+            #endregion
+
+            #region Filters
+            if (Filters.Count > 0)
+            {
+                EntityList = ListHelper.Filter(EntityList, Filters);
+            }
+            #endregion
+
+            #region Add Rows
+            await AddRows();
+            #endregion
+
+            #region Create Button
+            if (this.CreateButton != null)
+            {
+                ((Button)this.CreateButton).Click += CreateButton_Click;
+            }
+            #endregion
+        }
+
+        public async Task Import(List<IEntity> list = null)
+        {
+            #region Import Confs
+            this.Rows.Clear();
+            EntityList.Clear();
+            #endregion
+
+            #region Import
+            foreach (Type type in ImportLists.Keys.ToArray())
+            {
+                ImportLists[type] = await API.GetAll(type);
+            }
+
+            if (list == null)
+            {
+                EntityList.AddRange(AddList);
+                EntityList.AddRange(await API.GetAll(EntityType, 1));
+            }
+            else
+            {
+                EntityList.AddRange(AddList);
+                EntityList.AddRange(list);
+            }
+            #endregion
+
+            #region Filters
+            if (Filters.Count > 0)
+            {
+                EntityList = ListHelper.Filter(EntityList, Filters);
+            }
+            #endregion
+
+            #region Add Rows
+            await AddRows();
+            #endregion
+        }
+
+        private Task AddRows()
+        {
+            return Task.Run(() =>
+            {
+                foreach (IEntity entity in EntityList)
+                {
+                    object[] values = new object[this.ColumnCount];
+
+                    for (int columnIndex = 0; columnIndex < this.ColumnCount; columnIndex++)
+                    {
+                        DataGridViewColumn column = this.Columns[columnIndex];
+
+                        object itemValue = entity.GetType().GetProperty(column.Name).GetValue(entity);
+
+                        if (column is DataGridViewCustomTextBoxColumn customTextBoxColumn)
+                        {
+                            itemValue = customTextBoxColumn.Use(itemValue, ImportLists[customTextBoxColumn.EntityType]);
+                            values.SetValue(itemValue, columnIndex);
+                        }
+                        else if (column is DataGridViewTextBoxColumn)
+                        {
+                            values.SetValue(itemValue, columnIndex);
+                        }
+                        else if (column is DataGridViewImageColumn)
+                        {
+                            values.SetValue(AssetsHelper.GetImage(itemValue.ToString(), false, true), columnIndex);
+                        }
+                    }
+
+                    this.BeginInvoke((MethodInvoker)delegate
+                    {
+                        this.Rows.Add(values);
+                    });
+                }
+            });
         }
         #endregion
     }

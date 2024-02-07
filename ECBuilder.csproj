@@ -48,6 +48,9 @@
   <ItemGroup>
     <Compile Include="Classes\ImportLists.cs" />
     <Compile Include="ComponentBuilders\DataGridViewBuilders\Columns\DataGridViewCustomTextBoxColumn.cs" />
+    <Compile Include="ComponentBuilders\DataGridViewBuilders\DataGridViewBuilder.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ComponentBuilders\IComponentBuilder.cs" />
     <Compile Include="ComponentBuilders\TreeViewBuilders\TreeViewBuilder.cs">
       <SubType>Component</SubType>
@@ -77,9 +80,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DataAccess\API.cs" />
-    <Compile Include="ComponentBuilders\DataGridViewBuilders\DataGridViewBuilder.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="FormBuilders\ComponentBuilderFormBuilders\ComponentBuilderFormBuilder.cs">
       <SubType>Form</SubType>
     </Compile>

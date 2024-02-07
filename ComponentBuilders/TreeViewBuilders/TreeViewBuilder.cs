@@ -45,7 +45,7 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         public List<IEntity> AddList { get; set; } = new List<IEntity>();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<Type> ImportListDefinition { get; set; }
+        public List<Type> ImportListDefinition { get; set; } = new List<Type>();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ImportLists ImportLists { get; set; } = new ImportLists();
@@ -97,14 +97,8 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         #endregion
 
         #region Methods
-        public async Task Import(List<IEntity> list = null)
+        public async Task Initialize(List<IEntity> list = null)
         {
-            #region Import Configurations
-            this.Nodes.Clear();
-            ImportLists.Clear();
-            EntityList.Clear();
-            #endregion
-
             #region Import
             if (ImportListDefinition != null && ImportListDefinition.Count > 0)
             {
@@ -133,62 +127,52 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
             }
             #endregion
 
-            #region Adding Nodes
-            if (UseSuperior)
-            {
-                foreach (IEntity entity in EntityList.Where(whereEntity => whereEntity.GetType().GetProperty($"{whereEntity.GetType().Name}SuperiorID").GetValue(whereEntity).Equals(0)))
-                {
-                    TreeNode treeNode = new TreeNode()
-                    {
-                        Name = entity.GetType().GetProperty($"{entity.GetType().Name}ID").GetValue(entity).ToString(),
-                        Text = entity.GetType().GetProperty($"{entity.GetType().Name}Name").GetValue(entity).ToString(),
-                        Tag = entity
-                    };
-
-                    //this.BeginInvoke((MethodInvoker)delegate
-                    //{
-                    this.Nodes.Add(treeNode);
-                    //});
-                }
-
-                foreach (IEntity entity in EntityList.Where(whereEntity => Convert.ToInt32(whereEntity.GetType().GetProperty($"{whereEntity.GetType().Name}SuperiorID").GetValue(whereEntity)) > 0))
-                {
-                    //this.BeginInvoke((MethodInvoker)delegate
-                    //{
-                    this.Nodes.Find(entity.GetType().GetProperty($"{entity.GetType().Name}SuperiorID").GetValue(entity).ToString(), true)[0].Nodes.Add(new TreeNode
-                    {
-                        Name = entity.GetType().GetProperty($"{entity.GetType().Name}ID").GetValue(entity).ToString(),
-                        Text = entity.GetType().GetProperty($"{entity.GetType().Name}Name").GetValue(entity).ToString(),
-                        Tag = entity
-                    });
-                    //});
-                }
-            }
-            else
-            {
-                foreach (IEntity entity in EntityList)
-                {
-                    TreeNode treeNode = new TreeNode()
-                    {
-                        Name = entity.GetType().GetProperty($"{entity.GetType().Name}ID").GetValue(entity).ToString(),
-                        Text = entity.GetType().GetProperty($"{entity.GetType().Name}Name").GetValue(entity).ToString(),
-                        Tag = entity
-                    };
-
-                    //this.BeginInvoke((MethodInvoker)delegate
-                    //{
-                    this.Nodes.Add(treeNode);
-                    //});
-                }
-            }
+            #region Add Nodes
+            await AddNodes();
             #endregion
 
             #region Create Button
             if (this.CreateButton != null)
             {
-                ((Button)this.CreateButton).Click -= CreateButton_Click;
                 ((Button)this.CreateButton).Click += CreateButton_Click;
             }
+            #endregion
+        }
+
+        public async Task Import(List<IEntity> list = null)
+        {
+            #region Import Configurations
+            this.Nodes.Clear();
+            EntityList.Clear();
+            #endregion
+
+            #region Import
+            foreach (Type type in ImportLists.Keys)
+            {
+                ImportLists[type] = await API.GetAll(type);
+            }
+
+            if (list == null)
+            {
+                EntityList.AddRange(AddList);
+                EntityList.AddRange(await API.GetAll(EntityType, 1));
+            }
+            else
+            {
+                EntityList.AddRange(AddList);
+                EntityList.AddRange(list);
+            }
+            #endregion
+
+            #region Filter
+            if (Filters.Count > 0)
+            {
+                EntityList = ListHelper.Filter(EntityList, Filters);
+            }
+            #endregion
+
+            #region Add Nodes
+            await AddNodes();
             #endregion
         }
 
@@ -241,6 +225,60 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
             {
                 await this.Import();
             }
+        }
+
+        private Task AddNodes()
+        {
+            return Task.Run(() =>
+            {
+                if (UseSuperior)
+                {
+                    foreach (IEntity entity in EntityList.Where(whereEntity => whereEntity.GetType().GetProperty($"{whereEntity.GetType().Name}SuperiorID").GetValue(whereEntity).Equals(0)))
+                    {
+                        TreeNode treeNode = new TreeNode()
+                        {
+                            Name = entity.GetType().GetProperty($"{entity.GetType().Name}ID").GetValue(entity).ToString(),
+                            Text = entity.GetType().GetProperty($"{entity.GetType().Name}Name").GetValue(entity).ToString(),
+                            Tag = entity
+                        };
+
+                        this.BeginInvoke((MethodInvoker)delegate
+                        {
+                            this.Nodes.Add(treeNode);
+                        });
+                    }
+
+                    foreach (IEntity entity in EntityList.Where(whereEntity => Convert.ToInt32(whereEntity.GetType().GetProperty($"{whereEntity.GetType().Name}SuperiorID").GetValue(whereEntity)) > 0))
+                    {
+                        this.BeginInvoke((MethodInvoker)delegate
+                        {
+                            this.Nodes.Find(entity.GetType().GetProperty($"{entity.GetType().Name}SuperiorID").GetValue(entity).ToString(), true)[0].Nodes.Add(new TreeNode
+                            {
+                                Name = entity.GetType().GetProperty($"{entity.GetType().Name}ID").GetValue(entity).ToString(),
+                                Text = entity.GetType().GetProperty($"{entity.GetType().Name}Name").GetValue(entity).ToString(),
+                                Tag = entity
+                            });
+                        });
+                    }
+                }
+                else
+                {
+                    foreach (IEntity entity in EntityList)
+                    {
+                        TreeNode treeNode = new TreeNode()
+                        {
+                            Name = entity.GetType().GetProperty($"{entity.GetType().Name}ID").GetValue(entity).ToString(),
+                            Text = entity.GetType().GetProperty($"{entity.GetType().Name}Name").GetValue(entity).ToString(),
+                            Tag = entity
+                        };
+
+                        this.BeginInvoke((MethodInvoker)delegate
+                        {
+                            this.Nodes.Add(treeNode);
+                        });
+                    }
+                }
+            });
         }
         #endregion
     }

@@ -69,6 +69,8 @@ namespace ECBuilder.ComponentBuilders
         /// <returns>awaitable Task</returns>
         Task Import(List<IEntity> list = null);
 
+        Task Initialize(List<IEntity> list = null);
+
         /// <summary>
         /// Method showing <see cref="CreateForm">CreateForm</see>.
         /// </summary>
