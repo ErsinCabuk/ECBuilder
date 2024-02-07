@@ -9,7 +9,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns
     /// <summary>
     /// Column type for <see cref="DataGridViewBuilder">DataGridViewBuilder</see> that can get cell content from another <see cref="IEntity">Entity</see>.
     /// </summary>
-    public class DataGridViewCustomTextBoxColumn : DataGridViewTextBoxColumn
+    public class DataGridViewCustomTextBoxColumn : DataGridViewTextBoxColumn, IComponentEntityType
     {
         public DataGridViewCustomTextBoxColumn()
         {
@@ -20,7 +20,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns
         /// <summary>
         /// Entity list type to be get from <see cref="DataGridViewBuilder.ImportLists">DataGridViewBuilder.ImportLists</see>.
         /// </summary>
-        public Type ListType { get; set; }
+        public Type EntityType { get; set; }
 
         /// <summary>
         /// Property name of the Entity to be found from Entity list.
@@ -47,9 +47,9 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns
         public object Use(object value, List<IEntity> list)
         {
             #region Controls
-            if (ListType == null)
+            if (EntityType == null)
             {
-                BuilderDebug.Error("ListType was null.");
+                BuilderDebug.Error("EntityType was null.");
                 return null;
             }
 

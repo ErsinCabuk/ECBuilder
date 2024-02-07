@@ -9,6 +9,7 @@ using ECBuilder.Types;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -108,7 +109,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             ImportLists.Clear();
             EntityList.Clear();
 
-            if (AutoAddIDColumn)
+            if (AutoAddIDColumn && !this.Columns.Contains($"{EntityType.Name}ID"))
             {
                 this.Columns.Add(new DataGridViewTextBoxColumn
                 {
@@ -120,19 +121,16 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             #endregion
 
             #region Import
-            foreach (DataGridViewColumn dataGridViewColumn in this.Columns)
+            foreach (IComponentEntityType componentEntityType in this.Columns.OfType<IComponentEntityType>())
             {
-                if (dataGridViewColumn is DataGridViewCustomTextBoxColumn customTextBoxColumn)
-                {
-                    await AddImportList(customTextBoxColumn.ListType);
-                }
+                ImportLists.Add(componentEntityType.EntityType, await API.GetAll(componentEntityType.EntityType));
             }
 
             if (ImportListDefinition != null && ImportListDefinition.Count > 0)
             {
                 foreach (Type type in ImportListDefinition)
                 {
-                    await AddImportList(type);
+                    ImportLists.Add(type, await API.GetAll(type));
                 }
             }
 
@@ -168,7 +166,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
 
                     if (column is DataGridViewCustomTextBoxColumn customTextBoxColumn)
                     {
-                        itemValue = customTextBoxColumn.Use(itemValue, ImportLists[customTextBoxColumn.ListType]);
+                        itemValue = customTextBoxColumn.Use(itemValue, ImportLists[customTextBoxColumn.EntityType]);
                         values.SetValue(itemValue, columnIndex);
                     }
                     else if (column is DataGridViewTextBoxColumn)
@@ -250,17 +248,5 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             }
         }
         #endregion
-
-        private async Task AddImportList(Type type)
-        {
-            if (!ImportLists.ContainsKey(type))
-            {
-                ImportLists.Add(type, await API.GetAll(type));
-            }
-            else
-            {
-                BuilderDebug.Warn($"{type.Name} already contains in DataGridViewBuilder.ImportLists");
-            }
-        }
     }
 }
