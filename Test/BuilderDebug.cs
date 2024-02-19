@@ -15,11 +15,13 @@ namespace ECBuilder.Test
         public static void Error(string message)
         {
             Debug.WriteLine(
-                "----------ECBuilder Error----------" +
-                "\n"                                  +
-                message                               +
-                "\n"                                  +
-                "----------ECBuilder Error----------"
+                "\n"                                                      +
+                "====================ECBuilder Error====================" +
+                "\n"                                                      +
+                message                                                   +
+                "\n"                                                      +
+                "====================ECBuilder Error====================" +
+                "\n"
             );
         }
 
@@ -37,11 +39,11 @@ namespace ECBuilder.Test
             else
             {
                 Debug.WriteLine(
-                    "----------ECBuilder Error----------" +
-                    "\n"                                  +
-                    message                               +
-                    "\n"                                  +
-                    "----------ECBuilder Error----------"
+                    "====================ECBuilder Error====================" +
+                    "\n"                                                      +
+                    message                                                   +
+                    "\n"                                                      +
+                    "====================ECBuilder Error===================="
                 );
             }
         }
@@ -49,11 +51,13 @@ namespace ECBuilder.Test
         public static void Warn(string message)
         {
             Console.WriteLine(
-                "----------ECBuilder Warning----------" +
-                "\n"                                    +
-                message                                 +
-                "\n"                                    +
-                "----------ECBuilder Warning----------"
+                "\n" +
+                "====================ECBuilder Warning====================" +
+                "\n"                                                        +
+                message                                                     +
+                "\n"                                                        +
+                "====================ECBuilder Warning====================" +
+                "\n"
             );
         }
 
@@ -66,11 +70,11 @@ namespace ECBuilder.Test
             else
             {
                 Console.WriteLine(
-                    "----------ECBuilder Warning----------" +
-                    "\n"                                    +
-                    message                                 +
-                    "\n"                                    +
-                    "----------ECBuilder Warning----------"
+                    "====================ECBuilder Warning====================" +
+                    "\n"                                                        +
+                    message                                                     +
+                    "\n"                                                        +
+                    "====================ECBuilder Warning===================="
                 );
             }
         }

@@ -62,6 +62,8 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
         public bool AutoAddIDColumn { get; set; } = true;
 
         public IButtonControl CreateButton { get; set; } = null;
+
+        public string SearchProperty { get; set; }
         #endregion
 
         #region Events

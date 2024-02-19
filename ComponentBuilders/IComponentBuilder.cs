@@ -85,5 +85,10 @@ namespace ECBuilder.ComponentBuilders
         /// Button that will open the <see cref="FormBuilders.EntityFormBuilders.CreateEntityFormBuilder">Entity Create Form</see>. If it is null, the form will not open.
         /// </summary>
         IButtonControl CreateButton { get; set; }
+
+        /// <summary>
+        /// SearchProperty for <seealso cref="Components.TextBoxes.ComponentBuilderSearchTextBox"/>
+        /// </summary>
+        string SearchProperty { get; set; }
     }
 }

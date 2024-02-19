@@ -61,6 +61,8 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         public bool UseSuperior { get; set; } = true;
 
         public IButtonControl CreateButton { get; set; }
+
+        public string SearchProperty { get; set; }
         #endregion
 
         #region Events

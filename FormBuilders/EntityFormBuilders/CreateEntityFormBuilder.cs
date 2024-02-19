@@ -46,7 +46,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 }
                 else if (control is IComponentBuilder componentBuilder)
                 {
-                    await componentBuilder.Import(this.ImportLists[componentBuilder.EntityType]);
+                    await componentBuilder.Initialize(this.ImportLists[componentBuilder.EntityType]);
                 }
             }
         }

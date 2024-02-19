@@ -1,6 +1,7 @@
 ﻿using ECBuilder.ComponentBuilders;
 using ECBuilder.ComponentBuilders.DataGridViewBuilders;
 using ECBuilder.ComponentBuilders.TreeViewBuilders;
+using ECBuilder.Test;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -29,11 +30,6 @@ namespace ECBuilder.Components.TextBoxes
         /// Search text
         /// </summary>
         public string SearchText { get; private set; }
-
-        /// <summary>
-        /// The property name to search for in the <see cref="Builders.DataGridViewBuilders.DataGridViewBuilder">DataGridViewBuilder</see>.
-        /// </summary>
-        public string SearchProperty { get; set; }
         #endregion
 
         #region Events
@@ -59,10 +55,16 @@ namespace ECBuilder.Components.TextBoxes
         {
             if (searchMode)
             {
-                string searchProperty = string.IsNullOrEmpty(SearchProperty) ? $"{ComponentBuilder.EntityType.Name}Name" : SearchProperty;
+                string searchProperty = string.IsNullOrEmpty(ComponentBuilder.SearchProperty) ? $"{ComponentBuilder.EntityType.Name}Name" : ComponentBuilder.SearchProperty;
 
                 if (ComponentBuilder is DataGridViewBuilder dataGridViewBuilder)
                 {
+                    if (!dataGridViewBuilder.Columns.Contains(searchProperty))
+                    {
+                        BuilderDebug.Error($"{searchProperty} column (SearchProperty) is not found in DataGridViewBuilder");
+                        return;
+                    }
+
                     foreach (DataGridViewRow row in dataGridViewBuilder.Rows)
                     {
                         if (row.Cells[searchProperty].Value.ToString().ToLower().Contains(this.Text.ToLower()))

@@ -49,7 +49,7 @@ namespace ECBuilder.FormBuilders.ComponentBuilderFormBuilders
 
             panel.Controls.Add((Control)ComponentBuilder);
 
-            await ComponentBuilder.Import(ownerFormBuilder.ImportLists[ComponentBuilder.EntityType]);
+            await ComponentBuilder.Initialize(ownerFormBuilder.ImportLists[ComponentBuilder.EntityType]);
         }
     }
 }
