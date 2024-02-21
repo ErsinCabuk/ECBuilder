@@ -46,29 +46,12 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
 
         private Task EntityFormBuilder_BeforeLoadEvent()
         {
-            void GetControls(Control control)
-            {
-                foreach (Control forControl in control.Controls)
-                {
-                    if ((forControl.Tag != null) && forControl.Tag.ToString().Contains("use"))
-                    {
-                        UsingControls.Add(forControl);
-                    }
-
-                    if (forControl.HasChildren)
-                    {
-                        GetControls(forControl);
-                    }
-                }
-            }
-
             return Task.Run(() =>
             {
                 GetControls(this);
                 UsingControls.Sort((a, b) => a.TabIndex.CompareTo(b.TabIndex));
             });
         }
-
 
         #region Methods
         /// <summary>
@@ -155,6 +138,22 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 else if (type.IsEquivalentTo(typeof(DateTime)))
                 {
                     propertyInfo.SetValue(Entity, SqlDateTime.MinValue.Value);
+                }
+            }
+        }
+
+        private void GetControls(Control control)
+        {
+            foreach (Control forControl in control.Controls)
+            {
+                if ((forControl.Tag != null) && forControl.Tag.ToString().Contains("use"))
+                {
+                    UsingControls.Add(forControl);
+                }
+
+                if (forControl.HasChildren)
+                {
+                    GetControls(forControl);
                 }
             }
         }

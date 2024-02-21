@@ -86,6 +86,9 @@
     <Compile Include="FormBuilders\EntityFormBuilders\CreateEntityFormBuilder.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FormBuilders\FilterFormBuilders\FilterFormBuilder.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormBuilders\FormBuilder.cs">
       <SubType>Form</SubType>
     </Compile>
