@@ -1,7 +1,6 @@
 ﻿using ECBuilder.Classes;
 using ECBuilder.DataAccess;
 using ECBuilder.FormBuilders.EntityFormBuilders;
-using ECBuilder.FormBuilders.FilterFormBuilders;
 using ECBuilder.Helpers;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
@@ -102,11 +101,6 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
         {
             ShowCreateForm();
         }
-
-        private void FilterButton_Click(object sender, EventArgs e)
-        {
-            ShowFilterForm();
-        }
         #endregion
 
         #region Methods
@@ -148,11 +142,6 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
             if (this.CreateButton != null)
             {
                 ((Button)this.CreateButton).Click += CreateButton_Click;
-            }
-
-            if (this.FilterButton != null)
-            {
-                ((Button)this.FilterButton).Click += FilterButton_Click; ;
             }
             #endregion
         }
@@ -205,32 +194,6 @@ namespace ECBuilder.ComponentBuilders.TreeViewBuilders
             {
                 await InfoFormCloseEvent(dialogResult);
             }
-
-            if (dialogResult == DialogResult.OK)
-            {
-                await this.Import();
-            }
-        }
-
-        public async void ShowFilterForm()
-        {
-            #region Controls
-            if (FilterForm == null)
-            {
-                BuilderDebug.Error("FilterForm was null.");
-                return;
-            }
-
-            if (!FilterForm.IsSubclassOf(typeof(FilterFormBuilder)))
-            {
-                BuilderDebug.Error("FilterForm was not FilterFormBuilder.");
-                return;
-            }
-            #endregion
-
-            FilterFormBuilder filterForm = (FilterFormBuilder)Activator.CreateInstance(FilterForm);
-            filterForm.ComponentBuilder = this;
-            DialogResult dialogResult = filterForm.ShowDialog(this);
 
             if (dialogResult == DialogResult.OK)
             {

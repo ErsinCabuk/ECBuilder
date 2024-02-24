@@ -1,5 +1,6 @@
 ﻿using ECBuilder.Interfaces;
 using ECBuilder.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 

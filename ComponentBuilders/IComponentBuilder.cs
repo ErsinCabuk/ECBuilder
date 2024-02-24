@@ -20,12 +20,6 @@ namespace ECBuilder.ComponentBuilders
         /// </summary>
         Type CreateForm { get; set; }
 
-
-        /// <summary>
-        /// Form that will be opened when filtering entities in the component. Must be of type <see cref="FormBuilders.FilterFormBuilders.FilterFormBuilder">FilterFormBuilder</see>.
-        /// </summary>
-        Type FilterForm { get; set; }
-
         /// <summary>
         /// Event to be run when <see cref="InfoForm">InfoForm</see> is closed.
         /// </summary>
@@ -87,12 +81,6 @@ namespace ECBuilder.ComponentBuilders
         /// </summary>
         void ShowInfoForm(IEntity entity);
 
-
-        /// <summary>
-        /// Method showing <see cref="FilterForm">FilterForm</see>. 
-        /// </summary>
-        void ShowFilterForm();
-
         /// <summary>
         /// Button that will open the <see cref="FormBuilders.EntityFormBuilders.CreateEntityFormBuilder">Entity Create Form</see>. If it is null, the form will not open.
         /// </summary>
@@ -102,10 +90,5 @@ namespace ECBuilder.ComponentBuilders
         /// SearchProperty for <seealso cref="Components.TextBoxes.ComponentBuilderSearchTextBox"/>
         /// </summary>
         string SearchProperty { get; set; }
-
-        /// <summary>
-        /// Button that will open the <see cref="FormBuilders.FilterFormBuilders.FilterFormBuilder">Filter Form</see>. If it is null, the form will not open.
-        /// </summary>
-        IButtonControl FilterButton { get; set; }
     }
 }

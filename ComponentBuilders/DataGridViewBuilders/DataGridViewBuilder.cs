@@ -2,7 +2,6 @@
 using ECBuilder.ComponentBuilders.DataGridViewBuilders.Columns;
 using ECBuilder.DataAccess;
 using ECBuilder.FormBuilders.EntityFormBuilders;
-using ECBuilder.FormBuilders.FilterFormBuilders;
 using ECBuilder.Helpers;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
@@ -101,40 +100,9 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
         {
             ShowCreateForm();
         }
-
-        private void FilterButton_Click(object sender, EventArgs e)
-        {
-            ShowFilterForm();
-        }
         #endregion
 
         #region Methods
-        public async void ShowFilterForm()
-        {
-            #region Controls
-            if (FilterForm == null)
-            {
-                BuilderDebug.Error("FilterForm was null.");
-                return;
-            }
-
-            if (!FilterForm.IsSubclassOf(typeof(FilterFormBuilder)))
-            {
-                BuilderDebug.Error("FilterForm was not FilterFormBuilder.");
-                return;
-            }
-            #endregion
-
-            FilterFormBuilder filterForm = (FilterFormBuilder)Activator.CreateInstance(FilterForm);
-            filterForm.ComponentBuilder = this;
-            DialogResult dialogResult = filterForm.ShowDialog(this);
-
-            if (dialogResult == DialogResult.OK)
-            {
-                await this.Import();
-            }
-        }
-
         public async void ShowCreateForm()
         {
             #region Controls
@@ -253,11 +221,6 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             if (this.CreateButton != null)
             {
                 ((Button)this.CreateButton).Click += CreateButton_Click;
-            }
-
-            if(this.FilterButton != null)
-            {
-                ((Button)this.FilterButton).Click += FilterButton_Click;
             }
             #endregion
         }
