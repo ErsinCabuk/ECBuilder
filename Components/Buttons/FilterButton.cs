@@ -1,4 +1,4 @@
-﻿using ECBuilder.FormBuilders.EntityFormBuilders;
+﻿using ECBuilder.FormBuilders.FilterFormBuilders;
 using ECBuilder.Test;
 using System;
 using System.ComponentModel;
@@ -7,16 +7,14 @@ using System.Windows.Forms;
 
 namespace ECBuilder.Components.Buttons
 {
-    public class EntityButton : Button
+    public class FilterButton : Button
     {
-        public EntityButton() { }
-
         #region Properties
         /// <summary>
         /// Form containing the button.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public EntityFormBuilder ParentForm { get; set; }
+        public FilterFormBuilder ParentForm { get; set; }
 
         /// <summary>
         /// Method that will work before the button does its main method. If the method returns <see langword="true"/>, the button starts main method. If it returns <see langword="false"/>, not starts main method.
@@ -34,12 +32,7 @@ namespace ECBuilder.Components.Buttons
         /// Method to be run after the main method of the button runs.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public event Func<int, Task> AfterRunClickEvent;
-        #endregion
-
-        #region Parameters
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        internal event Func<Task> ClickEvent;
+        public event Func<Task> AfterRunClickEvent;
         #endregion
 
         #region Events
@@ -47,40 +40,48 @@ namespace ECBuilder.Components.Buttons
         {
             base.OnParentChanged(e);
 
-            if (!this.FindForm().GetType().IsSubclassOf(typeof(EntityFormBuilder)) && !this.FindForm().GetType().IsEquivalentTo(typeof(EntityFormBuilder)))
+            if (!this.FindForm().GetType().IsSubclassOf(typeof(FilterFormBuilder)) && !this.FindForm().GetType().IsEquivalentTo(typeof(FilterFormBuilder)))
             {
-                BuilderDebug.Error(this.DesignMode, $"{this.Name} EntityButton can only be used in EntityFormBuilder.");
+                BuilderDebug.Error(this.DesignMode, $"{this.Name} FilterButton can only be used in FilterFormBuilder.");
                 return;
             }
 
-            ParentForm = (EntityFormBuilder)this.FindForm();
+            ParentForm = (FilterFormBuilder)this.FindForm();
         }
 
         protected override async void OnClick(EventArgs e)
         {
+            #region Controls
             if (ParentForm == null)
             {
-                BuilderDebug.Error($"{this.Name} EntityButton can only be used in EntityFormBuilder.");
+                BuilderDebug.Error($"{this.Name} FilterButton can only be used in FilterFormBuilder.");
                 return;
             }
+            #endregion
 
+            #region ControlClickEvent
             if (ControlClickEvent != null)
             {
                 bool controlResult = ControlClickEvent();
                 if (!controlResult) return;
             }
+            #endregion
 
+            #region BeforeRunClickEvent
             if (BeforeRunClickEvent != null)
             {
                 await BeforeRunClickEvent();
             }
+            #endregion
 
-            await ClickEvent();
 
+
+            #region AfterRunClickEvent
             if (AfterRunClickEvent != null)
             {
-                await AfterRunClickEvent(Convert.ToInt32(ParentForm.Entity.GetType().GetProperty($"{ParentForm.Entity.GetType().Name}ID").GetValue(ParentForm.Entity)));
+                await AfterRunClickEvent();
             }
+            #endregion
         }
         #endregion
     }

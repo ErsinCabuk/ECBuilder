@@ -21,6 +21,11 @@ namespace ECBuilder.ComponentBuilders
         Type CreateForm { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        Type FilterForm { get; set; }
+
+        /// <summary>
         /// Event to be run when <see cref="InfoForm">InfoForm</see> is closed.
         /// </summary>
         event Func<DialogResult, Task> InfoFormCloseEvent;
@@ -81,10 +86,17 @@ namespace ECBuilder.ComponentBuilders
         /// </summary>
         void ShowInfoForm(IEntity entity);
 
+        void ShowFilterForm();
+
         /// <summary>
         /// Button that will open the <see cref="FormBuilders.EntityFormBuilders.CreateEntityFormBuilder">Entity Create Form</see>. If it is null, the form will not open.
         /// </summary>
         IButtonControl CreateButton { get; set; }
+
+        /// <summary>
+        /// Filter Button
+        /// </summary>
+        IButtonControl FilterButton { get; set; }
 
         /// <summary>
         /// SearchProperty for <seealso cref="Components.TextBoxes.ComponentBuilderSearchTextBox"/>
