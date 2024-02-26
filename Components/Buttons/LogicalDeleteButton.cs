@@ -3,7 +3,7 @@
     /// <summary>
     /// Button that <see cref="DataAccess.API.LogicalDelete(Interfaces.IEntity)">logical deletes</see> the <see cref="Builders.FormBuilders.FormBuilder.Entity">Entity</see> in <see cref="Builders.FormBuilders.InfoFormBuilder">InfoFormBuilder</see>.
     /// </summary>
-    public class LogicalDeleteButton : CustomButton
+    public class LogicalDeleteButton : EntityButton
     {
         public LogicalDeleteButton()
         {

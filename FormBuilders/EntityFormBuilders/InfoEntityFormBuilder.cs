@@ -1,17 +1,9 @@
-﻿using ECBuilder.ComponentBuilders;
-using ECBuilder.Components.ComboBoxes;
-using ECBuilder.Components.TextBoxes;
-using ECBuilder.Test;
-using System;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace ECBuilder.FormBuilders.EntityFormBuilders
+﻿namespace ECBuilder.FormBuilders.EntityFormBuilders
 {
     /// <summary>
     /// An entitys information form.
     /// </summary>
+    [System.Serializable]
     public class InfoEntityFormBuilder : EntityFormBuilder
     {
         public InfoEntityFormBuilder()
@@ -19,78 +11,10 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
             LoadEvent += InfoFormBuilder_LoadEvent;
         }
 
-        #region Events
-        internal async Task InfoFormBuilder_LoadEvent()
+        #region Event
+        internal async System.Threading.Tasks.Task InfoFormBuilder_LoadEvent()
         {
-            foreach (Control control in UsingControls)
-            {
-                PropertyInfo property = Entity.GetType().GetProperty(control.Name);
-                object value = null;
-                if (property != null)
-                {
-                    value = property.GetValue(Entity);
-                }
-
-                //if (property == null && !control.Tag.ToString().Contains("notProperty"))
-                //{
-                //    BuilderDebug.Error(this.DesignMode, $"{control.Name} property was not found in the {this.Name} form");
-                //    continue;
-                //}
-
-                if (control is ComponentBuilderTextBox componentBuilderTextBox)
-                {
-                    await componentBuilderTextBox.Import();
-                    componentBuilderTextBox.SetSelectedEntity(value);
-                }
-                else if (control is TextBox || control is RichTextBox)
-                {
-                    control.Text = value.ToString();
-                }
-                else if (control is DateTimePicker dateTimePicker)
-                {
-                    if (DateTime.TryParse(value.ToString(), out DateTime dateTime))
-                    {
-                        dateTimePicker.Value = dateTime;
-                    }
-                    else
-                    {
-                        BuilderDebug.Error($"{control.Name} property could not be converted to DateTime.");
-                    }
-                }
-                else if (control is NumericUpDown numericUpDown)
-                {
-                    if (value.GetType() == typeof(decimal))
-                    {
-                        if (decimal.TryParse(value.ToString(), out decimal intValue))
-                        {
-                            numericUpDown.Value = intValue;
-                        }
-                        else
-                        {
-                            BuilderDebug.Error($"{control.Name} property could not be converted to decimal.");
-                        }
-                    }
-                    else if (value.GetType() == typeof(int))
-                    {
-                        if (int.TryParse(value.ToString(), out int intValue))
-                        {
-                            numericUpDown.Value = intValue;
-                        }
-                        else
-                        {
-                            BuilderDebug.Error($"{control.Name} property could not be converted to int.");
-                        }
-                    }
-                }
-                else if (control is CustomComboBox customComboBox)
-                {
-                    await customComboBox.Import(value);
-                }
-                else if (control is IComponentBuilder componentBuilder)
-                {
-                    await componentBuilder.Initialize(this.ImportLists[componentBuilder.EntityType]);
-                }
-            }
+            await this.InitializeControls(true);
         }
         #endregion
     }

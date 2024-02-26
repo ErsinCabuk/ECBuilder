@@ -3,7 +3,7 @@
     /// <summary>
     /// Button that <see cref="DataAccess.API.Create">creates</see> the <see cref="Builders.FormBuilders.FormBuilder.Entity">Entity</see> in <see cref="Builders.FormBuilders.CreateFormBuilder">CreateFormBuilder</see>.
     /// </summary>
-    public class CreateButton : CustomButton
+    public class CreateButton : EntityButton
     {
         public CreateButton()
         {

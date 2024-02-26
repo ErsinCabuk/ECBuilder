@@ -1,14 +1,16 @@
 ﻿using ECBuilder.FormBuilders.EntityFormBuilders;
+using ECBuilder.Test;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ECBuilder.Components.Buttons
 {
-    public class CustomButton : Button
+    public class EntityButton : Button
     {
-        public CustomButton() { }
+        public EntityButton() { }
 
         #region Properties
         /// <summary>
@@ -46,11 +48,23 @@ namespace ECBuilder.Components.Buttons
         {
             base.OnParentChanged(e);
 
+            if(!this.FindForm().GetType().IsSubclassOf(typeof(EntityFormBuilder)) && !this.FindForm().GetType().IsEquivalentTo(typeof(EntityFormBuilder)))
+            {
+                BuilderDebug.Error(this.DesignMode, $"{this.Name} EntityButton can only be used in EntityFormBuilder.");
+                return;
+            }
+
             ParentForm = (EntityFormBuilder)this.FindForm();
         }
 
         protected override async void OnClick(EventArgs e)
         {
+            if(ParentForm == null)
+            {
+                BuilderDebug.Error($"{this.Name} EntityButton can only be used in EntityFormBuilder.");
+                return;
+            }
+
             if (ControlClickEvent != null)
             {
                 bool controlResult = ControlClickEvent();

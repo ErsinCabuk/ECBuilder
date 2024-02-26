@@ -5,7 +5,7 @@ namespace ECBuilder.Components.Buttons
     /// <summary>
     /// Button that <see cref="DataAccess.API.Update(Interfaces.IEntity)">edit</see> the <see cref="Builders.FormBuilders.FormBuilder.Entity">Entity</see> in <see cref="Builders.FormBuilders.InfoFormBuilder">InfoFormBuilder</see>.
     /// </summary>
-    public class EditButton : CustomButton
+    public class EditButton : EntityButton
     {
         public EditButton()
         {

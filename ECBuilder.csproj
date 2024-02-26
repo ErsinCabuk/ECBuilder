@@ -67,7 +67,7 @@
     <Compile Include="Components\Buttons\CreateButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\Buttons\CustomButton.cs">
+    <Compile Include="Components\Buttons\EntityButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\ComboBoxes\CustomComboBox.cs">

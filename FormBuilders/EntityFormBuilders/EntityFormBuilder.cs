@@ -49,12 +49,6 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
         {
             return Task.Run(() =>
             {
-                if (Entity == null)
-                {
-                    BuilderDebug.Error("Entity was null.");
-                    return;
-                }
-
                 GetControls(this);
                 UsingControls.Sort((a, b) => a.TabIndex.CompareTo(b.TabIndex));
 
@@ -73,6 +67,105 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
         }
 
         #region Methods
+        /// <summary>
+        /// Initialize controls.
+        /// </summary>
+        /// <param name="withValues">With <see cref="Entity">Entity</see> property values</param>
+        /// <returns>awaitable Task</returns>
+        public async Task InitializeControls(bool withValues = false)
+        {
+            if (withValues)
+            {
+                if (Entity == null)
+                {
+                    BuilderDebug.Error("Entity was null.");
+                    return;
+                }
+
+                foreach (Control control in UsingControls)
+                {
+                    PropertyInfo property = Entity.GetType().GetProperty(control.Name);
+                    object value = null;
+                    if (property != null)
+                    {
+                        value = property.GetValue(Entity);
+                    }
+
+                    if (control is ComponentBuilderTextBox componentBuilderTextBox)
+                    {
+                        await componentBuilderTextBox.Import();
+                        componentBuilderTextBox.SetSelectedEntity(value);
+                    }
+                    else if (control is TextBox || control is RichTextBox)
+                    {
+                        control.Text = value.ToString();
+                    }
+                    else if (control is DateTimePicker dateTimePicker)
+                    {
+                        if (DateTime.TryParse(value.ToString(), out DateTime dateTime))
+                        {
+                            dateTimePicker.Value = dateTime;
+                        }
+                        else
+                        {
+                            BuilderDebug.Error($"{control.Name} property could not be converted to DateTime.");
+                        }
+                    }
+                    else if (control is NumericUpDown numericUpDown)
+                    {
+                        if (value.GetType() == typeof(decimal))
+                        {
+                            if (decimal.TryParse(value.ToString(), out decimal intValue))
+                            {
+                                numericUpDown.Value = intValue;
+                            }
+                            else
+                            {
+                                BuilderDebug.Error($"{control.Name} property could not be converted to decimal.");
+                            }
+                        }
+                        else if (value.GetType() == typeof(int))
+                        {
+                            if (int.TryParse(value.ToString(), out int intValue))
+                            {
+                                numericUpDown.Value = intValue;
+                            }
+                            else
+                            {
+                                BuilderDebug.Error($"{control.Name} property could not be converted to int.");
+                            }
+                        }
+                    }
+                    else if (control is CustomComboBox customComboBox)
+                    {
+                        await customComboBox.Import(value);
+                    }
+                    else if (control is IComponentBuilder componentBuilder)
+                    {
+                        await componentBuilder.Initialize(this.ImportLists[componentBuilder.EntityType]);
+                    }
+                }
+            }
+            else
+            {
+                foreach (Control control in UsingControls)
+                {
+                    if (control is ComponentBuilderTextBox componentBuilderTextBox)
+                    {
+                        await componentBuilderTextBox.Import();
+                    }
+                    else if (control is CustomComboBox customComboBox)
+                    {
+                        await customComboBox.Import();
+                    }
+                    else if (control is IComponentBuilder componentBuilder)
+                    {
+                        await componentBuilder.Initialize(this.ImportLists[componentBuilder.EntityType]);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Validates the <see cref="UsingControls">UsingControls</see>.
         /// </summary>
