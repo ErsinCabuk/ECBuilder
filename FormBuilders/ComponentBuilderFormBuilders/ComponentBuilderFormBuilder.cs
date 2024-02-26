@@ -1,9 +1,7 @@
 ﻿using ECBuilder.ComponentBuilders;
 using ECBuilder.Interfaces;
 using ECBuilder.Test;
-using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 

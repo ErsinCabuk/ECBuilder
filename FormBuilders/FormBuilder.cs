@@ -37,7 +37,7 @@ namespace ECBuilder.FormBuilders
         ///
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<Type> ImportListDefinitions { get; set; }
+        public List<Type> ImportListDefinitions { get; set; } = new List<Type>();
 
         #endregion
 
@@ -48,7 +48,12 @@ namespace ECBuilder.FormBuilders
         #region Events
         protected override async void OnLoad(EventArgs e)
         {
-            CheckForIllegalCrossThreadCalls = false;
+            #region BeforeLoadEvent
+            if (BeforeLoadEvent != null)
+            {
+                await BeforeLoadEvent();
+            }
+            #endregion
 
             #region Import Lists
             if (ImportListDefinitions != null && ImportListDefinitions.Count > 0)
@@ -57,19 +62,12 @@ namespace ECBuilder.FormBuilders
                 {
                     if (ImportLists.ContainsKey(type))
                     {
-                        BuilderDebug.Warn($"{type.Name} already contains in FormBuilder.ImportLists.");
+                        BuilderDebug.Warn($"{type.Name} already contains in FormBuilder.ImportLists");
                         continue;
                     }
 
                     ImportLists.Add(type, await API.GetAll(type, 1));
                 }
-            }
-            #endregion
-
-            #region BeforeLoadEvent
-            if (BeforeLoadEvent != null)
-            {
-                await BeforeLoadEvent();
             }
             #endregion
 

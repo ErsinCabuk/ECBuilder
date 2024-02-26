@@ -15,11 +15,11 @@ namespace ECBuilder.Test
         public static void Error(string message)
         {
             Debug.WriteLine(
-                "\n"                                                      +
+                "\n" +
                 "====================ECBuilder Error====================" +
-                "\n"                                                      +
-                message                                                   +
-                "\n"                                                      +
+                "\n" +
+                message +
+                "\n" +
                 "====================ECBuilder Error====================" +
                 "\n"
             );
@@ -40,9 +40,9 @@ namespace ECBuilder.Test
             {
                 Debug.WriteLine(
                     "====================ECBuilder Error====================" +
-                    "\n"                                                      +
-                    message                                                   +
-                    "\n"                                                      +
+                    "\n" +
+                    message +
+                    "\n" +
                     "====================ECBuilder Error===================="
                 );
             }
@@ -53,9 +53,9 @@ namespace ECBuilder.Test
             Console.WriteLine(
                 "\n" +
                 "====================ECBuilder Warning====================" +
-                "\n"                                                        +
-                message                                                     +
-                "\n"                                                        +
+                "\n" +
+                message +
+                "\n" +
                 "====================ECBuilder Warning====================" +
                 "\n"
             );
@@ -71,9 +71,9 @@ namespace ECBuilder.Test
             {
                 Console.WriteLine(
                     "====================ECBuilder Warning====================" +
-                    "\n"                                                        +
-                    message                                                     +
-                    "\n"                                                        +
+                    "\n" +
+                    message +
+                    "\n" +
                     "====================ECBuilder Warning===================="
                 );
             }

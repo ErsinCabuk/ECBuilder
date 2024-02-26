@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ECBuilder.Classes
 {
@@ -28,6 +29,16 @@ namespace ECBuilder.Classes
             }
 
             return this[typeof(T)].Cast<T>().ToList();
+        }
+
+        public async Task Import<T>() where T : IEntity
+        {
+            if (!this.ContainsKey(typeof(T)))
+            {
+                throw new ListNotFoundException("List type was not found in lists.");
+            }
+
+            this[typeof(T)] = await DataAccess.API.GetAll(typeof(T));
         }
     }
 

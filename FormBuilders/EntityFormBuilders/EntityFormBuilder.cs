@@ -2,6 +2,7 @@
 using ECBuilder.Components.ComboBoxes;
 using ECBuilder.Components.TextBoxes;
 using ECBuilder.Interfaces;
+using ECBuilder.Test;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -48,8 +49,26 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
         {
             return Task.Run(() =>
             {
+                if (Entity == null)
+                {
+                    BuilderDebug.Error("Entity was null.");
+                    return;
+                }
+
                 GetControls(this);
                 UsingControls.Sort((a, b) => a.TabIndex.CompareTo(b.TabIndex));
+
+                foreach (IComponentEntityType componentEntityType in UsingControls.OfType<IComponentEntityType>())
+                {
+                    if (!ImportListDefinitions.Contains(componentEntityType.EntityType) && !ImportLists.ContainsKey(componentEntityType.EntityType))
+                    {
+                        ImportListDefinitions.Add(componentEntityType.EntityType);
+                    }
+                    else
+                    {
+                        BuilderDebug.Warn($"{componentEntityType.EntityType.Name} already contains in {this.Name}.ImportListDefinitions or {this.Name}.ImportLists");
+                    }
+                }
             });
         }
 
@@ -141,7 +160,9 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 }
             }
         }
+        #endregion
 
+        #region Private Methods
         private void GetControls(Control control)
         {
             foreach (Control forControl in control.Controls)

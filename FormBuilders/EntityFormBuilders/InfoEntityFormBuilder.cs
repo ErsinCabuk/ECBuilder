@@ -1,11 +1,8 @@
 ﻿using ECBuilder.ComponentBuilders;
 using ECBuilder.Components.ComboBoxes;
 using ECBuilder.Components.TextBoxes;
-using ECBuilder.DataAccess;
-using ECBuilder.Interfaces;
 using ECBuilder.Test;
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -25,17 +22,6 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
         #region Events
         internal async Task InfoFormBuilder_LoadEvent()
         {
-            if (Entity == null)
-            {
-                BuilderDebug.Error("Entity was null");
-                return;
-            }
-
-            foreach (IComponentEntityType componentEntityType in UsingControls.OfType<IComponentEntityType>())
-            {
-                await AddImportList(componentEntityType.EntityType);
-            }
-
             foreach (Control control in UsingControls)
             {
                 PropertyInfo property = Entity.GetType().GetProperty(control.Name);
@@ -104,20 +90,6 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 {
                     await componentBuilder.Initialize(this.ImportLists[componentBuilder.EntityType]);
                 }
-            }
-        }
-        #endregion
-
-        #region Methods
-        private async Task AddImportList(Type type)
-        {
-            if (!ImportLists.ContainsKey(type))
-            {
-                ImportLists.Add(type, await API.GetAll(type));
-            }
-            else
-            {
-                BuilderDebug.Warn($"{type.Name} already contains in InfoFormBuilder.ImportLists");
             }
         }
         #endregion

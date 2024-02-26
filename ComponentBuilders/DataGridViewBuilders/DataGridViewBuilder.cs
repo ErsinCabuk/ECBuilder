@@ -161,7 +161,7 @@ namespace ECBuilder.ComponentBuilders.DataGridViewBuilders
             #region Auto Add ID Column
             if (AutoAddIDColumn)
             {
-                if(this.Columns.Contains($"{EntityType.Name}ID"))
+                if (this.Columns.Contains($"{EntityType.Name}ID"))
                 {
                     BuilderDebug.Warn($"{this.Name} is already containt ID column.");
                     return;
