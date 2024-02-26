@@ -1,9 +1,5 @@
-﻿using ECBuilder.Components.ComboBoxes;
-using ECBuilder.Components.TextBoxes;
-using ECBuilder.FormBuilders.FilterFormBuilders;
-using ECBuilder.Interfaces;
+﻿using ECBuilder.FormBuilders.FilterFormBuilders;
 using ECBuilder.Test;
-using ECBuilder.Types;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -11,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ECBuilder.Components.Buttons
 {
-    public class FilterButton : Button
+    public class ResetFilterButton : Button
     {
         #region Properties
         /// <summary>
@@ -71,8 +67,6 @@ namespace ECBuilder.Components.Buttons
             }
             #endregion
 
-            ParentForm.ComponentBuilder.Filters.Clear();
-
             #region BeforeRunClickEvent
             if (BeforeRunClickEvent != null)
             {
@@ -80,56 +74,10 @@ namespace ECBuilder.Components.Buttons
             }
             #endregion
 
-            #region Filter
-            foreach (Control control in ParentForm.UsingControls)
-            {
-                if (!ParentForm.ControlFilterTypes.ContainsKey(control))
-                {
-                    BuilderDebug.Error($"{control.Name} not contains in {this.ParentForm.Name}.ControlFilterTypes");
-                    continue;
-                }
-
-                if (control.Tag.ToString().Contains("notFilter"))
-                {
-                    continue;
-                }
-
-                FilterTypes filterType = ParentForm.ControlFilterTypes[control];
-                object value = null;
-
-                if (control is ComponentBuilderTextBox componentBuilderTextBox)
-                {
-                    value = componentBuilderTextBox.SelectedValue;
-                }
-                else if (control is TextBox || control is RichTextBox)
-                {
-                    value = control.Text;
-                }
-                else if (control is DateTimePicker dateTimePicker)
-                {
-                    value = dateTimePicker.Value;
-                }
-                else if (control is CustomComboBox customComboBox)
-                {
-                    IEntity selectedEntity = customComboBox.EntityList[customComboBox.SelectedIndex];
-                    value = selectedEntity.GetType().GetProperty(customComboBox.ValueMember).GetValue(selectedEntity);
-                }
-                else if (control is NumericUpDown numericUpDown)
-                {
-                    value = numericUpDown.Value;
-                }
-
-                ParentForm.ComponentBuilder.Filters.Add(
-                    control.Name,
-                    (
-                        filterType,
-                        value
-                    )
-                );
-            }
+            ParentForm.ComponentBuilder.Filters.Clear();
+            await ParentForm.ComponentBuilder.Import();
 
             ParentForm.DialogResult = DialogResult.OK;
-            #endregion
 
             #region AfterRunClickEvent
             if (AfterRunClickEvent != null)
@@ -137,6 +85,7 @@ namespace ECBuilder.Components.Buttons
                 await AfterRunClickEvent();
             }
             #endregion
+
         }
         #endregion
     }

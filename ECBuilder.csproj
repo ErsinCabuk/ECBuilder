@@ -58,6 +58,9 @@
     <Compile Include="Components\Buttons\EditButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Components\Buttons\ResetFilterButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Components\Buttons\FilterButton.cs">
       <SubType>Component</SubType>
     </Compile>

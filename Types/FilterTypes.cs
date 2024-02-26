@@ -35,6 +35,8 @@
         /// <summary>
         /// Entered array and not entity value equal
         /// </summary>
-        NotEqualArray
+        NotEqualArray,
+
+        StringContains
     }
 }

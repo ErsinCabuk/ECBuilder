@@ -1,5 +1,6 @@
 ﻿using ECBuilder.Interfaces;
 using ECBuilder.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,7 +32,18 @@ namespace ECBuilder.Helpers
 
                 if (filterType == FilterTypes.Equal)
                 {
-                    list = list.Where(entity => entity.GetType().GetProperty(filter.Key).GetValue(entity).Equals(value)).ToList();
+                    list = list.Where(entity =>
+                    {
+                        if (entity.GetType().GetProperty(filter.Key).PropertyType.IsEquivalentTo(typeof(DateTime)))
+                        {
+                            DateTime dateTime = (DateTime)entity.GetType().GetProperty(filter.Key).GetValue(entity);
+                            return dateTime.ToString("dd/MM/yyyy HH:mm").Equals(((DateTime)value).ToString("dd/MM/yyyy HH:mm"));
+                        }
+                        else
+                        {
+                            return entity.GetType().GetProperty(filter.Key).GetValue(entity).Equals(value);
+                        }
+                    }).ToList();
                 }
                 else if (filterType == FilterTypes.GreaterThan)
                 {
@@ -118,6 +130,10 @@ namespace ECBuilder.Helpers
                             )
                         ).ToList();
                     }
+                }
+                else if (filterType == FilterTypes.StringContains)
+                {
+                    list = list.Where(entity => entity.GetType().GetProperty(filter.Key).GetValue(entity).ToString().Contains(value.ToString())).ToList();
                 }
             }
 

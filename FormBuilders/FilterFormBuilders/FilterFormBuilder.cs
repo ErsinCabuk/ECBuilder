@@ -36,6 +36,9 @@ namespace ECBuilder.FormBuilders.FilterFormBuilders
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Control> UsingControls { get; set; } = new List<Control>();
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Dictionary<Control, Types.FilterTypes> ControlFilterTypes { get; set; }
         #endregion
 
         private Task FilterFormBuilder_BeforeLoadEvent()
@@ -73,17 +76,60 @@ namespace ECBuilder.FormBuilders.FilterFormBuilders
         {
             foreach (Control control in UsingControls)
             {
+                object selectedValue = null;
+                if (this.ComponentBuilder.Filters.ContainsKey(control.Name))
+                {
+                    selectedValue = this.ComponentBuilder.Filters[control.Name].Item2;
+                }
+
                 if (control is ComponentBuilderTextBox componentBuilderTextBox)
                 {
                     await componentBuilderTextBox.Import();
+                    if (selectedValue != null) componentBuilderTextBox.SetSelectedEntity(selectedValue);
+                }
+                else if ((control is TextBox || control is RichTextBox) && selectedValue != null)
+                {
+                    control.Text = selectedValue.ToString();
+                }
+                else if (control is DateTimePicker dateTimePicker && selectedValue != null)
+                {
+                    if (DateTime.TryParse(selectedValue.ToString(), out DateTime dateTime))
+                    {
+                        dateTimePicker.Value = dateTime;
+                    }
+                    else
+                    {
+                        BuilderDebug.Error($"{control.Name} property could not be converted to DateTime.");
+                    }
+                }
+                else if (control is NumericUpDown numericUpDown && selectedValue != null)
+                {
+                    if (selectedValue.GetType() == typeof(decimal))
+                    {
+                        if (decimal.TryParse(selectedValue.ToString(), out decimal intValue))
+                        {
+                            numericUpDown.Value = intValue;
+                        }
+                        else
+                        {
+                            BuilderDebug.Error($"{control.Name} property could not be converted to decimal.");
+                        }
+                    }
+                    else if (selectedValue.GetType() == typeof(int))
+                    {
+                        if (int.TryParse(selectedValue.ToString(), out int intValue))
+                        {
+                            numericUpDown.Value = intValue;
+                        }
+                        else
+                        {
+                            BuilderDebug.Error($"{control.Name} property could not be converted to int.");
+                        }
+                    }
                 }
                 else if (control is CustomComboBox customComboBox)
                 {
-                    await customComboBox.Import();
-                }
-                else if (control is IComponentBuilder componentBuilder)
-                {
-                    await componentBuilder.Initialize(this.ImportLists[componentBuilder.EntityType]);
+                    await customComboBox.Import(selectedValue);
                 }
             }
         }
