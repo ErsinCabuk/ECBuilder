@@ -96,7 +96,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                         await componentBuilderTextBox.Import();
                         componentBuilderTextBox.SetSelectedEntity(value);
                     }
-                    else if (control is TextBox || control is RichTextBox)
+                    else if (control is TextBox || control is RichTextBox || control is MaskedTextBox)
                     {
                         control.Text = value.ToString();
                     }
@@ -178,7 +178,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
 
                 bool result = true;
                 if (control is ComponentBuilderTextBox componentBuilderTextBox && componentBuilderTextBox.SelectedValue == null) result = false;
-                else if ((control is TextBox || control is RichTextBox) && string.IsNullOrEmpty(control.Text)) result = false;
+                else if ((control is TextBox || control is RichTextBox || control is MaskedTextBox) && string.IsNullOrEmpty(control.Text)) result = false;
                 else if (control is NumericUpDown numericUpDown && string.IsNullOrEmpty(numericUpDown.Value.ToString())) result = false;
                 else if (control is ComboBox comboBox && comboBox.SelectedIndex == -1) result = false;
 
@@ -206,7 +206,7 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
                 {
                     propertyInfo.SetValue(Entity, componentBuilderTextBox.SelectedValue);
                 }
-                else if (control is TextBox || control is RichTextBox)
+                else if (control is TextBox || control is RichTextBox || control is MaskedTextBox)
                 {
                     propertyInfo.SetValue(Entity, control.Text.Trim());
                 }

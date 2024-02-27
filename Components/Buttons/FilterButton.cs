@@ -101,7 +101,7 @@ namespace ECBuilder.Components.Buttons
                 {
                     value = componentBuilderTextBox.SelectedValue;
                 }
-                else if (control is TextBox || control is RichTextBox)
+                else if (control is TextBox || control is RichTextBox || control is MaskedTextBox)
                 {
                     value = control.Text;
                 }

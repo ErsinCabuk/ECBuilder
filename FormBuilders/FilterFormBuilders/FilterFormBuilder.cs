@@ -87,7 +87,7 @@ namespace ECBuilder.FormBuilders.FilterFormBuilders
                     await componentBuilderTextBox.Import();
                     if (selectedValue != null) componentBuilderTextBox.SetSelectedEntity(selectedValue);
                 }
-                else if ((control is TextBox || control is RichTextBox) && selectedValue != null)
+                else if ((control is TextBox || control is RichTextBox || control is MaskedTextBox) && selectedValue != null)
                 {
                     control.Text = selectedValue.ToString();
                 }

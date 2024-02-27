@@ -37,7 +37,7 @@ namespace ECBuilder.Helpers
                         if (entity.GetType().GetProperty(filter.Key).PropertyType.IsEquivalentTo(typeof(DateTime)))
                         {
                             DateTime dateTime = (DateTime)entity.GetType().GetProperty(filter.Key).GetValue(entity);
-                            return dateTime.ToString("dd/MM/yyyy HH:mm").Equals(((DateTime)value).ToString("dd/MM/yyyy HH:mm"));
+                            return dateTime.Date == ((DateTime)value).Date;
                         }
                         else
                         {
