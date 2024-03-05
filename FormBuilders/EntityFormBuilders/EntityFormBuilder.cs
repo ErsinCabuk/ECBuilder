@@ -178,7 +178,8 @@ namespace ECBuilder.FormBuilders.EntityFormBuilders
 
                 bool result = true;
                 if (control is ComponentBuilderTextBox componentBuilderTextBox && componentBuilderTextBox.SelectedValue == null) result = false;
-                else if ((control is TextBox || control is RichTextBox || control is MaskedTextBox) && string.IsNullOrEmpty(control.Text)) result = false;
+                else if (control is MaskedTextBox maskedTextBox && !maskedTextBox.MaskCompleted) result = false;
+                else if ((control is TextBox || control is RichTextBox) && string.IsNullOrEmpty(control.Text)) result = false;
                 else if (control is NumericUpDown numericUpDown && string.IsNullOrEmpty(numericUpDown.Value.ToString())) result = false;
                 else if (control is ComboBox comboBox && comboBox.SelectedIndex == -1) result = false;
 
