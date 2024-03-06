@@ -10,10 +10,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.contextMenuStripDataGridView = new System.Windows.Forms.ContextMenuStrip();
+            this.contextMenuStripDataGridView = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBoxRepositing = new System.Windows.Forms.ToolStripTextBox();
             this.textBoxServerName = new System.Windows.Forms.TextBox();
@@ -26,16 +27,18 @@
             this.labelTitleDatabase = new System.Windows.Forms.Label();
             this.buttonConnect = new System.Windows.Forms.Button();
             this.groupBoxServerInfo = new System.Windows.Forms.GroupBox();
-            this.groupBoxFormInfo = new System.Windows.Forms.GroupBox();
             this.buttonStartDesigner = new System.Windows.Forms.Button();
+            this.labelTitleTable = new System.Windows.Forms.Label();
+            this.comboBoxTables = new System.Windows.Forms.ComboBox();
+            this.groupBoxFormInfo = new System.Windows.Forms.GroupBox();
+            this.textBoxNamespace = new System.Windows.Forms.TextBox();
+            this.labelTitleNamespace = new System.Windows.Forms.Label();
             this.textBoxFormText = new System.Windows.Forms.TextBox();
             this.labelTitleFormText = new System.Windows.Forms.Label();
             this.textBoxFormName = new System.Windows.Forms.TextBox();
             this.labelTitleFormType = new System.Windows.Forms.Label();
             this.comboBoxFormType = new System.Windows.Forms.ComboBox();
             this.labelTitleFormName = new System.Windows.Forms.Label();
-            this.labelTitleTable = new System.Windows.Forms.Label();
-            this.comboBoxTables = new System.Windows.Forms.ComboBox();
             this.dataGridViewControls = new System.Windows.Forms.DataGridView();
             this.ControlName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ControlType = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -45,7 +48,8 @@
             this.OtherProperties = new System.Windows.Forms.DataGridViewButtonColumn();
             this.groupBoxDesigner = new System.Windows.Forms.GroupBox();
             this.buttonGetFile = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonCreateDesigner = new System.Windows.Forms.Button();
+            this.folderBrowserDialogGetFile = new System.Windows.Forms.FolderBrowserDialog();
             this.contextMenuStripDataGridView.SuspendLayout();
             this.groupBoxServerInfo.SuspendLayout();
             this.groupBoxFormInfo.SuspendLayout();
@@ -164,6 +168,7 @@
             // 
             // groupBoxServerInfo
             // 
+            this.groupBoxServerInfo.Controls.Add(this.buttonStartDesigner);
             this.groupBoxServerInfo.Controls.Add(this.labelTitleServerName);
             this.groupBoxServerInfo.Controls.Add(this.textBoxServerName);
             this.groupBoxServerInfo.Controls.Add(this.labelTitleServerUsername);
@@ -171,111 +176,35 @@
             this.groupBoxServerInfo.Controls.Add(this.labelTitlePassword);
             this.groupBoxServerInfo.Controls.Add(this.buttonConnect);
             this.groupBoxServerInfo.Controls.Add(this.textBoxPassword);
+            this.groupBoxServerInfo.Controls.Add(this.labelTitleTable);
             this.groupBoxServerInfo.Controls.Add(this.labelTitleDatabase);
+            this.groupBoxServerInfo.Controls.Add(this.comboBoxTables);
             this.groupBoxServerInfo.Controls.Add(this.textBoxDatabase);
             this.groupBoxServerInfo.Location = new System.Drawing.Point(10, 10);
             this.groupBoxServerInfo.Margin = new System.Windows.Forms.Padding(0);
             this.groupBoxServerInfo.Name = "groupBoxServerInfo";
             this.groupBoxServerInfo.Padding = new System.Windows.Forms.Padding(10);
-            this.groupBoxServerInfo.Size = new System.Drawing.Size(325, 230);
+            this.groupBoxServerInfo.Size = new System.Drawing.Size(325, 309);
             this.groupBoxServerInfo.TabIndex = 22;
             this.groupBoxServerInfo.TabStop = false;
             this.groupBoxServerInfo.Text = "Server Config";
-            // 
-            // groupBoxFormInfo
-            // 
-            this.groupBoxFormInfo.Controls.Add(this.buttonStartDesigner);
-            this.groupBoxFormInfo.Controls.Add(this.textBoxFormText);
-            this.groupBoxFormInfo.Controls.Add(this.labelTitleFormText);
-            this.groupBoxFormInfo.Controls.Add(this.textBoxFormName);
-            this.groupBoxFormInfo.Controls.Add(this.labelTitleFormType);
-            this.groupBoxFormInfo.Controls.Add(this.comboBoxFormType);
-            this.groupBoxFormInfo.Controls.Add(this.labelTitleFormName);
-            this.groupBoxFormInfo.Controls.Add(this.labelTitleTable);
-            this.groupBoxFormInfo.Controls.Add(this.comboBoxTables);
-            this.groupBoxFormInfo.Location = new System.Drawing.Point(10, 250);
-            this.groupBoxFormInfo.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
-            this.groupBoxFormInfo.Name = "groupBoxFormInfo";
-            this.groupBoxFormInfo.Padding = new System.Windows.Forms.Padding(10);
-            this.groupBoxFormInfo.Size = new System.Drawing.Size(325, 229);
-            this.groupBoxFormInfo.TabIndex = 23;
-            this.groupBoxFormInfo.TabStop = false;
-            this.groupBoxFormInfo.Text = "Form Config";
             // 
             // buttonStartDesigner
             // 
             this.buttonStartDesigner.AutoSize = true;
             this.buttonStartDesigner.Enabled = false;
-            this.buttonStartDesigner.Location = new System.Drawing.Point(116, 189);
+            this.buttonStartDesigner.Location = new System.Drawing.Point(212, 268);
             this.buttonStartDesigner.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.buttonStartDesigner.Name = "buttonStartDesigner";
-            this.buttonStartDesigner.Size = new System.Drawing.Size(200, 31);
-            this.buttonStartDesigner.TabIndex = 16;
-            this.buttonStartDesigner.Text = "Start Designer";
+            this.buttonStartDesigner.Size = new System.Drawing.Size(103, 31);
+            this.buttonStartDesigner.TabIndex = 20;
+            this.buttonStartDesigner.Text = "Set Table";
             this.buttonStartDesigner.UseVisualStyleBackColor = true;
-            this.buttonStartDesigner.Click += new System.EventHandler(this.buttonStartDesigner_Click);
-            // 
-            // textBoxFormText
-            // 
-            this.textBoxFormText.Location = new System.Drawing.Point(116, 111);
-            this.textBoxFormText.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
-            this.textBoxFormText.Name = "textBoxFormText";
-            this.textBoxFormText.Size = new System.Drawing.Size(200, 29);
-            this.textBoxFormText.TabIndex = 24;
-            // 
-            // labelTitleFormText
-            // 
-            this.labelTitleFormText.AutoSize = true;
-            this.labelTitleFormText.Location = new System.Drawing.Point(10, 114);
-            this.labelTitleFormText.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.labelTitleFormText.Name = "labelTitleFormText";
-            this.labelTitleFormText.Size = new System.Drawing.Size(80, 21);
-            this.labelTitleFormText.TabIndex = 25;
-            this.labelTitleFormText.Text = "Form Text:";
-            // 
-            // textBoxFormName
-            // 
-            this.textBoxFormName.Location = new System.Drawing.Point(116, 72);
-            this.textBoxFormName.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
-            this.textBoxFormName.Name = "textBoxFormName";
-            this.textBoxFormName.Size = new System.Drawing.Size(200, 29);
-            this.textBoxFormName.TabIndex = 16;
-            // 
-            // labelTitleFormType
-            // 
-            this.labelTitleFormType.AutoSize = true;
-            this.labelTitleFormType.Location = new System.Drawing.Point(10, 152);
-            this.labelTitleFormType.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.labelTitleFormType.Name = "labelTitleFormType";
-            this.labelTitleFormType.Size = new System.Drawing.Size(86, 21);
-            this.labelTitleFormType.TabIndex = 23;
-            this.labelTitleFormType.Text = "Form Type:";
-            // 
-            // comboBoxFormType
-            // 
-            this.comboBoxFormType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
-            this.comboBoxFormType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.comboBoxFormType.FormattingEnabled = true;
-            this.comboBoxFormType.Location = new System.Drawing.Point(116, 150);
-            this.comboBoxFormType.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
-            this.comboBoxFormType.Name = "comboBoxFormType";
-            this.comboBoxFormType.Size = new System.Drawing.Size(200, 29);
-            this.comboBoxFormType.TabIndex = 22;
-            // 
-            // labelTitleFormName
-            // 
-            this.labelTitleFormName.AutoSize = true;
-            this.labelTitleFormName.Location = new System.Drawing.Point(10, 75);
-            this.labelTitleFormName.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.labelTitleFormName.Name = "labelTitleFormName";
-            this.labelTitleFormName.Size = new System.Drawing.Size(96, 21);
-            this.labelTitleFormName.TabIndex = 21;
-            this.labelTitleFormName.Text = "Form Name:";
             // 
             // labelTitleTable
             // 
             this.labelTitleTable.AutoSize = true;
-            this.labelTitleTable.Location = new System.Drawing.Point(10, 35);
+            this.labelTitleTable.Location = new System.Drawing.Point(10, 232);
             this.labelTitleTable.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
             this.labelTitleTable.Name = "labelTitleTable";
             this.labelTitleTable.Size = new System.Drawing.Size(48, 21);
@@ -288,11 +217,105 @@
             this.comboBoxTables.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.comboBoxTables.Enabled = false;
             this.comboBoxTables.FormattingEnabled = true;
-            this.comboBoxTables.Location = new System.Drawing.Point(116, 33);
+            this.comboBoxTables.Location = new System.Drawing.Point(115, 229);
             this.comboBoxTables.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.comboBoxTables.Name = "comboBoxTables";
             this.comboBoxTables.Size = new System.Drawing.Size(200, 29);
             this.comboBoxTables.TabIndex = 18;
+            // 
+            // groupBoxFormInfo
+            // 
+            this.groupBoxFormInfo.Controls.Add(this.textBoxNamespace);
+            this.groupBoxFormInfo.Controls.Add(this.labelTitleNamespace);
+            this.groupBoxFormInfo.Controls.Add(this.textBoxFormText);
+            this.groupBoxFormInfo.Controls.Add(this.labelTitleFormText);
+            this.groupBoxFormInfo.Controls.Add(this.textBoxFormName);
+            this.groupBoxFormInfo.Controls.Add(this.labelTitleFormType);
+            this.groupBoxFormInfo.Controls.Add(this.comboBoxFormType);
+            this.groupBoxFormInfo.Controls.Add(this.labelTitleFormName);
+            this.groupBoxFormInfo.Location = new System.Drawing.Point(10, 329);
+            this.groupBoxFormInfo.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
+            this.groupBoxFormInfo.Name = "groupBoxFormInfo";
+            this.groupBoxFormInfo.Padding = new System.Windows.Forms.Padding(10);
+            this.groupBoxFormInfo.Size = new System.Drawing.Size(325, 189);
+            this.groupBoxFormInfo.TabIndex = 23;
+            this.groupBoxFormInfo.TabStop = false;
+            this.groupBoxFormInfo.Text = "Form Config";
+            // 
+            // textBoxNamespace
+            // 
+            this.textBoxNamespace.Location = new System.Drawing.Point(115, 149);
+            this.textBoxNamespace.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
+            this.textBoxNamespace.Name = "textBoxNamespace";
+            this.textBoxNamespace.Size = new System.Drawing.Size(200, 29);
+            this.textBoxNamespace.TabIndex = 26;
+            // 
+            // labelTitleNamespace
+            // 
+            this.labelTitleNamespace.AutoSize = true;
+            this.labelTitleNamespace.Location = new System.Drawing.Point(9, 152);
+            this.labelTitleNamespace.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
+            this.labelTitleNamespace.Name = "labelTitleNamespace";
+            this.labelTitleNamespace.Size = new System.Drawing.Size(94, 21);
+            this.labelTitleNamespace.TabIndex = 27;
+            this.labelTitleNamespace.Text = "Namespace:";
+            // 
+            // textBoxFormText
+            // 
+            this.textBoxFormText.Location = new System.Drawing.Point(115, 71);
+            this.textBoxFormText.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
+            this.textBoxFormText.Name = "textBoxFormText";
+            this.textBoxFormText.Size = new System.Drawing.Size(200, 29);
+            this.textBoxFormText.TabIndex = 24;
+            // 
+            // labelTitleFormText
+            // 
+            this.labelTitleFormText.AutoSize = true;
+            this.labelTitleFormText.Location = new System.Drawing.Point(9, 74);
+            this.labelTitleFormText.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
+            this.labelTitleFormText.Name = "labelTitleFormText";
+            this.labelTitleFormText.Size = new System.Drawing.Size(80, 21);
+            this.labelTitleFormText.TabIndex = 25;
+            this.labelTitleFormText.Text = "Form Text:";
+            // 
+            // textBoxFormName
+            // 
+            this.textBoxFormName.Location = new System.Drawing.Point(115, 32);
+            this.textBoxFormName.Margin = new System.Windows.Forms.Padding(0);
+            this.textBoxFormName.Name = "textBoxFormName";
+            this.textBoxFormName.Size = new System.Drawing.Size(200, 29);
+            this.textBoxFormName.TabIndex = 16;
+            // 
+            // labelTitleFormType
+            // 
+            this.labelTitleFormType.AutoSize = true;
+            this.labelTitleFormType.Location = new System.Drawing.Point(9, 112);
+            this.labelTitleFormType.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
+            this.labelTitleFormType.Name = "labelTitleFormType";
+            this.labelTitleFormType.Size = new System.Drawing.Size(86, 21);
+            this.labelTitleFormType.TabIndex = 23;
+            this.labelTitleFormType.Text = "Form Type:";
+            // 
+            // comboBoxFormType
+            // 
+            this.comboBoxFormType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
+            this.comboBoxFormType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxFormType.FormattingEnabled = true;
+            this.comboBoxFormType.Location = new System.Drawing.Point(115, 110);
+            this.comboBoxFormType.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
+            this.comboBoxFormType.Name = "comboBoxFormType";
+            this.comboBoxFormType.Size = new System.Drawing.Size(200, 29);
+            this.comboBoxFormType.TabIndex = 22;
+            // 
+            // labelTitleFormName
+            // 
+            this.labelTitleFormName.AutoSize = true;
+            this.labelTitleFormName.Location = new System.Drawing.Point(9, 35);
+            this.labelTitleFormName.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
+            this.labelTitleFormName.Name = "labelTitleFormName";
+            this.labelTitleFormName.Size = new System.Drawing.Size(96, 21);
+            this.labelTitleFormName.TabIndex = 21;
+            this.labelTitleFormName.Text = "Form Name:";
             // 
             // dataGridViewControls
             // 
@@ -305,8 +328,8 @@
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewControls.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridViewControls.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -330,9 +353,12 @@
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewControls.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridViewControls.RowHeadersVisible = false;
             this.dataGridViewControls.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewControls.Size = new System.Drawing.Size(829, 418);
+            this.dataGridViewControls.Size = new System.Drawing.Size(829, 457);
             this.dataGridViewControls.TabIndex = 24;
+            this.dataGridViewControls.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewControls_CellContentClick);
+            this.dataGridViewControls.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridViewControls_RowsAdded);
             this.dataGridViewControls.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dataGridViewControls_MouseClick);
             // 
             // ControlName
@@ -368,18 +394,20 @@
             // OtherProperties
             // 
             this.OtherProperties.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.OtherProperties.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.OtherProperties.HeaderText = "Other";
             this.OtherProperties.Name = "OtherProperties";
             this.OtherProperties.Text = "Other";
+            this.OtherProperties.UseColumnTextForButtonValue = true;
             this.OtherProperties.Width = 55;
             // 
             // groupBoxDesigner
             // 
-            this.groupBoxDesigner.Location = new System.Drawing.Point(10, 489);
+            this.groupBoxDesigner.Location = new System.Drawing.Point(10, 528);
             this.groupBoxDesigner.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.groupBoxDesigner.Name = "groupBoxDesigner";
             this.groupBoxDesigner.Padding = new System.Windows.Forms.Padding(10);
-            this.groupBoxDesigner.Size = new System.Drawing.Size(1164, 331);
+            this.groupBoxDesigner.Size = new System.Drawing.Size(1164, 301);
             this.groupBoxDesigner.TabIndex = 2;
             this.groupBoxDesigner.TabStop = false;
             this.groupBoxDesigner.Text = "Designer";
@@ -387,7 +415,7 @@
             // buttonGetFile
             // 
             this.buttonGetFile.AutoSize = true;
-            this.buttonGetFile.Location = new System.Drawing.Point(974, 830);
+            this.buttonGetFile.Location = new System.Drawing.Point(974, 839);
             this.buttonGetFile.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.buttonGetFile.Name = "buttonGetFile";
             this.buttonGetFile.Size = new System.Drawing.Size(200, 31);
@@ -396,24 +424,29 @@
             this.buttonGetFile.UseVisualStyleBackColor = true;
             this.buttonGetFile.Click += new System.EventHandler(this.buttonGetFile_Click);
             // 
-            // button1
+            // buttonCreateDesigner
             // 
-            this.button1.AutoSize = true;
-            this.button1.Location = new System.Drawing.Point(975, 448);
-            this.button1.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(200, 31);
-            this.button1.TabIndex = 27;
-            this.button1.Text = "Create Designer";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.buttonCreateDesigner_Click);
+            this.buttonCreateDesigner.AutoSize = true;
+            this.buttonCreateDesigner.Location = new System.Drawing.Point(974, 487);
+            this.buttonCreateDesigner.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
+            this.buttonCreateDesigner.Name = "buttonCreateDesigner";
+            this.buttonCreateDesigner.Size = new System.Drawing.Size(200, 31);
+            this.buttonCreateDesigner.TabIndex = 27;
+            this.buttonCreateDesigner.Text = "Create Designer";
+            this.buttonCreateDesigner.UseVisualStyleBackColor = true;
+            this.buttonCreateDesigner.Click += new System.EventHandler(this.buttonCreateDesigner_Click);
+            // 
+            // folderBrowserDialogGetFile
+            // 
+            this.folderBrowserDialogGetFile.RootFolder = System.Environment.SpecialFolder.UserProfile;
+            this.folderBrowserDialogGetFile.ShowNewFolderButton = false;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1185, 869);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(1185, 879);
+            this.Controls.Add(this.buttonCreateDesigner);
             this.Controls.Add(this.buttonGetFile);
             this.Controls.Add(this.groupBoxDesigner);
             this.Controls.Add(this.dataGridViewControls);
@@ -463,15 +496,19 @@
         private System.Windows.Forms.TextBox textBoxFormText;
         private System.Windows.Forms.Label labelTitleFormText;
         private System.Windows.Forms.Button buttonGetFile;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonCreateDesigner;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBoxRepositing;
+        private System.ComponentModel.IContainer components;
         private System.Windows.Forms.Button buttonStartDesigner;
+        private System.Windows.Forms.TextBox textBoxNamespace;
+        private System.Windows.Forms.Label labelTitleNamespace;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogGetFile;
         private System.Windows.Forms.DataGridViewTextBoxColumn ControlName;
         private System.Windows.Forms.DataGridViewComboBoxColumn ControlType;
         private System.Windows.Forms.DataGridViewTextBoxColumn LabelText;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Required;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Locked;
         private System.Windows.Forms.DataGridViewButtonColumn OtherProperties;
-        private System.Windows.Forms.ToolStripTextBox toolStripTextBoxRepositing;
     }
 }
 

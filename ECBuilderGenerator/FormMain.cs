@@ -1,5 +1,6 @@
 ﻿using ECBuilder.Builders.FormBuilders;
 using ECBuilder.Components.Buttons;
+using ECBuilder.Components.ComboBoxes;
 using Microsoft.CSharp;
 using System;
 using System.CodeDom;
@@ -14,6 +15,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -41,8 +43,9 @@ namespace ECBuilderGenerator
         {
             typeof(TextBox),
             typeof(NumericUpDown),
-            typeof(ComboBox),
-            typeof(DateTimePicker)
+            typeof(CustomComboBox),
+            typeof(DateTimePicker),
+            typeof(RichTextBox),
         };
 
         List<Type> FormTypes { get; set; } = new List<Type>()
@@ -214,40 +217,42 @@ namespace ECBuilderGenerator
         #region Get File
         private void buttonGetFile_Click(object sender, EventArgs e)
         {
-            Cursor = Cursors.WaitCursor;
+            DialogResult dialogResult = folderBrowserDialogGetFile.ShowDialog();
+            if (dialogResult == DialogResult.OK)
+            {
+                string code = GenerateCSFromDesigner();
+                StringBuilder stringBuilderDesigner = new StringBuilder();
+                stringBuilderDesigner.AppendLine($"namespace {textBoxNamespace.Text}");
+                stringBuilderDesigner.AppendLine("{");
+                stringBuilderDesigner.Append(string.Join("\n", code.Replace("\r\n", "\n").Split('\n').Select(str => $"\t{str}").ToArray()));
+                code = stringBuilderDesigner.ToString();
+                code = code.Replace($" : {((Type)comboBoxFormType.SelectedItem).FullName}", "");
+                code = code.Replace("public " + textBoxFormName.Text + "()\n\t    {\n\t        this.InitializeComponent();\n\t    }", "");
+                code = code.Replace($"public partial class {textBoxFormName.Text}", $"partial class {textBoxFormName.Text}");
+                code.TrimEnd();
+                code += "}";
+                StreamWriter streamWriterDesigner = new StreamWriter(Path.Combine(folderBrowserDialogGetFile.SelectedPath, $"{textBoxFormName.Text}.Designer.cs"));
+                streamWriterDesigner.Write(code);
+                streamWriterDesigner.Close();
 
-            string code = GenerateCSFromDesigner();
-            StringBuilder stringBuilderDesigner = new StringBuilder();
-            stringBuilderDesigner.AppendLine("namespace ECBuilderGenerator");
-            stringBuilderDesigner.AppendLine("{");
-            stringBuilderDesigner.Append(string.Join("\n", code.Replace("\r\n", "\n").Split('\n').Select(str => $"\t{str}").ToArray()));
-            code = stringBuilderDesigner.ToString();
-            code = code.Replace($" : {((Type)comboBoxFormType.SelectedItem).FullName}", "");
-            code = code.Replace("public " + textBoxFormName.Text + "()\n\t    {\n\t        this.InitializeComponent();\n\t    }", "");
-            code = code.Replace($"public partial class {textBoxFormName.Text}", $"partial class {textBoxFormName.Text}");
-            code.TrimEnd();
-            code += "}";
-            StreamWriter streamWriterDesigner = new StreamWriter($@"C:\Users\SuffaTech_11003\Desktop\{textBoxFormName.Text}.Designer.cs");
-            streamWriterDesigner.Write(code);
-            streamWriterDesigner.Close();
+                StringBuilder stringBuilderMain = new StringBuilder();
+                stringBuilderMain.AppendLine($"namespace {textBoxNamespace.Text}");
+                stringBuilderMain.AppendLine("{");
+                stringBuilderMain.AppendLine($"\tpublic partial class {textBoxFormName.Text} : {((Type)comboBoxFormType.SelectedItem).FullName}");
+                stringBuilderMain.AppendLine("\t{");
+                stringBuilderMain.AppendLine($"\t\tpublic {textBoxFormName.Text}()");
+                stringBuilderMain.AppendLine("\t\t{");
+                stringBuilderMain.AppendLine("\t\t\tInitializeComponent();");
+                stringBuilderMain.AppendLine("\t\t}");
+                stringBuilderMain.AppendLine("\t}");
+                stringBuilderMain.AppendLine("}");
 
-            StringBuilder stringBuilderMain = new StringBuilder();
-            stringBuilderMain.AppendLine("namespace ECBuilderGenerator");
-            stringBuilderMain.AppendLine("{");
-            stringBuilderMain.AppendLine($"\tpublic partial class {textBoxFormName.Text} : {((Type)comboBoxFormType.SelectedItem).FullName}");
-            stringBuilderMain.AppendLine("\t{");
-            stringBuilderMain.AppendLine($"\t\tpublic {textBoxFormName.Text}()");
-            stringBuilderMain.AppendLine("\t\t{");
-            stringBuilderMain.AppendLine("\t\t\tInitializeComponent();");
-            stringBuilderMain.AppendLine("\t\t}");
-            stringBuilderMain.AppendLine("\t}");
-            stringBuilderMain.AppendLine("}");
+                StreamWriter streamWriterMain = new StreamWriter(Path.Combine(folderBrowserDialogGetFile.SelectedPath, $"{textBoxFormName.Text}.cs"));
+                streamWriterMain.Write(stringBuilderMain.ToString());
+                streamWriterMain.Close();
 
-            StreamWriter streamWriterMain = new StreamWriter($@"C:\Users\SuffaTech_11003\Desktop\{textBoxFormName.Text}.cs");
-            streamWriterMain.Write(stringBuilderMain.ToString());
-            streamWriterMain.Close();
-
-            Cursor = Cursors.Default;
+                MessageBox.Show("Files saved.");
+            }
         }
         #endregion
 
@@ -284,7 +289,6 @@ namespace ECBuilderGenerator
                 return builder.ToString();
             }
         }
-
         #endregion
 
         #region DataGridView Context Menu Strip
@@ -325,5 +329,25 @@ namespace ECBuilderGenerator
             toolStripTextBoxRepositing.Clear();
         }
         #endregion
+
+        private void dataGridViewControls_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dataGridViewControls.Columns[e.ColumnIndex].GetType() != typeof(DataGridViewButtonColumn) || e.RowIndex == -1) return;
+
+            DataGridViewRow row = dataGridViewControls.Rows[e.RowIndex];
+            if (row.IsNewRow) return;
+
+            DataGridViewComboBoxCell comboBox = (DataGridViewComboBoxCell)row.Cells["ControlType"];
+
+            Type type = comboBox.Items.Cast<Type>().First(item => item.Name == comboBox.Value.ToString());
+
+            FormProperties formProperties = new FormProperties(type.GetProperties());
+            formProperties.ShowDialog();
+        }
+
+        private void dataGridViewControls_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+
+        }
     }
 }
